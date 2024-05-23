@@ -686,6 +686,39 @@ defmodule JuntoWeb.CoreComponents do
     """
   end
 
+  slot :button, required: true
+  slot :item, required: true
+
+  def dropdown(assigns) do
+    ~H"""
+    <div class="dropdown dropdown-end text-left">
+      <div tabindex="0" role="button">
+        <div class="flex bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 ease-in-out duration-300  rounded-lg  w-fit gap-2 px-4 py-1 cursor-pointer justify-center items-center">
+          <%= render_slot(@button) %>
+          <div>
+            <.icon name="hero-chevron-down" class="h-3 w-3" />
+          </div>
+        </div>
+      </div>
+      <div
+        tabindex="0"
+        class="mt-2 dropdown-content z-[1] menu pt-2 px-1 outline outline-1 dark:outline-slate-700/50 outline-slate-700/10 shadow-xl bg-base-100 dark:bg-base-100/80 rounded-md text-base backdrop-blur-lg w-72"
+      >
+        <ul class="rounded-sm">
+          <%= for iter <- @item do %>
+            <li><%= render_slot(iter) %></li>
+          <% end %>
+        </ul>
+        <div
+          class="absolute left-56 -top-1.5 h-[10px] w-[10px] bg-base-100 dark:bg-base:100/80 rotate-180"
+          style="clip-path: polygon(100% 0,0 0,50% 100%);"
+        >
+        </div>
+      </div>
+    </div>
+    """
+  end
+
   @doc """
   Renders a [Heroicon](https://heroicons.com).
 
