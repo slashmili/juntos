@@ -1,7 +1,7 @@
-import InputOtpGroup from "./hooks/input-otp-group"
+import inputOptGroup from "./hooks/input-otp-group"
 
 let Hooks = {
-  InputOtpGroup: InputOtpGroup
+  ...inputOptGroup
 }
 
 export default Hooks

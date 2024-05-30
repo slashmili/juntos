@@ -78,26 +78,41 @@ defmodule JuntoWeb.EventLive.NewEvent do
   defp datepick(assigns) do
     ~H"""
     <div>
-      <div class="flex">
-        <div class="flex flex-col gap-1 bg-black/5 pl-4 pt-1 pr-1 rounded relative">
-          <div class="absolute border-dashed border-l-[1.5px] top-8 bottom-7 left-6 border-slate-500 dark:border-slate-400" style=""></div>
+      <div class="flex gap-2">
+        <div class="flex flex-col gap-1 bg-black/5 pl-4 pt-1 pr-1 rounded-lg relative">
+          <div
+            class="absolute border-dashed border-l-[1.5px] top-8 bottom-7 left-6 border-slate-500 dark:border-slate-400"
+            style=""
+          >
+          </div>
           <div class="flex h-11 gap-[1px]">
             <div class="pl-1 pt-4 opacity-80">
-              <svg viewBox="0 0 100 100" class=" dark:text-slate-400 w-4 opacity-50" xmlns="http://www.w3.org/2000/svg"> <circle cx="35" cy="35" r="35" /> </svg>
+              <svg
+                viewBox="0 0 100 100"
+                class=" dark:text-slate-400 w-4 opacity-50"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="35" cy="35" r="35" />
+              </svg>
             </div>
-            <div class="p-2 w-16 opacity-80"> Start </div>
+            <div class="p-2 w-48 opacity-80">Start</div>
             <.input_date />
             <.input_time />
           </div>
           <div class="flex h-11 gap-[1px]">
             <div class="pl-1 pt-4  opacity-80">
-              <svg viewBox="0 0 100 100" class="w-4 opacity-50" xmlns="http://www.w3.org/2000/svg"> <circle cx="35" cy="35" r="35" stroke="currentColor" stroke-width="10" fill="none" /> </svg>
+              <svg viewBox="0 0 100 100" class="w-4 opacity-50" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="35" cy="35" r="35" stroke="currentColor" stroke-width="10" fill="none" />
+              </svg>
             </div>
-            <div class="p-2 w-16 opacity-80"> End </div>
+            <div class="p-2 w-48 opacity-80">End</div>
             <.input_date />
             <.input_time />
-
           </div>
+        </div>
+
+        <div class="flex flex-col gap-2 grow bg-black/5 pl-2 pr-2 pt-1 rounded-lg hover:bg-black/20 dark:hover:bg-white/20 cursor-pointer select-none">
+          <.timezone_dropdown />
         </div>
       </div>
     </div>
@@ -115,8 +130,21 @@ defmodule JuntoWeb.EventLive.NewEvent do
   defp input_time(assigns) do
     ~H"""
     <div class="p-2 bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 rounded-tr-lg rounded-br-lg">
-      <input class="picker bg-transparent  border-none outline-none" type="time" value="21:00" required />
+      <input
+        class="picker bg-transparent  border-none outline-none"
+        type="time"
+        value="21:00"
+        required
+      />
     </div>
+    """
+  end
+
+  defp timezone_dropdown(assigns) do
+    ~H"""
+    <div class=""><.icon name="hero-globe-alt" class="w-4 h-4" /></div>
+    <div class="text-sm font-medium">GMT+02:00</div>
+    <div class="text-xs overflow-hidden text-ellipsis">Berlin</div>
     """
   end
 
