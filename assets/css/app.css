@@ -20,7 +20,7 @@
     }
   }
   & .form-container {
-    @apply grow flex flex-col;
+    @apply grow flex flex-col gap-y-1 ;
 
     & .form-header {
       @apply basis-1/2 min-w-0;
@@ -28,6 +28,36 @@
       & .form-avatar {
       }
     }
+   & .form-input-name {
+     @apply min-h-12;
+     textarea {
+       @apply h-12 font-semibold text-4xl resize-none p-0 w-full bg-transparent overflow-hidden focus:outline-none border border-transparent;
+     }
+   }
+   
+   & .form-datepick {
+     .datetime-container {
+       @apply flex flex-col gap-1 bg-black/5 pl-4 pr-1 rounded-lg relative;
+     }
+     .datetime-start-end-line {
+       @apply absolute border-dashed border-l-[1.5px] top-8 bottom-7 left-6 border-slate-500 dark:border-slate-400;
+     }
+     .datetime-start-end-container {
+       @apply flex h-11 gap-[1px];
+       .text {
+	 @apply p-2 w-48 opacity-80;
+       }
+       .icon-wrapper {
+	  @apply pl-1 pt-4  opacity-80;
+	  svg {
+            @apply w-4 opacity-50;
+	  }
+        }
+     }
+     .timezone-container {
+       @apply flex flex-col gap-2 grow bg-black/5 pl-2 pr-2 pt-1 rounded-lg hover:bg-black/20 dark:hover:bg-white/20 cursor-pointer select-none;
+     }
+   }
   }
 
 }

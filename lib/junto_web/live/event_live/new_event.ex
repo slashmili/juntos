@@ -12,64 +12,41 @@ defmodule JuntoWeb.EventLive.NewEvent do
       </div>
       <div class="form-container">
         <div class="flex">
-          <div class="form-header">
-            <div class="dropdown">
-              <div tabindex="0" role="button"><.event_group /></div>
-              <div
-                tabindex="0"
-                class=" mt-2 dropdown-content z-[1] menu pt-2 px-1 outline outline-1 dark:outline-slate-700/50 outline-slate-700/10 shadow-xl bg-base-100 dark:bg-base-100/80 backdrop-blur-lg rounded-md w-60 text-base gap-2"
-              >
-                <div class="text-xs opacity-50 pl-4">Choose the group of the event</div>
-
-                <ul class="rounded-sm">
-                  <li><a><.avatar />Personal Event</a></li>
-                  <li>
-                    <a>
-                      <div class="opacity-50">
-                        <.icon name="hero-plus" class="w-4 h-4 " /> Create Group
-                      </div>
-                    </a>
-                  </li>
-                </ul>
-
-                <div
-                  class="absolute left-20 -top-1.5 h-[10px] w-[10px]  bg-base-100 dark:bg-base-100/80 rotate-180"
-                  style="clip-path: polygon(100% 0,0 0,50% 100%);"
-                >
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="basis-1/2">
-            <div class="text-right"><.scope_dropdown /></div>
-          </div>
+          <.group_dropdown />
+          <.scope_dropdown />
         </div>
-        <div class="h-12">
-          some space
-          <div class="p-3">
-            <textarea
-              autofocus
-              id="foo"
-              class="h-12 font-semibold text-4xl resize-none p-0 w-full bg-transparent overflow-hidden focus:outline-none border border-transparent"
-              spellcheck="false"
-              autocapitalize="words"
-              placeholder="Event Name"
-              onInput="this.parentNode.dataset.clonedVal = this.value"
-              row="2"
-            ></textarea>
-            <script>
-              const textarea = document.getElementById('foo');
-              //TODO: move it out of here
-              textarea.addEventListener('input', () => {
-              if (textarea.scrollHeight < 50) return;
-                  textarea.style.height = 'auto';
-                  textarea.style.height = `${textarea.scrollHeight}px`;
-              });
-                  
-            </script>
-          </div>
-          <.datepick />
-        </div>
+        <.event_title_input />
+        <.datepick />
+        <.event_location_selector />
+      </div>
+    </div>
+    """
+  end
+
+  defp event_title_input(assigns) do
+    ~H"""
+    <div class="form-input-name">
+      <div class="p-3">
+        <textarea
+          autofocus
+          id="foo"
+          class=""
+          spellcheck="false"
+          autocapitalize="words"
+          placeholder="Event Name"
+          onInput="this.parentNode.dataset.clonedVal = this.value"
+          row="2"
+        ></textarea>
+        <script>
+          const textarea = document.getElementById('foo');
+          //TODO: move it out of here
+          textarea.addEventListener('input', () => {
+          if (textarea.scrollHeight < 50) return;
+              textarea.style.height = 'auto';
+              textarea.style.height = `${textarea.scrollHeight}px`;
+          });
+              
+        </script>
       </div>
     </div>
     """
@@ -77,41 +54,40 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp datepick(assigns) do
     ~H"""
-    <div>
+    <div class="form-datepick">
       <div class="flex gap-2">
-        <div class="flex flex-col gap-1 bg-black/5 pl-4 pt-1 pr-1 rounded-lg relative">
+        <div class="datetime-container">
           <div
-            class="absolute border-dashed border-l-[1.5px] top-8 bottom-7 left-6 border-slate-500 dark:border-slate-400"
-            style=""
+            class="datetime-start-end-line"
           >
           </div>
-          <div class="flex h-11 gap-[1px]">
-            <div class="pl-1 pt-4 opacity-80">
+          <div class="datetime-start-end-container">
+            <div class="icon-wrapper">
               <svg
                 viewBox="0 0 100 100"
-                class=" dark:text-slate-400 w-4 opacity-50"
+                class="dark:text-slate-400"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <circle cx="35" cy="35" r="35" />
               </svg>
             </div>
-            <div class="p-2 w-48 opacity-80">Start</div>
+            <div class="text">Start</div>
             <.input_date />
             <.input_time />
           </div>
-          <div class="flex h-11 gap-[1px]">
-            <div class="pl-1 pt-4  opacity-80">
-              <svg viewBox="0 0 100 100" class="w-4 opacity-50" xmlns="http://www.w3.org/2000/svg">
+          <div class="datetime-start-end-container">
+            <div class="icon-wrapper">
+              <svg viewBox="0 0 100 100" class="" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="35" cy="35" r="35" stroke="currentColor" stroke-width="10" fill="none" />
               </svg>
             </div>
-            <div class="p-2 w-48 opacity-80">End</div>
+            <div class="text">End</div>
             <.input_date />
             <.input_time />
           </div>
         </div>
 
-        <div class="flex flex-col gap-2 grow bg-black/5 pl-2 pr-2 pt-1 rounded-lg hover:bg-black/20 dark:hover:bg-white/20 cursor-pointer select-none">
+        <div class="timezone-container">
           <.timezone_dropdown />
         </div>
       </div>
@@ -148,31 +124,68 @@ defmodule JuntoWeb.EventLive.NewEvent do
     """
   end
 
+  defp group_dropdown(assigns) do
+    ~H"""
+    <div class="form-header">
+      <div class="dropdown">
+        <div tabindex="0" role="button"><.event_group /></div>
+        <div
+          tabindex="0"
+          class=" mt-2 dropdown-content z-[1] menu pt-2 px-1 outline outline-1 dark:outline-slate-700/50 outline-slate-700/10 shadow-xl bg-base-100 dark:bg-base-100/80 backdrop-blur-lg rounded-md w-60 text-base gap-2"
+        >
+          <div class="text-xs opacity-50 pl-4">Choose the group of the event</div>
+
+          <ul class="rounded-sm">
+            <li><a><.avatar />Personal Event</a></li>
+            <li>
+              <a>
+                <div class="opacity-50">
+                  <.icon name="hero-plus" class="w-4 h-4 " /> Create Group
+                </div>
+              </a>
+            </li>
+          </ul>
+
+          <div
+            class="absolute left-20 -top-1.5 h-[10px] w-[10px]  bg-base-100 dark:bg-base-100/80 rotate-180"
+            style="clip-path: polygon(100% 0,0 0,50% 100%);"
+          >
+          </div>
+        </div>
+      </div>
+    </div>
+    """
+  end
+
   defp scope_dropdown(assigns) do
     ~H"""
-    <.dropdown>
-      <:button>
-        <div class="text-sm">
-          <.icon name="hero-globe-alt" class="w-4 h-4" /> Public
-        </div>
-      </:button>
-      <:item>
-        <.scope_item icon="hero-globe-alt" checked={true}>
-          <:title>Public</:title>
-          <:desc>
-            Show on your group. Could be listed and suggested
-          </:desc>
-        </.scope_item>
-      </:item>
-      <:item>
-        <.scope_item icon="hero-sparkles-solid" checked={false}>
-          <:title>Private</:title>
-          <:desc>
-            Unlisted. Only people with the link can register
-          </:desc>
-        </.scope_item>
-      </:item>
-    </.dropdown>
+    <div class="basis-1/2">
+      <div class="text-right">
+        <.dropdown>
+          <:button>
+            <div class="text-sm">
+              <.icon name="hero-globe-alt" class="w-4 h-4" /> Public
+            </div>
+          </:button>
+          <:item>
+            <.scope_item icon="hero-globe-alt" checked={true}>
+              <:title>Public</:title>
+              <:desc>
+                Show on your group. Could be listed and suggested
+              </:desc>
+            </.scope_item>
+          </:item>
+          <:item>
+            <.scope_item icon="hero-sparkles-solid" checked={false}>
+              <:title>Private</:title>
+              <:desc>
+                Unlisted. Only people with the link can register
+              </:desc>
+            </.scope_item>
+          </:item>
+        </.dropdown>
+      </div>
+    </div>
     """
   end
 
@@ -207,6 +220,19 @@ defmodule JuntoWeb.EventLive.NewEvent do
       <div class="bg-neutral text-neutral-content rounded-full w-4 h-4">
         <span class="text-xs">I</span>
       </div>
+    </div>
+    """
+  end
+
+  defp event_location_selector(assigns) do
+    ~H"""
+    <div class="flex flex-col gap-1 bg-black/5 pl-4 pt-1 pr-1 rounded-lg relative">
+      hello
+      asdadadadas
+      adasdasdsad
+    </div>
+    <div class="hidden">
+      location https://jsfiddle.net/gh/get/library/pure/googlemaps/js-samples/tree/master/dist/samples/places-queryprediction/jsfiddle
     </div>
     """
   end
