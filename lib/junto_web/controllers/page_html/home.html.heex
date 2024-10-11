@@ -1,432 +1,85 @@
 <.flash_group flash={@flash} />
-<button class="btn">Button</button>
 
-<div class="flex flex-col w-72">
-  <div class="flex w-full bg-slate-400">
-    <div class="grow">May</div>
-    <div>Pre</div>
-    <div>Today</div>
-    <div>Nex</div>
-  </div>
-  <div class="flex flex-col text-sm select-none font-medium leading-6">
-    <div class="flex  text-center  p-2">
-      <div class="flex items-center justify-center w-8 h-8">S</div>
-      <div class="flex items-center justify-center w-8 h-8">M</div>
-      <div class="flex items-center justify-center w-8 h-8">T</div>
-      <div class="flex items-center justify-center w-8 h-8">W</div>
-      <div class="flex items-center justify-center w-8 h-8">T</div>
-      <div class="flex items-center justify-center w-8 h-8">F</div>
-      <div class="flex items-center justify-center w-8 h-8">S</div>
-    </div>
-    <div class="flex overflow-x-scroll w-full">
-      <div class="flex flex-col w-full">
-        <div class="flex text-center p-2">
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 text-slate-500 rounded-lg">30</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">1</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">2</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">3</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">4</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">5</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer bg-red-400 rounded-lg hover:bg-red-500">6</div>
-        </div>
-        <div class="flex text-center p-2 ">
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">7</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">8</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">9</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">10</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">11</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">12</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg ">13</div>
-        </div>
+  https://jsfiddle.net/gh/get/library/pure/googlemaps/js-samples/tree/master/dist/samples/place-autocomplete-data-simple/jsfiddle
+    <div id="title"></div>
+    <ul id="results"></ul>
+    <p><span id="prediction"></span></p>
 
-        <div class="flex text-center p-2 ">
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">14</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">15</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">16</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">17</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">18</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">19</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg ">20</div>
-        </div>
+    <!-- prettier-ignore -->
+    <script>(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
+        ({key: "AIzaSyBCFpZZG_hiR7FySu0INks8QjmkdSS5s_Q", v: "weekly"});</script>
 
-        <div class="flex text-center p-2 ">
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">21</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">22</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">23</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">24</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">25</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">26</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg ">27</div>
-        </div>
+<script>
+/**
+ * @license
+ * Copyright 2024 Google LLC. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+/**
+ * Demonstrates making a single request for Place predictions, then requests Place Details for the first result.
+ */
+async function init() {
+  // @ts-ignore
+  const { Place, AutocompleteSessionToken, AutocompleteSuggestion } =
+    await google.maps.importLibrary("places");
+  // Add an initial request body.
+  let request = {
+    input: "High Mobility",
+  };
+  // Create a session token.
+  const token = new AutocompleteSessionToken();
 
-        <div class="flex text-center p-2 ">
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">28</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">29</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">30</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 rounded-lg">31</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 text-slate-500 rounded-lg">1</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 text-slate-500 rounded-lg">2</div>
-          <div class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-slate-700 text-slate-500 rounded-lg ">3</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+  // Add the token to the request.
+  // @ts-ignore
+  request.sessionToken = token;
 
-<div role="container">
-  <div class="w-[240px] bg-slate-500">
-    <a href="javascript:document.getElementById('cal').scrollBy({left: -240, behavior: 'smooth'})"> pre</a> |
-    <a href="javascript:document.getElementById('today').scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'  })"> today</a> |
-    <a href="javascript:document.getElementById('cal').scrollBy({left: 140, behavior: 'smooth'})"> next</a>
-    <div id="cal" role="months" class="flex w-[100%] snap-x snap-mandatory flex-row overflow-x-auto"
-phx-hook="Datepick"
+  // Fetch autocomplete suggestions.
+  const { suggestions } =
+    await AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
+  const title = document.getElementById("title");
 
-      >
-      <!-- month 01 -->
-      <div class="flex snap-start">
-        <div role="weeks" class="relative grid w-[240px]" style="grid-template-columns: 1fr;">
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
+  title.appendChild(
+    document.createTextNode('Query predictions for "' + request.input + '":'),
+  );
 
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- end of month 1 -->
+  for (let suggestion of suggestions) {
+    const placePrediction = suggestion.placePrediction;
 
-      <!-- month 01 -->
-      <div class="flex snap-start">
-        <div role="weeks" class="relative grid w-[240px]" style="grid-template-columns: 1fr;">
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">2</div>
-              <div class="">2</div>
-              <div class="">2</div>
-              <div class="">2</div>
-              <div class="">2</div>
-              <div class="">2</div>
-              <div class="">2</div>
-            </div>
-          </div>
+    // Log everything for the place prediction. TODO: Delete this section once we have seen the results.
+    console.log("placeId: " + placePrediction.placeId); // You've now got the place ID!
+    console.log("    text: " + placePrediction.text.toString());
+    console.log("    mainText: " + placePrediction.mainText.toString());
+    console.log(
+      "    secondaryText: " + placePrediction.secondaryText.toString(),
+    );
+    console.log("    types: " + placePrediction.types);
+    console.log("    distanceMeters: " + placePrediction.distanceMeters);
 
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- end of month 1 -->
+    // Create a new list element.
+    const listItem = document.createElement("li");
+    const resultsElement = document.getElementById("results");
 
+    listItem.appendChild(
+      document.createTextNode(placePrediction.text.toString()),
+    );
+    resultsElement.appendChild(listItem);
+  }
 
-      <!-- month 01 -->
-      <div class="flex snap-start">
-        <div role="weeks" class="relative grid w-[240px]" style="grid-template-columns: 1fr;">
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">3</div>
-              <div class="">3</div>
-              <div class="">3</div>
-              <div class="">3</div>
-              <div class="">3</div>
-              <div class="">3</div>
-              <div class="" id="today">8</div>
-            </div>
-          </div>
+  let place = suggestions[0].placePrediction.toPlace(); // Get first predicted place.
 
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- end of month 1 -->
+  await place.fetchFields({
+    fields: ["displayName", "formattedAddress"],
+  });
 
+  const placeInfo = document.getElementById("prediction");
 
-      <!-- month 01 -->
-      <div class="flex snap-start">
-        <div role="weeks" class="relative grid w-[240px]" style="grid-template-columns: 1fr;">
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">4</div>
-              <div class="">4</div>
-              <div class="">4</div>
-              <div class="">4</div>
-              <div class="">4</div>
-              <div class="">4</div>
-              <div class="">4</div>
-            </div>
-          </div>
+  placeInfo.textContent =
+    "First predicted place: " +
+    place.displayName +
+    ": " +
+    place.formattedAddress;
+}
 
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-          <div>
-            <div class="grid grid-cols-7">
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-              <div class="">1</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- end of month 1 -->
+init();
 
-
-
-      <!--- end of months -->
-    </div>
-  </div>
-</div>
+</script>

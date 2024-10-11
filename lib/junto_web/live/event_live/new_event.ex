@@ -3,7 +3,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   def render(assigns) do
     ~H"""
-    <div class="create-event temporary bg-blue-300 dark:bg-blue-900/50">
+    <div class="create-event temporary bg-blue-300/30 dark:bg-blue-900/50">
       <div class="banner">
         <picture>
           <source type="image/webp" srcset="images/junto-sample-banner.webp" />
@@ -56,11 +56,8 @@ defmodule JuntoWeb.EventLive.NewEvent do
     ~H"""
     <div class="form-datepick">
       <div class="flex gap-2">
-        <div class="datetime-container">
-          <div
-            class="datetime-start-end-line"
-          >
-          </div>
+        <div class="datetime-container pt-1 pb-1">
+          <div class="datetime-start-end-line"></div>
           <div class="datetime-start-end-container">
             <div class="icon-wrapper">
               <svg
@@ -126,7 +123,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp group_dropdown(assigns) do
     ~H"""
-    <div class="form-header">
+    <div class="form-header select-none">
       <div class="dropdown">
         <div tabindex="0" role="button"><.event_group /></div>
         <div
@@ -159,7 +156,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp scope_dropdown(assigns) do
     ~H"""
-    <div class="basis-1/2">
+    <div class="basis-1/2 select-none">
       <div class="text-right">
         <.dropdown>
           <:button>
@@ -226,14 +223,37 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp event_location_selector(assigns) do
     ~H"""
-    <div class="flex flex-col gap-1 bg-black/5 pl-4 pt-1 pr-1 rounded-lg relative">
-      hello
-      asdadadadas
-      adasdasdsad
+    <div class="dropdown w-full">
+      <div tabindex="0" role="button">
+        <div class="flex flex-row gap-1 bg-black/5 pl-4 pt-1 pr-1 rounded-lg relative opacity-80 cursor-pointer hover:bg-black/20 pt-3 pb-3 select-none">
+          <div>
+            <.icon name="hero-map-pin" class="w-5 h-5" />
+          </div>
+          <div>
+            <div>Add Event Location</div>
+            <div class="text-sm">Offline location or virutal link</div>
+          </div>
+        </div>
+      </div>
+      <ul tabindex="0" class="dropdown-content z-[1] ">
+        <.event_location_lookup/>
+      </ul>
     </div>
+
     <div class="hidden">
       location https://jsfiddle.net/gh/get/library/pure/googlemaps/js-samples/tree/master/dist/samples/places-queryprediction/jsfiddle
     </div>
     """
+  end
+
+  defp event_location_lookup(assigns) do
+    ~H"""
+    <div class="w-full bg-red-700">
+      <div class="input-container pt-1">
+        <textarea class="w-full h-10 border-0 resize-none p-0 w-full bg-transparent overflow-hidden focus:outline-none border border-transparent;
+"></textarea>
+      </div>
+    </div>
+"""
   end
 end
