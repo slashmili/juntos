@@ -94,7 +94,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp input_date(assigns) do
     ~H"""
-    <div class="p-2 bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 rounded-tl-lg rounded-bl-lg">
+    <div class="pt-1 bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 rounded-tl-lg rounded-bl-lg">
       <input class="picker bg-transparent  border-none outline-none" type="date" value="2024-05-23" />
     </div>
     """
@@ -102,7 +102,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp input_time(assigns) do
     ~H"""
-    <div class="p-2 bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 rounded-tr-lg rounded-br-lg">
+    <div class="pt-1 bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 rounded-tr-lg rounded-br-lg">
       <input
         class="picker bg-transparent  border-none outline-none"
         type="time"
@@ -123,77 +123,84 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp group_dropdown(assigns) do
     ~H"""
-    <div class="form-header select-none">
-      <div class="dropdown">
-        <div tabindex="0" role="button"><.event_group /></div>
-        <div
-          tabindex="0"
-          class=" mt-2 dropdown-content z-[1] menu pt-2 px-1 outline outline-1 dark:outline-slate-700/50 outline-slate-700/10 shadow-xl bg-base-100 dark:bg-base-100/80 backdrop-blur-lg rounded-md w-60 text-base gap-2"
-        >
-          <div class="text-xs opacity-50 pl-4">Choose the group of the event</div>
+    <.dropdown class="form-header">
+      <:button id="group-dropdown-btn" dropdown-toggle="group-dropdown" dropdown-delay="500" class="">
+        <.event_group />
+      </:button>
+      <:menu class="select-none z-50" id="group-dropdown">
+        <div class="ml-[60px] p-2 outline outline-1 dark:outline-slate-700/50 outline-slate-700/10 shadow-xl rounded-md text-base backdrop-blur-lg dark:text-slate-400 text-slate-500 w-60 bg-white/80 dark:bg-black/80">
+          <div class="text-xs opacity-50">Choose the group of the event</div>
 
           <ul class="rounded-sm">
-            <li><a><.avatar />Personal Event</a></li>
+            <li>
+              <div class="flex p-2 dark:text-slate-100 text-slate-900 hover:bg-gray-700/10 rounded-md cursor-pointer">
+                <a>Personal Event</a>
+              </div>
+            </li>
             <li>
               <a>
-                <div class="opacity-50">
+                <div class="my-auto p-2 dark:text-slate-400 text-slate-500 hover:bg-gray-700/10 rounded-md cursor-pointer opacity-50">
                   <.icon name="hero-plus" class="w-4 h-4 " /> Create Group
                 </div>
               </a>
             </li>
           </ul>
-
-          <div
-            class="absolute left-20 -top-1.5 h-[10px] w-[10px]  bg-base-100 dark:bg-base-100/80 rotate-180"
-            style="clip-path: polygon(100% 0,0 0,50% 100%);"
-          >
-          </div>
         </div>
-      </div>
-    </div>
+      </:menu>
+    </.dropdown>
     """
   end
 
   defp scope_dropdown(assigns) do
     ~H"""
-    <div class="basis-1/2 select-none">
-      <div class="text-right">
-        <.dropdown>
-          <:button>
-            <div class="text-sm">
-              <.icon name="hero-globe-alt" class="w-4 h-4" /> Public
-            </div>
-          </:button>
-          <:item>
-            <.scope_item icon="hero-globe-alt" checked={true}>
-              <:title>Public</:title>
-              <:desc>
-                Show on your group. Could be listed and suggested
-              </:desc>
-            </.scope_item>
-          </:item>
-          <:item>
-            <.scope_item icon="hero-sparkles-solid" checked={false}>
-              <:title>Private</:title>
-              <:desc>
-                Unlisted. Only people with the link can register
-              </:desc>
-            </.scope_item>
-          </:item>
-        </.dropdown>
-      </div>
-    </div>
+    <.dropdown class="form-header flex justify-end">
+      <:button
+        id="scope-dropdown-btn"
+        dropdown-toggle="scope-dropdown"
+        dropdown-delay="500"
+        class="bg-black/10 hover:bg-black/20 transition ease-in-out duration-300  dark:bg-white/10 dark:hover:bg-white/20 rounded-lg  w-fit gap-2 px-4 py-1 cursor-pointer justify-center items-center"
+      >
+        <div class="text-sm">
+          <.icon name="hero-globe-alt" class="w-4 h-4" /> Public
+          <.icon name="hero-chevron-down" class="h-3 w-3" />
+        </div>
+      </:button>
+      <:menu id="scope-dropdown" class="!ml-[-15px] select-none z-50">
+        <div class="pt-2 pb-2 px-1 outline outline-1 dark:outline-slate-700/50 outline-slate-700/10 shadow-xl bg-base-100 rounded-md text-base backdrop-blur-lg w-72 bg-white/80 dark:bg-black/80">
+          <ul class="rounded-sm">
+            <li>
+              <.scope_item icon="hero-globe-alt" checked={true}>
+                <:title>Public</:title>
+                <:desc>
+                  Show on your group. Could be listed and suggested
+                </:desc>
+              </.scope_item>
+            </li>
+            <li>
+              <.scope_item icon="hero-sparkles-solid" checked={false}>
+                <:title>Private</:title>
+                <:desc>
+                  Unlisted. Only people with the link can register
+                </:desc>
+              </.scope_item>
+            </li>
+          </ul>
+        </div>
+      </:menu>
+    </.dropdown>
     """
   end
 
   defp scope_item(assigns) do
     ~H"""
-    <div class="flex">
-      <div class="w-6"><.icon :if={@checked} name="hero-check" class="w-4 h4" /></div>
-      <div class="w-6"><.icon name={@icon} class="w-4 h4" /></div>
-      <div class="text-sm">
-        <div><%= render_slot(@title) %></div>
-        <div class="text-slate-400"><%= render_slot(@desc) %></div>
+    <div class="flex p-2 dark:text-slate-400 text-slate-500 hover:bg-gray-700/10 rounded-md cursor-pointer">
+      <div class="my-auto w-6"><.icon name={@icon} class="w-4 h4" /></div>
+      <div class="text-sm pl-2">
+        <div class="dark:text-slate-100 text-slate-900"><%= render_slot(@title) %></div>
+        <div><%= render_slot(@desc) %></div>
+      </div>
+      <div class="my-auto w-6">
+        <.icon :if={@checked} name="hero-check" class="dark:text-white text-black w-4 h4" />
       </div>
     </div>
     """
@@ -213,18 +220,27 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp avatar(assigns) do
     ~H"""
-    <div class="avatar placeholder my-auto justify-class items-center">
-      <div class="bg-neutral text-neutral-content rounded-full w-4 h-4">
-        <span class="text-xs">I</span>
-      </div>
-    </div>
+    <span class="relative w-4 h-4 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+      <svg
+        class="absolute w-4 h-4 text-gray-400 -left-1"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+          clip-rule="evenodd"
+        >
+        </path>
+      </svg>
+    </span>
     """
   end
 
   defp event_location_selector(assigns) do
     ~H"""
-    <div class="dropdown w-full">
-      <div tabindex="0" role="button">
+    <div class="w-full">
         <div class="flex flex-row gap-1 bg-black/5 pl-4 pt-1 pr-1 rounded-lg relative opacity-80 cursor-pointer hover:bg-black/20 pt-3 pb-3 select-none">
           <div>
             <.icon name="hero-map-pin" class="w-5 h-5" />
@@ -233,10 +249,9 @@ defmodule JuntoWeb.EventLive.NewEvent do
             <div>Add Event Location</div>
             <div class="text-sm">Offline location or virutal link</div>
           </div>
-        </div>
       </div>
       <ul tabindex="0" class="dropdown-content z-[1] ">
-        <.event_location_lookup/>
+        <.event_location_lookup />
       </ul>
     </div>
 
@@ -251,9 +266,9 @@ defmodule JuntoWeb.EventLive.NewEvent do
     <div class="w-full bg-red-700">
       <div class="input-container pt-1">
         <textarea class="w-full h-10 border-0 resize-none p-0 w-full bg-transparent overflow-hidden focus:outline-none border border-transparent;
-"></textarea>
+    "></textarea>
       </div>
     </div>
-"""
+    """
   end
 end
