@@ -28,6 +28,12 @@ defmodule JuntoWeb.EventLive.NewEvent do
         <.event_title_input />
         <.datepick />
         <.event_location_selector gmap_suggested_places={@gmap_suggested_places} place={@place} />
+        <div>
+          <.text_editor
+            name="desc"
+            class="prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none prose max-w-none "
+          />
+        </div>
       </div>
       <div class="form-container"></div>
     </div>

@@ -822,4 +822,17 @@ defmodule JuntoWeb.CoreComponents do
   def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
   end
+
+  attr :name, :string, required: true
+  attr :class, :string, default: nil
+  attr :value, :string, default: ""
+
+  def text_editor(assigns) do
+    ~H"""
+    <div phx-hook="TextEditor" id={"editor-#{@name}"} data-value={@value} data-class={@class}>
+      <div data-editor={@name}></div>
+      <input type="hidden" name={@name} value={@value} data-editor-hidden={@name} />
+    </div>
+    """
+  end
 end
