@@ -1,6 +1,16 @@
 defmodule JuntoWeb.EventLive.NewEvent do
   use JuntoWeb, :live_view
 
+  @impl true
+  def mount(_params, _session, socket) do
+    {:ok,
+     assign(socket,
+       gmap_suggested_places: [],
+       place: nil
+     )}
+  end
+
+  @impl true
   def render(assigns) do
     ~H"""
     <div class="create-event temporary bg-blue-300/30 dark:bg-blue-900/50">
@@ -17,8 +27,9 @@ defmodule JuntoWeb.EventLive.NewEvent do
         </div>
         <.event_title_input />
         <.datepick />
-        <.event_location_selector />
+        <.event_location_selector gmap_suggested_places={@gmap_suggested_places} place={@place} />
       </div>
+      <div class="form-container"></div>
     </div>
     """
   end
@@ -94,7 +105,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp input_date(assigns) do
     ~H"""
-    <div class="p-2 bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 rounded-tl-lg rounded-bl-lg">
+    <div class="pt-1 bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 rounded-tl-lg rounded-bl-lg">
       <input class="picker bg-transparent  border-none outline-none" type="date" value="2024-05-23" />
     </div>
     """
@@ -102,7 +113,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp input_time(assigns) do
     ~H"""
-    <div class="p-2 bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 rounded-tr-lg rounded-br-lg">
+    <div class="pt-1 bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 rounded-tr-lg rounded-br-lg">
       <input
         class="picker bg-transparent  border-none outline-none"
         type="time"
@@ -123,77 +134,84 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp group_dropdown(assigns) do
     ~H"""
-    <div class="form-header select-none">
-      <div class="dropdown">
-        <div tabindex="0" role="button"><.event_group /></div>
-        <div
-          tabindex="0"
-          class=" mt-2 dropdown-content z-[1] menu pt-2 px-1 outline outline-1 dark:outline-slate-700/50 outline-slate-700/10 shadow-xl bg-base-100 dark:bg-base-100/80 backdrop-blur-lg rounded-md w-60 text-base gap-2"
-        >
-          <div class="text-xs opacity-50 pl-4">Choose the group of the event</div>
+    <.dropdown class="form-header">
+      <:button id="group-dropdown-btn" dropdown-toggle="group-dropdown" dropdown-delay="500" class="">
+        <.event_group />
+      </:button>
+      <:menu class="select-none z-50" id="group-dropdown">
+        <div class="ml-[60px] p-2 outline outline-1 dark:outline-slate-700/50 outline-slate-700/10 shadow-xl rounded-md text-base backdrop-blur-lg dark:text-slate-400 text-slate-500 w-60 bg-white/80 dark:bg-black/80">
+          <div class="text-xs opacity-50">Choose the group of the event</div>
 
           <ul class="rounded-sm">
-            <li><a><.avatar />Personal Event</a></li>
+            <li>
+              <div class="flex p-2 dark:text-slate-100 text-slate-900 hover:bg-gray-700/10 rounded-md cursor-pointer">
+                <a>Personal Event</a>
+              </div>
+            </li>
             <li>
               <a>
-                <div class="opacity-50">
+                <div class="my-auto p-2 dark:text-slate-400 text-slate-500 hover:bg-gray-700/10 rounded-md cursor-pointer opacity-50">
                   <.icon name="hero-plus" class="w-4 h-4 " /> Create Group
                 </div>
               </a>
             </li>
           </ul>
-
-          <div
-            class="absolute left-20 -top-1.5 h-[10px] w-[10px]  bg-base-100 dark:bg-base-100/80 rotate-180"
-            style="clip-path: polygon(100% 0,0 0,50% 100%);"
-          >
-          </div>
         </div>
-      </div>
-    </div>
+      </:menu>
+    </.dropdown>
     """
   end
 
   defp scope_dropdown(assigns) do
     ~H"""
-    <div class="basis-1/2 select-none">
-      <div class="text-right">
-        <.dropdown>
-          <:button>
-            <div class="text-sm">
-              <.icon name="hero-globe-alt" class="w-4 h-4" /> Public
-            </div>
-          </:button>
-          <:item>
-            <.scope_item icon="hero-globe-alt" checked={true}>
-              <:title>Public</:title>
-              <:desc>
-                Show on your group. Could be listed and suggested
-              </:desc>
-            </.scope_item>
-          </:item>
-          <:item>
-            <.scope_item icon="hero-sparkles-solid" checked={false}>
-              <:title>Private</:title>
-              <:desc>
-                Unlisted. Only people with the link can register
-              </:desc>
-            </.scope_item>
-          </:item>
-        </.dropdown>
-      </div>
-    </div>
+    <.dropdown class="form-header flex justify-end">
+      <:button
+        id="scope-dropdown-btn"
+        dropdown-toggle="scope-dropdown"
+        dropdown-delay="500"
+        class="bg-black/10 hover:bg-black/20 transition ease-in-out duration-300  dark:bg-white/10 dark:hover:bg-white/20 rounded-lg  w-fit gap-2 px-4 py-1 cursor-pointer justify-center items-center"
+      >
+        <div class="text-sm">
+          <.icon name="hero-globe-alt" class="w-4 h-4" /> Public
+          <.icon name="hero-chevron-down" class="h-3 w-3" />
+        </div>
+      </:button>
+      <:menu id="scope-dropdown" class="!ml-[-15px] select-none z-50">
+        <div class="pt-2 pb-2 px-1 outline outline-1 dark:outline-slate-700/50 outline-slate-700/10 shadow-xl bg-base-100 rounded-md text-base backdrop-blur-lg w-72 bg-white/80 dark:bg-black/80">
+          <ul class="rounded-sm">
+            <li>
+              <.scope_item icon="hero-globe-alt" checked={true}>
+                <:title>Public</:title>
+                <:desc>
+                  Show on your group. Could be listed and suggested
+                </:desc>
+              </.scope_item>
+            </li>
+            <li>
+              <.scope_item icon="hero-sparkles-solid" checked={false}>
+                <:title>Private</:title>
+                <:desc>
+                  Unlisted. Only people with the link can register
+                </:desc>
+              </.scope_item>
+            </li>
+          </ul>
+        </div>
+      </:menu>
+    </.dropdown>
     """
   end
 
   defp scope_item(assigns) do
     ~H"""
-    <div class="flex">
-      <div class="w-6"><.icon :if={@checked} name="hero-check" class="w-4 h4" /></div>
-      <div class="w-6"><.icon name={@icon} class="w-4 h4" /></div>
-      <div class="text-sm">
-        <div><%= render_slot(@title) %></div>
-        <div class="text-slate-400"><%= render_slot(@desc) %></div>
+    <div class="flex p-2 dark:text-slate-400 text-slate-500 hover:bg-gray-700/10 rounded-md cursor-pointer">
+      <div class="my-auto w-6"><.icon name={@icon} class="w-4 h4" /></div>
+      <div class="text-sm pl-2">
+        <div class="dark:text-slate-100 text-slate-900"><%= render_slot(@title) %></div>
+        <div><%= render_slot(@desc) %></div>
+      </div>
+      <div class="my-auto w-6">
+        <.icon :if={@checked} name="hero-check" class="dark:text-white text-black w-4 h4" />
       </div>
     </div>
     """
@@ -213,47 +231,152 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp avatar(assigns) do
     ~H"""
-    <div class="avatar placeholder my-auto justify-class items-center">
-      <div class="bg-neutral text-neutral-content rounded-full w-4 h-4">
-        <span class="text-xs">I</span>
-      </div>
-    </div>
+    <span class="relative w-4 h-4 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+      <svg
+        class="absolute w-4 h-4 text-gray-400 -left-1"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+          clip-rule="evenodd"
+        >
+        </path>
+      </svg>
+    </span>
     """
   end
 
   defp event_location_selector(assigns) do
     ~H"""
-    <div class="dropdown w-full">
-      <div tabindex="0" role="button">
-        <div class="flex flex-row gap-1 bg-black/5 pl-4 pt-1 pr-1 rounded-lg relative opacity-80 cursor-pointer hover:bg-black/20 pt-3 pb-3 select-none">
-          <div>
-            <.icon name="hero-map-pin" class="w-5 h-5" />
+    <div class="relative">
+      <div
+        class="flex flex-row gap-1 bg-black/5 pl-4 pt-1 pr-1 rounded-lg relative opacity-80 cursor-pointer hover:bg-black/20 pt-3 pb-3 select-none"
+        phx-click={JS.toggle(to: "#event-location-dropdown") |> JS.focus(to: "#map-search")}
+      >
+        <div>
+          <.icon name="hero-map-pin" class="w-5 h-5" />
+        </div>
+        <div :if={is_nil(@place)}>
+          <div>Add Event Location</div>
+          <div class="text-sm">Offline location or virutal link</div>
+        </div>
+
+        <div :if={@place} class="grow">
+          <div class="font-medium"><%= @place["name"] %></div>
+          <div class="text-sm"><%= @place["address"] %></div>
+        </div>
+        <div :if={@place} class="pt-1 pr-1" phx-click="deselect-place">
+          <div
+            data-tooltip-target="tooltip-default"
+            class="hover:bg-red-100 flex items-center justify-center rounded-full p-1 transition ease-in-out"
+          >
+            <.icon name="hero-x-mark" class="w-5 h-5 " />
           </div>
-          <div>
-            <div>Add Event Location</div>
-            <div class="text-sm">Offline location or virutal link</div>
+
+          <div
+            id="tooltip-default"
+            role="tooltip"
+            class="absolute z-10 invisible inline-block p-2 text-sm text-white transition-opacity duration-300  rounded-lg shadow-sm tooltip dark:bg-neutral-300 dark:text-black bg-neutral-950"
+          >
+            Remove Location
+            <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
         </div>
       </div>
-      <ul tabindex="0" class="dropdown-content z-[1] ">
-        <.event_location_lookup/>
+      <ul
+        tabindex="0"
+        class="hidden w-full"
+        id="event-location-dropdown"
+        phx-click-away={JS.toggle()}
+        phx-window-keydown={JS.toggle()}
+        phx-key="escape"
+      >
+        <.event_location_lookup gmap_suggested_places={@gmap_suggested_places} />
       </ul>
     </div>
-
-    <div class="hidden">
-      location https://jsfiddle.net/gh/get/library/pure/googlemaps/js-samples/tree/master/dist/samples/places-queryprediction/jsfiddle
+    <div
+      :if={@place}
+      data-place={Jason.encode!(@place)}
+      data-map-id={get_gmaps_id()}
+      id="google-map"
+      class="h-32"
+      phx-hook="Gmaps"
+      data-api-key={get_gmaps_api_key()}
+      phx-update="ignore"
+    >
     </div>
+    Hello
     """
   end
 
   defp event_location_lookup(assigns) do
     ~H"""
-    <div class="w-full bg-red-700">
-      <div class="input-container pt-1">
-        <textarea class="w-full h-10 border-0 resize-none p-0 w-full bg-transparent overflow-hidden focus:outline-none border border-transparent;
-"></textarea>
+    <div class="pt-2 pb-2 px-1 outline outline-1 dark:outline-slate-700/50 outline-slate-700/10 shadow-xl bg-base-100 rounded-md text-base backdrop-blur-lg bg-white/80 dark:bg-black/80">
+      <div
+        id="gmap-new-event-lookup"
+        class="input-container bg-gray-700/10 dark:bg-gray-800 -mt-2 -mx-1 rounded-t-md pb-1"
+        phx-hook="GmapLookup"
+        data-api-key={get_gmaps_api_key()}
+      >
+        <textarea
+          id="map-search"
+          class="p-3 focus:outline-none focus:border-teal focus:ring-0 dark:text-slate-100 h-10 border-0 resize-none p-0 w-full bg-transparent overflow-hidden focus:outline-none border border-transparent;"
+          placeholder="Enter Location"
+        ></textarea>
+      </div>
+      <div :if={@gmap_suggested_places}>
+        <ul class="gmap-suggested-places">
+          <li
+            :for={place <- @gmap_suggested_places}
+            phx-click={
+              JS.push("select-place", value: place)
+              |> JS.toggle(to: "#event-location-dropdown")
+            }
+          >
+            <.event_place_item name={place["name"]} location={place["address"]} />
+          </li>
+        </ul>
       </div>
     </div>
-"""
+    """
+  end
+
+  defp event_place_item(assigns) do
+    ~H"""
+    <div class="flex p-2 dark:text-slate-400 text-slate-500 hover:bg-gray-700/10 rounded-md cursor-pointer">
+      <div class="my-auto w-6"><.icon name="hero-map-pin" class="w-5 h5" /></div>
+      <div class="pl-2">
+        <div class="dark:text-slate-100 text-slate-900"><%= @name %></div>
+        <div class="text-sm max-w-md"><%= @location %></div>
+      </div>
+    </div>
+    """
+  end
+
+  @impl true
+  def handle_event("gmap-suggested-places", places, socket) do
+    {:noreply, assign(socket, :gmap_suggested_places, places)}
+  end
+
+  @impl true
+  def handle_event("select-place", place, socket) do
+    {:noreply, assign(socket, :place, place)}
+  end
+
+  @impl true
+  def handle_event("deselect-place", _, socket) do
+    {:noreply, assign(socket, :place, nil)}
+  end
+
+  defp get_gmaps_api_key do
+    # TODO: to delete dev key
+    "AIzaSyCCubqJSWvbLIQJdsZXyMj7olwYanekI6M"
+  end
+
+  defp get_gmaps_id do
+    "300ffa0564ebe9c7"
   end
 end
