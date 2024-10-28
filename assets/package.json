@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.8",
     "flowbite": "^2.5.2"
   }
 }

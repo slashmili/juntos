@@ -60,4 +60,7 @@
    }
   }
 
+  .gmap-suggested-places {
+    @apply rounded-md select-none pt-2
+  }
 }

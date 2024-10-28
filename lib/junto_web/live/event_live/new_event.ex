@@ -1,6 +1,16 @@
 defmodule JuntoWeb.EventLive.NewEvent do
   use JuntoWeb, :live_view
 
+  @impl true
+  def mount(_params, _session, socket) do
+    {:ok,
+     assign(socket,
+       gmap_suggested_places: [],
+       place: nil
+     )}
+  end
+
+  @impl true
   def render(assigns) do
     ~H"""
     <div class="create-event temporary bg-blue-300/30 dark:bg-blue-900/50">
@@ -17,8 +27,9 @@ defmodule JuntoWeb.EventLive.NewEvent do
         </div>
         <.event_title_input />
         <.datepick />
-        <.event_location_selector />
+        <.event_location_selector gmap_suggested_places={@gmap_suggested_places} place={@place} />
       </div>
+      <div class="form-container"></div>
     </div>
     """
   end
@@ -240,35 +251,132 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp event_location_selector(assigns) do
     ~H"""
-    <div class="w-full">
-        <div class="flex flex-row gap-1 bg-black/5 pl-4 pt-1 pr-1 rounded-lg relative opacity-80 cursor-pointer hover:bg-black/20 pt-3 pb-3 select-none">
-          <div>
-            <.icon name="hero-map-pin" class="w-5 h-5" />
+    <div class="relative">
+      <div
+        class="flex flex-row gap-1 bg-black/5 pl-4 pt-1 pr-1 rounded-lg relative opacity-80 cursor-pointer hover:bg-black/20 pt-3 pb-3 select-none"
+        phx-click={JS.toggle(to: "#event-location-dropdown") |> JS.focus(to: "#map-search")}
+      >
+        <div>
+          <.icon name="hero-map-pin" class="w-5 h-5" />
+        </div>
+        <div :if={is_nil(@place)}>
+          <div>Add Event Location</div>
+          <div class="text-sm">Offline location or virutal link</div>
+        </div>
+
+        <div :if={@place} class="grow">
+          <div class="font-medium"><%= @place["name"] %></div>
+          <div class="text-sm"><%= @place["address"] %></div>
+        </div>
+        <div :if={@place} class="pt-1 pr-1" phx-click="deselect-place">
+          <div
+            data-tooltip-target="tooltip-default"
+            class="hover:bg-red-100 flex items-center justify-center rounded-full p-1 transition ease-in-out"
+          >
+            <.icon name="hero-x-mark" class="w-5 h-5 " />
           </div>
-          <div>
-            <div>Add Event Location</div>
-            <div class="text-sm">Offline location or virutal link</div>
+
+          <div
+            id="tooltip-default"
+            role="tooltip"
+            class="absolute z-10 invisible inline-block p-2 text-sm text-white transition-opacity duration-300  rounded-lg shadow-sm tooltip dark:bg-neutral-300 dark:text-black bg-neutral-950"
+          >
+            Remove Location
+            <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
+        </div>
       </div>
-      <ul tabindex="0" class="dropdown-content z-[1] ">
-        <.event_location_lookup />
+      <ul
+        tabindex="0"
+        class="hidden w-full"
+        id="event-location-dropdown"
+        phx-click-away={JS.toggle()}
+        phx-window-keydown={JS.toggle()}
+        phx-key="escape"
+      >
+        <.event_location_lookup gmap_suggested_places={@gmap_suggested_places} />
       </ul>
     </div>
-
-    <div class="hidden">
-      location https://jsfiddle.net/gh/get/library/pure/googlemaps/js-samples/tree/master/dist/samples/places-queryprediction/jsfiddle
+    <div
+      :if={@place}
+      data-place={Jason.encode!(@place)}
+      data-map-id={get_gmaps_id()}
+      id="google-map"
+      class="h-32"
+      phx-hook="Gmaps"
+      data-api-key={get_gmaps_api_key()}
+      phx-update="ignore"
+    >
     </div>
+    Hello
     """
   end
 
   defp event_location_lookup(assigns) do
     ~H"""
-    <div class="w-full bg-red-700">
-      <div class="input-container pt-1">
-        <textarea class="w-full h-10 border-0 resize-none p-0 w-full bg-transparent overflow-hidden focus:outline-none border border-transparent;
-    "></textarea>
+    <div class="pt-2 pb-2 px-1 outline outline-1 dark:outline-slate-700/50 outline-slate-700/10 shadow-xl bg-base-100 rounded-md text-base backdrop-blur-lg bg-white/80 dark:bg-black/80">
+      <div
+        id="gmap-new-event-lookup"
+        class="input-container bg-gray-700/10 dark:bg-gray-800 -mt-2 -mx-1 rounded-t-md pb-1"
+        phx-hook="GmapLookup"
+        data-api-key={get_gmaps_api_key()}
+      >
+        <textarea
+          id="map-search"
+          class="p-3 focus:outline-none focus:border-teal focus:ring-0 dark:text-slate-100 h-10 border-0 resize-none p-0 w-full bg-transparent overflow-hidden focus:outline-none border border-transparent;"
+          placeholder="Enter Location"
+        ></textarea>
+      </div>
+      <div :if={@gmap_suggested_places}>
+        <ul class="gmap-suggested-places">
+          <li
+            :for={place <- @gmap_suggested_places}
+            phx-click={
+              JS.push("select-place", value: place)
+              |> JS.toggle(to: "#event-location-dropdown")
+            }
+          >
+            <.event_place_item name={place["name"]} location={place["address"]} />
+          </li>
+        </ul>
       </div>
     </div>
     """
+  end
+
+  defp event_place_item(assigns) do
+    ~H"""
+    <div class="flex p-2 dark:text-slate-400 text-slate-500 hover:bg-gray-700/10 rounded-md cursor-pointer">
+      <div class="my-auto w-6"><.icon name="hero-map-pin" class="w-5 h5" /></div>
+      <div class="pl-2">
+        <div class="dark:text-slate-100 text-slate-900"><%= @name %></div>
+        <div class="text-sm max-w-md"><%= @location %></div>
+      </div>
+    </div>
+    """
+  end
+
+  @impl true
+  def handle_event("gmap-suggested-places", places, socket) do
+    {:noreply, assign(socket, :gmap_suggested_places, places)}
+  end
+
+  @impl true
+  def handle_event("select-place", place, socket) do
+    {:noreply, assign(socket, :place, place)}
+  end
+
+  @impl true
+  def handle_event("deselect-place", _, socket) do
+    {:noreply, assign(socket, :place, nil)}
+  end
+
+  defp get_gmaps_api_key do
+    # TODO: to delete dev key
+    "AIzaSyCCubqJSWvbLIQJdsZXyMj7olwYanekI6M"
+  end
+
+  defp get_gmaps_id do
+    "300ffa0564ebe9c7"
   end
 end
