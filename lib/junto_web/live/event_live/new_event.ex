@@ -142,7 +142,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
   defp group_dropdown(assigns) do
     ~H"""
     <.dropdown class="form-header">
-      <:button id="group-dropdown-btn" dropdown-toggle="group-dropdown" class="">
+      <:button id="groupDropdownBtn" dropdown-toggle="group-dropdown" class="">
         <.event_group />
       </:button>
       <:menu class="select-none z-50" id="group-dropdown">
@@ -152,42 +152,35 @@ defmodule JuntoWeb.EventLive.NewEvent do
             JS.remove_class("block", to: "#group-dropdown")
             |> JS.add_class("hidden", to: "#group-dropdown")
             |> JS.set_attribute({"aria-hidden", true}, to: "#group-dropdown")
-            |> JS.focus(to: "#group-dropdown-btn")
+            |> JS.focus(to: "#groupDropdownBtn")
           }
           phx-key="escape"
         >
           <div class="text-xs opacity-50">Choose the group of the event</div>
 
-          <ul class="rounded-sm" role="group-selector">
-            <li tabindex="0" class="rounded-md outline-none focus:bg-gray-700/10">
+          <.dropdown_list>
+            <:item>
               <a href="#">
                 <div class="flex p-2 dropdown-menu-group-selector">
                   Personal Event
                 </div>
               </a>
-            </li>
-            <li tabindex="0" class="rounded-md outline-none focus:bg-gray-700/10">
-              <a href="#">
-                <div class="flex p-2">
-                  Group A
-                </div>
-              </a>
-            </li>
-            <li tabindex="0" class="rounded-md outline-none focus:bg-gray-700/10">
+            </:item>
+            <:item>
               <a href="#">
                 <div class="flex p-2 dropdown-menu-group-selector">
                   Group B
                 </div>
               </a>
-            </li>
-            <li tabindex="0" class="rounded-md outline-none focus:bg-gray-700/10">
+            </:item>
+            <:item>
               <a>
                 <div class="my-auto p-2 dark:text-slate-400 text-slate-500 hover:bg-gray-700/10 rounded-md cursor-pointer opacity-50">
                   <.icon name="hero-plus" class="w-4 h-4 " /> Create Group
                 </div>
               </a>
-            </li>
-          </ul>
+            </:item>
+          </.dropdown_list>
         </div>
       </:menu>
     </.dropdown>
@@ -218,7 +211,6 @@ defmodule JuntoWeb.EventLive.NewEvent do
     <.dropdown class="form-header flex justify-end">
       <:button
         id="scopeDropdownBtn"
-        dropdown-toggle="scope-dropdown"
         dropdown-delay="500"
         class="dropdown-style w-fit gap-2 px-4 py-1 justify-center items-center"
       >
@@ -229,26 +221,18 @@ defmodule JuntoWeb.EventLive.NewEvent do
           <.icon name="hero-chevron-down" class="h-3 w-3" />
         </div>
       </:button>
-      <:menu id="scope-dropdown" class="!ml-[-15px] select-none z-50">
-        <div id="scopeDropdownContainer" class="pt-2 pb-2 px-1 dropdown-menu-style w-72 ">
-          <ul class="rounded-sm">
-            <li
-              :for={{_, scope} <- Enum.sort_by(@event_scopes, &elem(&1, 1).order)}
-              tabindex="0"
-              class="rounded-md outline-none focus:bg-gray-700/10"
-              phx-click={JS.push("select-scope", value: scope, loading: "#scopeDropdownBtn")}
-              phx-keydown={JS.push("select-scope", value: scope, loading: "#scopeDropdownBtn")}
-              phx-key="Enter"
-            >
-              <.scope_item icon={scope.icon} checked={@selected_scope == scope.type}>
-                <:title><%= scope.title %></:title>
-                <:desc>
-                  <%= scope.desc %>
-                </:desc>
-              </.scope_item>
-            </li>
-          </ul>
-        </div>
+      <:menu
+        class="!ml-[-15px] select-none z-50 pt-2 pb-2 px-1 dropdown-menu-style w-72 "
+        enable-li-navigator={true}
+      >
+        <.dropdown_list>
+          <:item
+            :for={{_, scope} <- Enum.sort_by(@event_scopes, &elem(&1, 1).order)}
+            custom-phx-select={JS.push("select-scope", value: scope, loading: "#scopeDropdownBtn")}
+          >
+            <.scope_item scope={scope} checked={@selected_scope == scope.type} />
+          </:item>
+        </.dropdown_list>
       </:menu>
     </.dropdown>
     """
@@ -257,10 +241,10 @@ defmodule JuntoWeb.EventLive.NewEvent do
   defp scope_item(assigns) do
     ~H"""
     <div class="flex p-2 dark:text-slate-400 text-slate-500 hover:bg-gray-700/10 rounded-md cursor-pointer">
-      <div class="my-auto w-6"><.icon name={@icon} class="w-4 h4" /></div>
+      <div class="my-auto w-6"><.icon name={@scope.icon} class="w-4 h4" /></div>
       <div class="text-sm pl-2">
-        <div class="dark:text-slate-100 text-slate-900"><%= render_slot(@title) %></div>
-        <div><%= render_slot(@desc) %></div>
+        <div class="dark:text-slate-100 text-slate-900"><%= @scope.title %></div>
+        <div><%= @scope.desc %></div>
       </div>
       <div class="my-auto w-6">
         <.icon :if={@checked} name="hero-check" class="dark:text-white text-black w-4 h4" />
