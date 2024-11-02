@@ -6,7 +6,8 @@ defmodule JuntoWeb.EventLive.NewEvent do
     {:ok,
      assign(socket,
        gmap_suggested_places: [],
-       place: nil
+       place: nil,
+       selected_scope: :public
      )}
   end
 
@@ -23,7 +24,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
       <div class="form-container">
         <div class="flex">
           <.group_dropdown />
-          <.scope_dropdown />
+          <.scope_dropdown selected_scope={@selected_scope} />
         </div>
         <.event_title_input />
         <.datepick />
@@ -193,35 +194,56 @@ defmodule JuntoWeb.EventLive.NewEvent do
     """
   end
 
+  @event_scopes %{
+    public: %{
+      order: 0,
+      type: :public,
+      title: "Public",
+      icon: "hero-globe-alt",
+      desc: "Show on your group. Could be listed and suggested "
+    },
+    private: %{
+      order: 1,
+      type: :private,
+      title: "Private",
+      icon: "hero-sparkles-solid",
+      desc: "Unlisted. Only people with the link can register"
+    }
+  }
+
   defp scope_dropdown(assigns) do
+    assigns = Map.put(assigns, :event_scopes, @event_scopes)
+
     ~H"""
     <.dropdown class="form-header flex justify-end">
       <:button
+        id="scopeDropdownBtn"
         dropdown-toggle="scope-dropdown"
         dropdown-delay="500"
         class="dropdown-style w-fit gap-2 px-4 py-1 justify-center items-center"
       >
         <div class="text-sm">
-          <.icon name="hero-globe-alt" class="w-4 h-4" /> Public
+          <.icon name={@event_scopes[@selected_scope].icon} class="w-4 h-4" /> <%= @event_scopes[
+            @selected_scope
+          ].title %>
           <.icon name="hero-chevron-down" class="h-3 w-3" />
         </div>
       </:button>
       <:menu id="scope-dropdown" class="!ml-[-15px] select-none z-50">
         <div id="scopeDropdownContainer" class="pt-2 pb-2 px-1 dropdown-menu-style w-72 ">
           <ul class="rounded-sm">
-            <li tabindex="0" class="rounded-md outline-none focus:bg-gray-700/10">
-              <.scope_item icon="hero-globe-alt" checked={true}>
-                <:title>Public</:title>
+            <li
+              :for={{_, scope} <- Enum.sort_by(@event_scopes, &elem(&1, 1).order)}
+              tabindex="0"
+              class="rounded-md outline-none focus:bg-gray-700/10"
+              phx-click={JS.push("select-scope", value: scope, loading: "#scopeDropdownBtn")}
+              phx-keydown={JS.push("select-scope", value: scope, loading: "#scopeDropdownBtn")}
+              phx-key="Enter"
+            >
+              <.scope_item icon={scope.icon} checked={@selected_scope == scope.type}>
+                <:title><%= scope.title %></:title>
                 <:desc>
-                  Show on your group. Could be listed and suggested
-                </:desc>
-              </.scope_item>
-            </li>
-            <li tabindex="0" class="rounded-md outline-none focus:bg-gray-700/10">
-              <.scope_item icon="hero-sparkles-solid" checked={false}>
-                <:title>Private</:title>
-                <:desc>
-                  Unlisted. Only people with the link can register
+                  <%= scope.desc %>
                 </:desc>
               </.scope_item>
             </li>
@@ -383,6 +405,11 @@ defmodule JuntoWeb.EventLive.NewEvent do
       </div>
     </div>
     """
+  end
+
+  @impl true
+  def handle_event("select-scope", %{"type" => type}, socket) do
+    {:noreply, assign(socket, :selected_scope, String.to_existing_atom(type))}
   end
 
   @impl true

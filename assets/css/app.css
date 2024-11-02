@@ -11,6 +11,15 @@
   }
 }
 
+.dropdown-custom {
+  .phx-click-loading {
+    @apply animate-pulse !cursor-wait;
+  }
+  .phx-keydown-loading {
+    @apply animate-pulse !cursor-wait;
+  }
+}
+
 .create-event {
   @apply flex max-md:flex-col flex-row gap-8 pt-10 pl-4 pr-4 md:max-w-7xl justify-center;
   & .banner {

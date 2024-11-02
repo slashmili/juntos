@@ -3,13 +3,15 @@ import gmapLookup from "./hooks/gmap-lookup"
 import gmaps from "./hooks/gmaps"
 import textEditor from "./hooks/text-editor"
 import listNavigator from "./hooks/list-navigator"
+import fdropdown from "./hooks/flowbit-dropdown"
 
 let Hooks = {
   ...inputOptGroup,
   ...gmapLookup,
   ...gmaps,
   ...textEditor,
-  ...listNavigator
+  ...listNavigator,
+  ...fdropdown
 }
 
 export default Hooks
