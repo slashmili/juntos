@@ -13,7 +13,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="create-event temporary bg-blue-300/30 dark:bg-blue-900/50">
+    <div class="create-event temporary h-screen bg-green-500/30">
       <div class="banner">
         <picture>
           <source type="image/webp" srcset="images/junto-sample-banner.webp" />
@@ -141,20 +141,45 @@ defmodule JuntoWeb.EventLive.NewEvent do
   defp group_dropdown(assigns) do
     ~H"""
     <.dropdown class="form-header">
-      <:button id="group-dropdown-btn" dropdown-toggle="group-dropdown" dropdown-delay="500" class="">
+      <:button id="group-dropdown-btn" dropdown-toggle="group-dropdown" class="">
         <.event_group />
       </:button>
       <:menu class="select-none z-50" id="group-dropdown">
-        <div class="ml-[60px] p-2 outline outline-1 dark:outline-slate-700/50 outline-slate-700/10 shadow-xl rounded-md text-base backdrop-blur-lg dark:text-slate-400 text-slate-500 w-60 bg-white/80 dark:bg-black/80">
+        <div
+          class="ml-[60px] dropdown-menu-style p-2 w-60"
+          phx-window-keydown={
+            JS.remove_class("block", to: "#group-dropdown")
+            |> JS.add_class("hidden", to: "#group-dropdown")
+            |> JS.set_attribute({"aria-hidden", true}, to: "#group-dropdown")
+            |> JS.focus(to: "#group-dropdown-btn")
+          }
+          phx-key="escape"
+        >
           <div class="text-xs opacity-50">Choose the group of the event</div>
 
-          <ul class="rounded-sm">
-            <li>
-              <div class="flex p-2 dark:text-slate-100 text-slate-900 hover:bg-gray-700/10 rounded-md cursor-pointer">
-                <a>Personal Event</a>
-              </div>
+          <ul class="rounded-sm" role="group-selector">
+            <li tabindex="0" class="rounded-md outline-none focus:bg-gray-700/10">
+              <a href="#">
+                <div class="flex p-2 dropdown-menu-group-selector">
+                  Personal Event
+                </div>
+              </a>
             </li>
-            <li>
+            <li tabindex="0" class="rounded-md outline-none focus:bg-gray-700/10">
+              <a href="#">
+                <div class="flex p-2">
+                  Group A
+                </div>
+              </a>
+            </li>
+            <li tabindex="0" class="rounded-md outline-none focus:bg-gray-700/10">
+              <a href="#">
+                <div class="flex p-2 dropdown-menu-group-selector">
+                  Group B
+                </div>
+              </a>
+            </li>
+            <li tabindex="0" class="rounded-md outline-none focus:bg-gray-700/10">
               <a>
                 <div class="my-auto p-2 dark:text-slate-400 text-slate-500 hover:bg-gray-700/10 rounded-md cursor-pointer opacity-50">
                   <.icon name="hero-plus" class="w-4 h-4 " /> Create Group
@@ -172,10 +197,9 @@ defmodule JuntoWeb.EventLive.NewEvent do
     ~H"""
     <.dropdown class="form-header flex justify-end">
       <:button
-        id="scope-dropdown-btn"
         dropdown-toggle="scope-dropdown"
         dropdown-delay="500"
-        class="bg-black/10 hover:bg-black/20 transition ease-in-out duration-300  dark:bg-white/10 dark:hover:bg-white/20 rounded-lg  w-fit gap-2 px-4 py-1 cursor-pointer justify-center items-center"
+        class="dropdown-style w-fit gap-2 px-4 py-1 justify-center items-center"
       >
         <div class="text-sm">
           <.icon name="hero-globe-alt" class="w-4 h-4" /> Public
@@ -183,9 +207,9 @@ defmodule JuntoWeb.EventLive.NewEvent do
         </div>
       </:button>
       <:menu id="scope-dropdown" class="!ml-[-15px] select-none z-50">
-        <div class="pt-2 pb-2 px-1 outline outline-1 dark:outline-slate-700/50 outline-slate-700/10 shadow-xl bg-base-100 rounded-md text-base backdrop-blur-lg w-72 bg-white/80 dark:bg-black/80">
+        <div id="scopeDropdownContainer" class="pt-2 pb-2 px-1 dropdown-menu-style w-72 ">
           <ul class="rounded-sm">
-            <li>
+            <li tabindex="0" class="rounded-md outline-none focus:bg-gray-700/10">
               <.scope_item icon="hero-globe-alt" checked={true}>
                 <:title>Public</:title>
                 <:desc>
@@ -193,7 +217,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
                 </:desc>
               </.scope_item>
             </li>
-            <li>
+            <li tabindex="0" class="rounded-md outline-none focus:bg-gray-700/10">
               <.scope_item icon="hero-sparkles-solid" checked={false}>
                 <:title>Private</:title>
                 <:desc>
@@ -225,11 +249,11 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp event_group(assigns) do
     ~H"""
-    <div class="flex bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 ease-in-out duration-300  rounded-lg  w-fit gap-2 px-4 py-1 cursor-pointer justify-center items-center">
+    <div class="flex dropdown-style w-fit gap-2 px-4 py-1 justify-center items-center">
       <.avatar />
-      <div class="grow text-sm">Personal Event</div>
-      <div class="">
-        <.icon name="hero-chevron-down" class="h-3 w-3" />
+      <div class="grow text-sm font-medium">Personal Event</div>
+      <div class="align-middle">
+        <.icon name="hero-chevron-down text-sm font-medium" class="h-4 w-4" />
       </div>
     </div>
     """
@@ -293,11 +317,10 @@ defmodule JuntoWeb.EventLive.NewEvent do
         </div>
       </div>
       <ul
-        tabindex="0"
         class="hidden w-full"
         id="event-location-dropdown"
         phx-click-away={JS.toggle()}
-        phx-window-keydown={JS.toggle()}
+        phx-window-keydown={JS.hide(to: "#event-location-dropdown")}
         phx-key="escape"
       >
         <.event_location_lookup gmap_suggested_places={@gmap_suggested_places} />

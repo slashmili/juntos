@@ -696,27 +696,37 @@ defmodule JuntoWeb.CoreComponents do
   end
 
   slot :menu, required: true do
-    attr :id, :string, required: true
+    attr :id, :string, required: false
     attr :class, :string, required: true
   end
 
   def dropdown(assigns) do
+    button =
+      assigns[:button]
+      |> List.first()
+      |> Map.put_new(:id, Ecto.UUID.generate())
+
+    assigns = Map.put(assigns, :button, button)
+
     ~H"""
     <div class={@class}>
-      <%= for b <- @button do %>
-        <button
-          id={b.id}
-          class={b.class}
-          data-dropdown-toggle={b[:"dropdown-toggle"]}
-          type="button"
-          data-dropdown-delay={b[:"toggle-delay"]}
-        >
-          <%= render_slot(@button) %>
-        </button>
-        <div class={"hidden " <> hd(@menu).class} id={hd(@menu).id}>
-          <%= render_slot(@menu) %>
-        </div>
-      <% end %>
+      <button
+        id={@button.id}
+        class={@button.class}
+        data-dropdown-toggle={@button[:"dropdown-toggle"]}
+        type="button"
+        data-dropdown-delay={@button[:"toggle-delay"]}
+      >
+        <%= render_slot(@button) %>
+      </button>
+      <div
+        class={"hidden " <> hd(@menu).class}
+        id={hd(@menu).id}
+        phx-hook="ListNavigator"
+        data-list-navigator-button-id={@button.id}
+      >
+        <%= render_slot(@menu) %>
+      </div>
     </div>
     """
   end

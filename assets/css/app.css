@@ -27,6 +27,18 @@
 
       & .form-avatar {
       }
+
+      & .dropdown-style {
+        @apply bg-black/10 hover:bg-black/70 text-slate-800 hover:text-slate-100 ;
+        @apply dark:bg-white/20 dark:hover:bg-white/80 dark:text-slate-100 dark:hover:text-black;
+        @apply ease-in-out duration-300 cursor-pointer rounded-lg;
+      }
+      & .dropdown-menu-style {
+       @apply dark:outline-slate-700/50 outline-slate-700/10 shadow-xl rounded-md text-base backdrop-blur-lg dark:text-slate-400 text-slate-500 outline outline-1 bg-white/80 dark:bg-black/80
+      }
+      & .dropdown-menu-group-selector {
+        @apply dark:text-slate-100 text-slate-900 hover:bg-gray-700/10 rounded-md cursor-pointer outline-none focus:bg-gray-700/10;
+      }
     }
    & .form-input-name {
      @apply min-h-12;
