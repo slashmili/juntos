@@ -6,7 +6,11 @@ export default {
       this.setup();
     },
     updated() {
-      this.setup();
+      if(this.dropdown.isVisible()) {
+        this.dropdown.show();
+      }
+      //sometimes the elements change like in a location lookup
+      this.setupListeners();
     },
     setup() {
       const dropdownId = this.el.getAttribute("data-flowbit-dropdown-custom-toggle")
@@ -18,18 +22,21 @@ export default {
       };
       const dropdown = new Dropdown(dropdownEl, this.el, options, {override: true});
       
-      dropdownEl.querySelectorAll('[phx-click], a[href]').forEach((clickableItem) => {
+      this.dropdown = dropdown;
+      this.dropdownEl = dropdownEl;
+    },
+    setupListeners() {
+      this.dropdownEl.querySelectorAll('[phx-click], a[href]').forEach((clickableItem) => {
         clickableItem.addEventListener('click', () => {
-          dropdown.toggle();
+          this.dropdown.hide();
         })
         clickableItem.addEventListener('keydown', (event) => {
           if(event.key == 'Enter') {
-            dropdown.toggle();
+            this.dropdown.hide();
           }
         });
-
       })
-    },
+    }
   }
 }
 
