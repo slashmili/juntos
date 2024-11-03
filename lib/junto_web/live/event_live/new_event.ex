@@ -14,7 +14,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="create-event temporary h-screen bg-green-500/30">
+    <div class="create-event temporary h-screen bg-green-500/30 text-normal">
       <div class="banner">
         <picture>
           <source type="image/webp" srcset="images/junto-sample-banner.webp" />
@@ -48,7 +48,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
         <textarea
           autofocus
           id="foo"
-          class=""
+          class="hover:placeholder-gray-400"
           spellcheck="false"
           autocapitalize="words"
           placeholder="Event Name"
@@ -102,7 +102,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
           </div>
         </div>
 
-        <div class="timezone-container">
+        <div class="timezone-container hover-block-animation">
           <.timezone_dropdown />
         </div>
       </div>
@@ -112,7 +112,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp input_date(assigns) do
     ~H"""
-    <div class="pt-1 bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 rounded-tl-lg rounded-bl-lg">
+    <div class="pt-1 bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 rounded-tl-lg rounded-bl-lg hover-block-animation">
       <input class="picker bg-transparent  border-none outline-none" type="date" value="2024-05-23" />
     </div>
     """
@@ -120,7 +120,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp input_time(assigns) do
     ~H"""
-    <div class="pt-1 bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 rounded-tr-lg rounded-br-lg">
+    <div class="pt-1 bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 rounded-tr-lg rounded-br-lg hover-block-animation">
       <input
         class="picker bg-transparent  border-none outline-none"
         type="time"
@@ -255,7 +255,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp event_group(assigns) do
     ~H"""
-    <div class="flex dropdown-style w-fit gap-2 px-4 py-1 justify-center items-center">
+    <div class="flex dropdown-style w-fit gap-2 px-4 py-1 justify-center items-center ease-in-out duration-300">
       <.avatar />
       <div class="grow text-sm font-medium">Personal Event</div>
       <div class="align-middle">
@@ -307,7 +307,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
         <div :if={@place} class="pt-1 pr-1" phx-click="deselect-place">
           <div
             data-tooltip-target="tooltip-default"
-            class="hover:bg-red-100 flex items-center justify-center rounded-full p-1 transition ease-in-out"
+            class="hover:bg-red-100 flex items-center justify-center rounded-full p-1 hover-block-animation"
           >
             <.icon name="hero-x-mark" class="w-5 h-5 " />
           </div>
