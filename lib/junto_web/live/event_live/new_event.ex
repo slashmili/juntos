@@ -28,6 +28,11 @@ defmodule JuntoWeb.EventLive.NewEvent do
         </div>
         <.event_title_input />
         <.datepick />
+        <.event_location_selector_dropdown
+          gmap_suggested_places={@gmap_suggested_places}
+          place={@place}
+        />
+
         <.event_location_selector gmap_suggested_places={@gmap_suggested_places} place={@place} />
         <div>
           <.text_editor
@@ -102,7 +107,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
           </div>
         </div>
 
-        <div class="timezone-container hover-block-animation">
+        <div class="timezone-container hover-block-custom">
           <.timezone_dropdown />
         </div>
       </div>
@@ -112,7 +117,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp input_date(assigns) do
     ~H"""
-    <div class="pt-1 bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 rounded-tl-lg rounded-bl-lg hover-block-animation">
+    <div class="pt-1 bg-black/10 dark:bg-white/10 hover-block-custom rounded-tl-lg rounded-bl-lg hover-block-custom">
       <input class="picker bg-transparent  border-none outline-none" type="date" value="2024-05-23" />
     </div>
     """
@@ -120,7 +125,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp input_time(assigns) do
     ~H"""
-    <div class="pt-1 bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 rounded-tr-lg rounded-br-lg hover-block-animation">
+    <div class="pt-1 bg-black/10 dark:bg-white/10 rounded-tr-lg rounded-br-lg hover-block-custom">
       <input
         class="picker bg-transparent  border-none outline-none"
         type="time"
@@ -285,6 +290,55 @@ defmodule JuntoWeb.EventLive.NewEvent do
     """
   end
 
+  defp event_location_selector_dropdown(assigns) do
+    ~H"""
+    dropdown:
+    <.dropdown class="relative">
+      <:button id="placeDropdownBtn" dropdown-toggle="eventPlaceDropdown" class="w-full">
+        <div class="flex flex-row gap-1 bg-black/5 pl-4 pt-1 pr-1 rounded-lg relative opacity-80 cursor-pointer pt-3 pb-3 select-none">
+          <div>
+            <.icon name="hero-map-pin" class="w-5 h-5" />
+          </div>
+          <div :if={is_nil(@place)}>
+            <div class="text-left">Add Event Location</div>
+            <div class="text-sm text-left">Offline location or virutal link</div>
+          </div>
+        </div>
+      </:button>
+
+      <:menu class="select-none z-50 w-full" id="eventPlaceDropdown">
+        <.event_location_lookup2 gmap_suggested_places={@gmap_suggested_places} />
+      </:menu>
+    </.dropdown>
+    """
+  end
+
+  defp event_location_lookup2(assigns) do
+    ~H"""
+    <div class="pt-2 pb-2 px-1 outline outline-1 dark:outline-slate-700/50 outline-slate-700/10 shadow-xl bg-base-100 rounded-md text-base backdrop-blur-lg bg-white/80 dark:bg-black/80">
+      <div
+        id="gmap-new-event-lookup2"
+        class="input-container bg-gray-700/10 dark:bg-gray-800 -mt-2 -mx-1 rounded-t-md pb-1"
+        phx-hook="GmapLookup"
+        data-api-key={get_gmaps_api_key()}
+      >
+        <textarea
+          id="placeQueryTxt"
+          class="p-3 focus:outline-none focus:border-teal focus:ring-0 dark:text-slate-100 h-10 border-0 resize-none p-0 w-full bg-transparent overflow-hidden focus:outline-none border border-transparent;"
+          placeholder="Enter Location"
+        ></textarea>
+      </div>
+      <div :if={@gmap_suggested_places}>
+        <ul class="gmap-suggested-places">
+          <li :for={place <- @gmap_suggested_places} phx-click={JS.push("select-place", value: place)}>
+            <.event_place_item name={place["name"]} location={place["address"]} />
+          </li>
+        </ul>
+      </div>
+    </div>
+    """
+  end
+
   defp event_location_selector(assigns) do
     ~H"""
     <div class="relative">
@@ -307,7 +361,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
         <div :if={@place} class="pt-1 pr-1" phx-click="deselect-place">
           <div
             data-tooltip-target="tooltip-default"
-            class="hover:bg-red-100 flex items-center justify-center rounded-full p-1 hover-block-animation"
+            class="hover:bg-red-100 flex items-center justify-center rounded-full p-1 hover-block-custom"
           >
             <.icon name="hero-x-mark" class="w-5 h-5 " />
           </div>
@@ -343,7 +397,6 @@ defmodule JuntoWeb.EventLive.NewEvent do
       phx-update="ignore"
     >
     </div>
-    Hello
     """
   end
 

@@ -18,15 +18,17 @@ export default {
       };
       const dropdown = new Dropdown(dropdownEl, this.el, options, {override: true});
       
-      dropdownEl.addEventListener('click', () => {
-        dropdown.toggle();
-      })
-
-      dropdownEl.addEventListener('keydown', (event) => {
-        if(event.key == 'Enter') {
+      dropdownEl.querySelectorAll('[phx-click], a[href]').forEach((clickableItem) => {
+        clickableItem.addEventListener('click', () => {
           dropdown.toggle();
-        }
-      });
+        })
+        clickableItem.addEventListener('keydown', (event) => {
+          if(event.key == 'Enter') {
+            dropdown.toggle();
+          }
+        });
+
+      })
     },
   }
 }
