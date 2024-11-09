@@ -4,6 +4,7 @@ import { Markdown } from 'tiptap-markdown';
 import Heading from "@tiptap/extension-heading";
 import BulletList from "@tiptap/extension-bullet-list";
 import OrderedList from "@tiptap/extension-ordered-list";
+import Placeholder from "@tiptap/extension-placeholder";
 
 export default {
   TextEditor:{
@@ -13,11 +14,15 @@ export default {
     classes() {
       return this.el.dataset.class || "";
     },
+    placeholder() {
+      return this.el.dataset.placeholder || "";
+    },
     mounted() {
       const element = this.el.querySelector("[data-editor]");
       const hidden = this.el.querySelector("[data-editor-hidden]");
       const extensions = [
         StarterKit,
+        Placeholder.configure({placeholder: this.placeholder()}),
         Markdown,
         Heading.configure({
           HTMLAttributes: {

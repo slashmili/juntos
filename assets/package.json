@@ -2,6 +2,7 @@
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.8",
     "@tiptap/core": "^2.9.1",
+    "@tiptap/extension-placeholder": "^2.9.1",
     "@tiptap/pm": "^2.9.1",
     "@tiptap/starter-kit": "^2.9.1",
     "flowbite": "^2.5.2",

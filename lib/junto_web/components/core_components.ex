@@ -858,10 +858,17 @@ defmodule JuntoWeb.CoreComponents do
   attr :name, :string, required: true
   attr :class, :string, default: nil
   attr :value, :string, default: ""
+  attr :placeholder, :string, default: ""
 
   def text_editor(assigns) do
     ~H"""
-    <div phx-hook="TextEditor" id={"editor-#{@name}"} data-value={@value} data-class={@class}>
+    <div
+      phx-hook="TextEditor"
+      id={"editor-#{@name}"}
+      data-value={@value}
+      data-class={@class}
+      data-placeholder={@placeholder}
+    >
       <div data-editor={@name}></div>
       <input type="hidden" name={@name} value={@value} data-editor-hidden={@name} />
     </div>
