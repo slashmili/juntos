@@ -47,6 +47,11 @@
   @apply dark:text-slate-100 text-slate-900 hover:bg-gray-700/10 rounded-md cursor-pointer outline-none focus:bg-gray-700/10;
 }
 
+.create-event-textarea-style {
+  @apply  dark:text-white hover:placeholder-gray-400 resize-none p-0 bg-transparent overflow-hidden border-transparent focus:border-transparent focus:ring-0 focus:outline-none;
+  @apply font-semibold text-2xl sm:text-4xl;
+}
+
 .create-event-text-color {
   dark:text-slate-100 text-slate-900
 }

@@ -110,6 +110,33 @@ defmodule JuntoWeb.EventLive.NewEvent do
     """
   end
 
+  def event_title_input(assigns) do
+    ~H"""
+    <div class="min-h-12 py-3 pl-3">
+      <textarea
+        id="titleTextarea"
+        autofocus
+        autocapitalize="words"
+        spellcheck="false"
+        class="h-12 w-full create-event-textarea-style"
+        placeholder="Event Name"
+        onInput="this.parentNode.dataset.clonedVal = this.value"
+        row="2"
+      />
+      <script>
+        const textarea = document.getElementById('titleTextarea');
+        //TODO: move it out of here
+        textarea.addEventListener('input', () => {
+        if (textarea.scrollHeight < 50) return;
+            textarea.style.height = 'auto';
+            textarea.style.height = `${textarea.scrollHeight}px`;
+        });
+            
+      </script>
+    </div>
+    """
+  end
+
   ### Reusable components
   alias JuntoWeb.CoreComponentsBackup
   attr :id, :string, required: true
