@@ -716,28 +716,6 @@ defmodule JuntoWeb.CoreComponents do
     """
   end
 
-  slot :item, required: true do
-    attr :class, :string, required: false
-    attr :"custom-phx-select", :string, required: false
-  end
-
-  def dropdown_list(assigns) do
-    ~H"""
-    <ul class="rounded-sm">
-      <li
-        :for={item <- @item}
-        class={[item[:class], "rounded-md outline-none focus:bg-gray-700/10"]}
-        tabindex="0"
-        phx-click={item[:"custom-phx-select"]}
-        phx-keydown={item[:"custom-phx-select"]}
-        phx-key="Enter"
-      >
-        <%= render_slot(item) %>
-      </li>
-    </ul>
-    """
-  end
-
   @doc """
   Renders a [Heroicon](https://heroicons.com).
 

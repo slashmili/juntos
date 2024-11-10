@@ -4,6 +4,7 @@ export default {
   FlowbitDropdown: {
     mounted() {
       this.setup();
+      this.setupListeners();
     },
     updated() {
       if(this.dropdown.isVisible()) {
