@@ -27,8 +27,6 @@ defmodule JuntoWeb.EventLive.NewEvent do
      )}
   end
 
-  alias JuntoWeb.EventLive.NewEventComponents
-
   defp group_dropdown(assigns) do
     ~H"""
     <.header_dropdown id="groupDropdown">
@@ -110,9 +108,9 @@ defmodule JuntoWeb.EventLive.NewEvent do
     """
   end
 
-  def event_title_input(assigns) do
+  defp event_title_input(assigns) do
     ~H"""
-    <div class="min-h-12 py-3 pl-3">
+    <div class="min-h-12">
       <textarea
         id="titleTextarea"
         autofocus
@@ -137,7 +135,78 @@ defmodule JuntoWeb.EventLive.NewEvent do
     """
   end
 
+  defp datepick(assigns) do
+    ~H"""
+    <button
+      class="flex gap-2 w-full px-3 py-2  animated create-event-button-style sm:hidden"
+      data-modal-target="datepickModal"
+      data-modal-toggle="datepickModal"
+    >
+      <div><.icon name="hero-clock" class="w-4 h-4" /></div>
+      <div class="min-w-0 text-left">
+        <div class="font-medium truncate">Tuesday, 12 November</div>
+        <div class="text-sm truncate">07:00 -- 08:00</div>
+      </div>
+    </button>
+    <.datepick_modal />
+    """
+  end
+
+  defp datepick_modal(assigns) do
+    ~H"""
+    <div
+      id="datepickModal"
+      tabindex="-1"
+      aria-hidden="true"
+      class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-8rem)] max-h-full bg-transparent"
+    >
+      <div class="relative p-4 w-full max-w-2xl max-h-full bg-transparent">
+        <div class="relative rounded-lg shadow-lg shadow-black bg-white/90 dark:bg-neutral-900/70 backdrop-blur-lg dark:text-white">
+          <div class="p-3 px-3 flex flex-col gap-2">
+            <div class="">
+              <div class="font-semibold text-lg">Event Time</div>
+            </div>
+            <.datepick_date label="Start" />
+            <.datepick_date label="End" />
+            <div>
+              Timezone
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  defp datepick_date(assigns) do
+    ~H"""
+    <div class="flex flex-row">
+      <div class="flex items-center text-sm opacity-60"><%= @label %></div>
+      <div class="pl-3 grow flex justify-end">
+        <input
+          class="bg-transparent dark:border-white/10 dark:hover:border-white/40  border rounded-l-md outline-pink-500  focus:ring-0 focus:outline-none"
+          type="date"
+          value="2024-05-23"
+        />
+        <input
+          class="bg-transparent dark:border-white/10 dark:hover:border-white/40 border rounded-r-md outline-none focus:ring-0 focus:outline-none -ml-[4px] "
+          type="time"
+          value="21:00"
+          required
+        />
+      </div>
+    </div>
+    """
+  end
+
   ### Reusable components
+
+  def modal(assigns) do
+    ~H"""
+
+    """
+  end
+
   alias JuntoWeb.CoreComponentsBackup
   attr :id, :string, required: true
   attr :class, :string, required: false, default: ""

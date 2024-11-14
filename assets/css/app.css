@@ -56,6 +56,14 @@
   dark:text-slate-100 text-slate-900
 }
 
+.create-event-button-style {
+  @apply bg-black/10 hover:bg-black/70 text-slate-800 hover:text-slate-100 ;
+  @apply dark:bg-slate-100/10 dark:hover:bg-slate-100/20 dark:text-slate-100 ;
+  @apply cursor-pointer rounded-lg select-none;
+  @apply hover:bg-black/20 dark:hover:bg-white/20;
+
+}
+
 .create-event {
   @apply flex max-md:flex-col flex-row gap-8 pt-10 pl-4 pr-4 md:max-w-7xl justify-center;
   & .banner {
