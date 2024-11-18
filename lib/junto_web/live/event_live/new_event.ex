@@ -35,7 +35,10 @@ defmodule JuntoWeb.EventLive.NewEvent do
           Personal Event
         </div>
       </:title>
-      <div class="ml-[20px] sm:ml-[60px] p-2 w-60 create-event-dropdown-menu-style select-none">
+      <div
+        class="ml-[20px] sm:ml-[60px] p-2 w-60 create-event-dropdown-menu-style outline-white/80 select-none"
+        style="background-color: #222a"
+      >
         <div class="text-xs opacity-50">Choose the group of the event</div>
         <.group_dropdown_menu_items />
       </div>
@@ -51,14 +54,14 @@ defmodule JuntoWeb.EventLive.NewEvent do
     <.dropdown_list>
       <:item :for={group <- @all_groups}>
         <a href="#">
-          <div class="flex p-2 create-event-dropdown-menu-group-selector">
+          <div class="flex p-2 create-event-dropdown-menu-group-selector ">
             <%= group %>
           </div>
         </a>
       </:item>
       <:item>
         <a>
-          <div class="my-auto p-2 dark:text-slate-400 text-slate-500 hover:bg-gray-700/10 rounded-md cursor-pointer opacity-50">
+          <div class="my-auto p-2 dark:text-slate-400 text-slate-500 hover:bg-gray-700/10  rounded-md cursor-pointer opacity-50">
             <.icon name="hero-plus" class="w-4 h-4 " /> Create Group
           </div>
         </a>
@@ -79,7 +82,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
           ].title %>
         </div>
       </:title>
-      <div class="!ml-[-15px] select-none z-50 pt-2 pb-2 px-1 w-72 create-event-dropdown-menu-style select-none ">
+      <div class="!ml-[-15px] select-none z-50 pt-2 pb-2 px-1 w-72 create-event-dropdown-menu-style select-none">
         <.scope_dropdown_menu_items selected_scope={@selected_scope} event_scopes={@event_scopes} />
       </div>
     </.header_dropdown>
@@ -92,6 +95,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
       <:item
         :for={{_, scope} <- Enum.sort_by(@event_scopes, &elem(&1, 1).order)}
         custom-phx-select={JS.push("select-scope", value: scope, loading: "#scopeDropdownBtn")}
+        class="dark:hover:bg-white/5"
       >
         <div class="flex p-2 cursor-pointer">
           <div class="my-auto w-6"><.icon name={scope.icon} class="w-4 h4" /></div>

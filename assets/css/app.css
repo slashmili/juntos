@@ -40,11 +40,11 @@
 }
 
 .create-event-dropdown-menu-style { 
-  @apply dark:outline-slate-700/50 outline-slate-700/10 shadow-xl rounded-md text-base backdrop-blur-lg dark:text-slate-400 text-slate-500 outline outline-1 bg-white/80 dark:bg-black/80
+  @apply dark:outline-white/5 outline-slate-700/10 shadow-xl rounded-md text-base backdrop-blur-lg dark:text-slate-100/50 text-slate-500 outline outline-1 bg-white/80 dark:bg-black/20;
 }
 
 .create-event-dropdown-menu-group-selector {
-  @apply dark:text-slate-100 text-slate-900 hover:bg-gray-700/10 rounded-md cursor-pointer outline-none focus:bg-gray-700/10;
+  @apply dark:text-slate-100 text-slate-900 hover:bg-gray-700/10 dark:hover:bg-white/5 rounded-md cursor-pointer outline-none focus:bg-gray-700/10;
 }
 
 .create-event-textarea-style {
