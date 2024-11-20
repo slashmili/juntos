@@ -51,22 +51,18 @@ defmodule JuntoWeb.EventLive.NewEvent do
     assigns = Map.put(assigns, :all_groups, all_groups)
 
     ~H"""
-    <.dropdown_list>
+    <.dropdown_list_button>
       <:item :for={group <- @all_groups}>
-        <a href="#">
-          <div class="flex p-2 create-event-dropdown-menu-group-selector ">
-            <%= group %>
-          </div>
-        </a>
+        <div class="flex p-2 create-event-dropdown-menu-group-selector ">
+          <%= group %>
+        </div>
       </:item>
       <:item>
-        <a>
-          <div class="my-auto p-2 dark:text-slate-400 text-slate-500 hover:bg-gray-700/10  rounded-md cursor-pointer opacity-50">
-            <.icon name="hero-plus" class="w-4 h-4 " /> Create Group
-          </div>
-        </a>
+        <div class="my-auto p-2 text-left dark:text-slate-400 text-slate-500 hover:bg-gray-700/10  rounded-md cursor-pointer opacity-50">
+          <.icon name="hero-plus" class="w-4 h-4 " /> Create Group
+        </div>
       </:item>
-    </.dropdown_list>
+    </.dropdown_list_button>
     """
   end
 
@@ -91,15 +87,15 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   def scope_dropdown_menu_items(assigns) do
     ~H"""
-    <.dropdown_list>
+    <.dropdown_list_button>
       <:item
         :for={{_, scope} <- Enum.sort_by(@event_scopes, &elem(&1, 1).order)}
         custom-phx-select={JS.push("select-scope", value: scope, loading: "#scopeDropdownBtn")}
         class="dark:hover:bg-white/5"
       >
-        <div class="flex p-2 cursor-pointer">
+        <div class="flex p-2">
           <div class="my-auto w-6"><.icon name={scope.icon} class="w-4 h4" /></div>
-          <div class="text-sm pl-2">
+          <div class="text-sm pl-2 text-left">
             <div class="dark:text-slate-100 text-slate-900"><%= scope.title %></div>
             <div><%= scope.desc %></div>
           </div>
@@ -108,7 +104,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
           </div>
         </div>
       </:item>
-    </.dropdown_list>
+    </.dropdown_list_button>
     """
   end
 
@@ -146,7 +142,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
       data-modal-target="datepickModal"
       data-modal-toggle="datepickModal"
     >
-      <div><.icon name="hero-clock" class="w-4 h-4" /></div>
+      <div class="-z-[1]"><.icon name="hero-clock" class="w-4 h-4" /></div>
       <div class="min-w-0 text-left">
         <div class="font-medium truncate">Tuesday, 12 November</div>
         <div class="text-sm truncate">07:00 -- 08:00</div>
@@ -245,20 +241,21 @@ defmodule JuntoWeb.EventLive.NewEvent do
     attr :"custom-phx-select", :string, required: false
   end
 
-  def dropdown_list(assigns) do
+  def dropdown_list_button(assigns) do
     ~H"""
-    <ul class="rounded-sm">
-      <li
-        :for={item <- @item}
-        class={[item[:class], "rounded-md outline-none focus:bg-gray-700/10"]}
-        tabindex="0"
-        phx-click={item[:"custom-phx-select"]}
-        phx-keydown={item[:"custom-phx-select"]}
-        phx-key="Enter"
-      >
-        <%= render_slot(item) %>
+    <menu class="rounded-sm">
+      <li :for={item <- @item} class={[item[:class], "rounded-md outline-none focus:bg-gray-700/10"]}>
+        <button
+          class="w-full"
+          tabindex="0"
+          phx-click={item[:"custom-phx-select"]}
+          phx-keydown={item[:"custom-phx-select"]}
+          phx-key="Enter"
+        >
+          <%= render_slot(item) %>
+        </button>
       </li>
-    </ul>
+    </menu>
     """
   end
 end

@@ -2,21 +2,22 @@ export default {
   ListNavigator: {
     mounted() {
 
-      const items = this.el.querySelectorAll('li');
+      const btn = document.getElementById(this.el.dataset.listNavigatorButtonId)
+      const items = this.el.querySelectorAll('button');
       const itemLength = items.length
       const hook = this;
-      const keyDowns = ['ArrowDown', 'j', 'J', 'Tab'];
+      const keyDowns = ['ArrowDown', 'j', 'J'];
       const keyUps = ['ArrowUp', 'k', 'K'];
       for(let item of items) {
         item.addEventListener('mouseover', (event) => {
           event.currentTarget.focus()
         });
       }
-      document
-        .getElementById(this.el.dataset.listNavigatorButtonId)
-        ?.addEventListener('keydown', (event) => {
-        items[0]?.focus();
-        event.preventDefault();
+      btn?.addEventListener('keydown', (event) => {
+        if(keyDowns.includes(event.key)) {
+          items[0]?.focus();
+          event.preventDefault();
+        }
       });
       this.el.addEventListener('keydown', (event) => {
         const isKeyDown = keyDowns.includes(event.key)
