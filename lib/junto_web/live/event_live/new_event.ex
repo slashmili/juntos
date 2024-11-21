@@ -1,5 +1,6 @@
 defmodule JuntoWeb.EventLive.NewEvent do
   use JuntoWeb, :live_view
+  alias JuntoWeb.CoreComponentsBackup
 
   @event_scopes %{
     public: %{
@@ -139,8 +140,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
     ~H"""
     <button
       class="flex gap-2 w-full px-3 py-2  animated create-event-button-style sm:hidden"
-      data-modal-target="datepickModal"
-      data-modal-toggle="datepickModal"
+      phx-click={CoreComponentsBackup.show_modal("datepickModal")}
     >
       <div class="-z-[1]"><.icon name="hero-clock" class="w-4 h-4" /></div>
       <div class="min-w-0 text-left">
@@ -154,15 +154,13 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp datepick_modal(assigns) do
     ~H"""
-    <div
+    <CoreComponentsBackup.modal
       id="datepickModal"
-      tabindex="-1"
-      aria-hidden="true"
-      class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-8rem)] max-h-full bg-transparent"
+      class="bg-transparent backdrop:bg-black/60 backdrop-grayscale"
     >
-      <div class="relative p-4 w-full max-w-2xl max-h-full bg-transparent">
+      <div class="w-full max-w-2xl max-h-full bg-transparent">
         <div class="relative rounded-lg shadow-lg shadow-black bg-white/90 dark:bg-neutral-900/70 backdrop-blur-lg dark:text-white">
-          <div class="p-3 px-3 flex flex-col gap-2">
+          <div class="p-4 flex flex-col gap-2">
             <div class="">
               <div class="font-semibold text-lg">Event Time</div>
             </div>
@@ -174,7 +172,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
           </div>
         </div>
       </div>
-    </div>
+    </CoreComponentsBackup.modal>
     """
   end
 
@@ -189,7 +187,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
           value="2024-05-23"
         />
         <input
-          class="bg-transparent dark:border-white/10 dark:hover:border-white/40 border rounded-r-md outline-none focus:ring-0 focus:outline-none -ml-[4px] "
+          class="bg-transparent dark:border-white/10 dark:hover:border-white/40 border rounded-r-md outline-none focus:ring-0 focus:outline-none -ml-[2px] "
           type="time"
           value="21:00"
           required
@@ -201,13 +199,12 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   ### Reusable components
 
-  def modal(assigns) do
+  def modal2(assigns) do
     ~H"""
 
     """
   end
 
-  alias JuntoWeb.CoreComponentsBackup
   attr :id, :string, required: true
   attr :class, :string, required: false, default: ""
   slot :title, required: true

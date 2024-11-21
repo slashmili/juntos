@@ -4,6 +4,7 @@ import gmaps from "./hooks/gmaps"
 import textEditor from "./hooks/text-editor"
 import listNavigator from "./hooks/list-navigator"
 import fdropdown from "./hooks/flowbit-dropdown"
+import dialog from "./hooks/dialog"
 
 let Hooks = {
   ...inputOptGroup,
@@ -11,7 +12,8 @@ let Hooks = {
   ...gmaps,
   ...textEditor,
   ...listNavigator,
-  ...fdropdown
+  ...fdropdown,
+  ...dialog
 }
 
 export default Hooks

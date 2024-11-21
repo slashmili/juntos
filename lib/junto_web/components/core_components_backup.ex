@@ -16,8 +16,25 @@ defmodule JuntoWeb.CoreComponentsBackup do
   """
   use Phoenix.Component
 
-  # alias Phoenix.LiveView.JS
+  alias Phoenix.LiveView.JS
   # import JuntoWeb.Gettext
+
+  @doc """
+    <.modal id="my-modal" class="bg-red-50" >
+      content
+    <.modal>
+  """
+  attr :id, :string, required: true
+  attr :class, :string, required: false, default: ""
+  slot :inner_block, required: true
+
+  def modal(assigns) do
+    ~H"""
+    <dialog id={@id} class=" bg-transparent backdrop:bg-black/60 backdrop-grayscale" phx-hook="Dialog">
+      <%= render_slot(@inner_block) %>
+    </dialog>
+    """
+  end
 
   attr :id, :string, required: true
   attr :class, :string, required: false, default: ""
@@ -51,5 +68,10 @@ defmodule JuntoWeb.CoreComponentsBackup do
       <%= render_slot(@inner_block) %>
     </div>
     """
+  end
+
+  def show_modal(js \\ %JS{}, id) when is_binary(id) do
+    js
+    |> JS.dispatch("showModal", to: "##{id}")
   end
 end
