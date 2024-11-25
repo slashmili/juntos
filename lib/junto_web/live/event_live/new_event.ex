@@ -154,7 +154,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp datepick_modal(assigns) do
     ~H"""
-    <.modal id="datepickModal" show={true}>
+    <.modal id="datepickModal">
       <div class="w-full max-w-2xl max-h-full bg-transparent">
         <div class="relative rounded-lg shadow-lg shadow-black bg-white/90 dark:bg-neutral-900/70 backdrop-blur-lg dark:text-white">
           <div class="p-4 flex flex-col gap-2">
@@ -173,14 +173,14 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   defp datepick_timezone(assigns) do
     ~H"""
-    <div class="flex flex-row">
-      <div class="flex items-center text-sm opacity-60">Timezone</div>
+    <div class="flex flex-row text-sm">
+      <div class="flex items-center opacity-60">Timezone</div>
       <div class="pl-3 grow flex justify-end"></div>
       <CoreComponentsBackup.dropdown id="timezoneDropdown">
         <:button
           id="timezoneDropdownBtnBtn"
           dropdown-toggle="timezoneDropdown"
-          class="bg-transparent dark:border-white/10 dark:hover:border-white/80 border rounded  px-1 py-2 focus:ring-0 focus:outline-none focus:border-white/80"
+          class="bg-transparent border-black/10 hover:border-black/40 dark:border-white/10 dark:hover:border-white/80 border rounded  px-1 py-2 focus:ring-0 focus:outline-none focus:border-black/40 dark:focus:border-white/80"
         >
           <div class="min-w-0 flex gap-2 m">
             <div class="dark:text-white/50">GMT+01:00</div>
@@ -188,23 +188,28 @@ defmodule JuntoWeb.EventLive.NewEvent do
             <div><.icon name="hero-chevron-down " class="h-4 w-4" /></div>
           </div>
         </:button>
-        <div class="bg-black/30 backdrop-blur-lg rounded-md w-80 max-h-48 overflow-auto shadow-black shadow-lg">
-          <div class="bg-white/10 w-full rounded-t-md">
+        <div class="dark:bg-black/50 backdrop-blur-lg rounded-md w-80 shadow-black shadow-lg">
+          <div class="bg-black/10 dark:bg-white/10 w-full rounded-t-md">
             <input
               tabindex="-1"
               type="text"
-              class="bg-transparent placeholder-white/40 outline-none focus:ring-0 border-none focus:outline-none focus:ring-0"
+              class="bg-transparent dark:placeholder-white/40 text-sm outline-none focus:ring-0 border-none focus:outline-none focus:ring-0"
               placeholder="Search for a timzone"
             />
           </div>
-          <ul class="p-2">
-            <li :for={_ <- Enum.to_list(1..20)}>
-              <button class="flex text-left w-full hover:bg-white/10 rounded-md p-1">
-                <div class="truncate grow">Europe/Berlin</div>
-                <div class="dark:text-white/50 base-1 flex justify-end">GMT+1:00</div>
-              </button>
-            </li>
-          </ul>
+
+          <div class="max-h-44 overflow-auto">
+            <ul class="p-1">
+              <li :for={{zone_name, offset} <- get_list_of_timezones()}>
+                <button class="flex text-left w-full hover:bg-black/10 dark:hover:bg-white/10 rounded-md py-1 px-2">
+                  <div class="truncate grow"><%= zone_name %></div>
+                  <div class="text-black/50 dark:text-white/50 base-1 flex justify-end">
+                    <%= offset %>
+                  </div>
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
       </CoreComponentsBackup.dropdown>
     </div>
@@ -217,12 +222,12 @@ defmodule JuntoWeb.EventLive.NewEvent do
       <div class="flex items-center text-sm opacity-60"><%= @label %></div>
       <div class="pl-3 grow flex justify-end">
         <input
-          class="bg-transparent dark:border-white/10 dark:hover:border-white/80  border rounded-l-md outline-pink-500  focus:ring-0 focus:outline-none focus:border-white/80 "
+          class="bg-transparent border-black/10 hover:border-black/40 dark:border-white/10 dark:hover:border-white/80  border rounded-l-md outline-pink-500  focus:ring-0 focus:outline-none focus:border-black/40 dark:focus:border-white/80"
           type="date"
           value="2024-05-23"
         />
         <input
-          class="bg-transparent dark:border-white/10 dark:hover:border-white/80 border rounded-r-md outline-none focus:ring-0 focus:outline-none focus:border-white/80 -ml-[2px] "
+          class="bg-transparent border-black/10 hover:border-black/40 dark:border-white/10 dark:hover:border-white/80 border rounded-r-md outline-none focus:ring-0 focus:outline-none focus:border-black/40 dark:focus:border-white/80 -ml-[2px] "
           type="time"
           value="21:00"
           required
@@ -289,5 +294,46 @@ defmodule JuntoWeb.EventLive.NewEvent do
       </li>
     </menu>
     """
+  end
+
+  defp get_list_of_timezones(datetime \\ nil) do
+    # TODO: extract it this with some known timezones
+    datetime = datetime || DateTime.utc_now()
+
+    iso_days =
+      Calendar.ISO.naive_datetime_to_iso_days(
+        datetime.year,
+        datetime.month,
+        datetime.day,
+        datetime.hour,
+        datetime.minute,
+        datetime.second,
+        datetime.microsecond
+      )
+
+    for zone_name <- Tzdata.zone_list() do
+      {:ok, tzone} =
+        Tzdata.TimeZoneDatabase.time_zone_period_from_utc_iso_days(iso_days, zone_name)
+
+      {zone_name, tzone[:utc_offset]}
+    end
+    |> Enum.sort(fn zone1, zone2 ->
+      elem(zone1, 1) < elem(zone2, 1)
+    end)
+    |> Enum.map(fn {zone_name, utc_offset} ->
+      minutes = div(utc_offset, 60)
+      hours = abs(div(minutes, 60))
+      hours = String.pad_leading("#{hours}", 2, "0")
+      remaingin_minutes = rem(minutes, 60)
+
+      sign =
+        if utc_offset < 0 do
+          "-"
+        else
+          "+"
+        end
+
+      {zone_name, "GMT #{sign}#{hours}:#{remaingin_minutes}"}
+    end)
   end
 end
