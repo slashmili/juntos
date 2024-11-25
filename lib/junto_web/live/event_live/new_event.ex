@@ -241,7 +241,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
   defp location(assigns) do
     ~H"""
     <button
-      class="flex gap-2 w-full px-3 py-2  animated create-event-button-style sm:hidden outline-none focus:outline-none"
+      class="flex gap-2 w-full px-3 py-2  animated create-event-button-style outline-none focus:outline-none"
       phx-click={show_modal("locationModal")}
     >
       <div><.icon name="hero-map-pin" class="w-5 h-5" /></div>
@@ -289,7 +289,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
           <input
             type="text"
             id="locationModalTextarea"
-            class="bg-transparent dark:placeholder-white/40 outline-none focus:ring-0 border-none focus:outline-none focus:ring-0 w-full"
+            class="bg-black/20 dark:bg-white/10 w-full rounded-t-md dark:placeholder-white/40 outline-none focus:ring-0 border-none focus:outline-none focus:ring-0 w-full"
             placeholder="Enter Location"
           />
           <div :if={@gmap_suggested_places == []}>&nbsp;</div>
