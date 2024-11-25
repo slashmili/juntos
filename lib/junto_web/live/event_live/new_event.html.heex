@@ -18,7 +18,11 @@
     <.datepick />
   </div>
   <div class="col-span-3 sm:col-span-5">
-    <.location gmap_suggested_places={@gmap_suggested_places} place={@place} />
+    <.location
+      gmap_suggested_places={@gmap_suggested_places}
+      place={@place}
+      force_rerender_map={@force_rerender_map}
+    />
   </div>
   <div class="col-span-3 sm:col-span-5">description</div>
   <div class="col-span-3 sm:col-span-5">Create event</div>

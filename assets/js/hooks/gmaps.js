@@ -16,7 +16,7 @@ export default {
       const placeObj = new Place({id: place.id})
       await placeObj.fetchFields({fields: ['location', 'formattedAddress']})
       //Replace current place with more detials
-      this.pushEvent("select-place", { ...place, address: placeObj.formattedAddress})
+      this.pushEvent("select-place-update-address", { ...place, address: placeObj.formattedAddress})
       const map = new Map(this.el, {
         center: placeObj.location,
         mapId: this.el.dataset.mapId,

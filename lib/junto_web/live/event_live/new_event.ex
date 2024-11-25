@@ -24,7 +24,8 @@ defmodule JuntoWeb.EventLive.NewEvent do
      assign(socket,
        gmap_suggested_places: [],
        place: nil,
-       selected_scope: :public
+       selected_scope: :public,
+       force_rerender_map: false
      )}
   end
 
@@ -252,18 +253,25 @@ defmodule JuntoWeb.EventLive.NewEvent do
         <div class="text-left font-medium"><%= @place["name"] %></div>
         <div class="text-left text-sm"><%= @place["address"] %></div>
       </div>
+      <div :if={@place} class="pt-1 pr-1" phx-click="deselect-place" role="button">
+        <div class="flex items-center justify-center rounded-full p-1 hover-block-custom">
+          <.icon name="hero-x-mark" class="w-5 h-5 " />
+        </div>
+        <div class="sr-only">close</div>
+      </div>
     </button>
     <.location_modal gmap_suggested_places={@gmap_suggested_places} />
-    <div
-      :if={@place}
-      data-place={Jason.encode!(@place)}
-      data-map-id={get_gmaps_id()}
-      id="google-map"
-      class="h-32"
-      phx-hook="Gmaps"
-      data-api-key={get_gmaps_api_key()}
-      phx-update="ignore"
-    >
+    <div :if={@place && @force_rerender_map != true}>
+      <div
+        data-place={Jason.encode!(@place)}
+        data-map-id={get_gmaps_id()}
+        id="google-map"
+        class="h-32"
+        phx-hook="Gmaps"
+        data-api-key={get_gmaps_api_key()}
+        phx-update="ignore"
+      >
+      </div>
     </div>
     """
   end
@@ -428,12 +436,23 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   @impl true
   def handle_event("select-place", place, socket) do
-    {:noreply, assign(socket, :place, place)}
+    send(self(), :reset_map_rerender)
+    {:noreply, assign(socket, place: place, force_rerender_map: true)}
+  end
+
+  @impl true
+  def handle_event("select-place-update-address", place, socket) do
+    {:noreply, assign(socket, place: place)}
   end
 
   @impl true
   def handle_event("deselect-place", _, socket) do
     {:noreply, assign(socket, :place, nil)}
+  end
+
+  @impl true
+  def handle_info(:reset_map_rerender, socket) do
+    {:noreply, assign(socket, :force_rerender_map, false)}
   end
 
   defp get_gmaps_api_key do
