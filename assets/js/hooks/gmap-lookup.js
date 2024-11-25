@@ -8,11 +8,11 @@ export default {
       });
 
 
-      const textarea = this.el.getElementsByTagName('textarea')[0]
-      this.listeners(textarea, loader)
+      const input = this.el.getElementsByTagName('input')[0]
+      this.listeners(input, loader)
     },
-    listeners (textarea, loader) {
-      textarea.addEventListener('input', (event) => {
+    listeners (input, loader) {
+      input.addEventListener('input', (event) => {
         if (event.target.value.length == 0) {
           this.pushEvent("gmap-suggested-places", [])
         }
@@ -21,7 +21,7 @@ export default {
         }
       });
 
-        textarea.addEventListener('keydown', (event) => {
+        input.addEventListener('keydown', (event) => {
           if (event.key === 'Enter') {
             event.preventDefault();
           }
@@ -38,8 +38,6 @@ export default {
       request.sessionToken = token;
       const { suggestions } =
         await AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
-
-      console.log('suggestions: ', suggestions)
 
       const places = suggestions.map((suggestion) => {
         const placePrediction = suggestion.placePrediction;

@@ -237,6 +237,85 @@ defmodule JuntoWeb.EventLive.NewEvent do
     """
   end
 
+  defp location(assigns) do
+    ~H"""
+    <button
+      class="flex gap-2 w-full px-3 py-2  animated create-event-button-style sm:hidden outline-none focus:outline-none"
+      phx-click={show_modal("locationModal")}
+    >
+      <div><.icon name="hero-map-pin" class="w-5 h-5" /></div>
+      <div :if={is_nil(@place)}>
+        <div class="text-left">Add Event Location</div>
+        <div class="text-sm text-left">Offline location or virutal link</div>
+      </div>
+      <div :if={@place} class="grow">
+        <div class="text-left font-medium"><%= @place["name"] %></div>
+        <div class="text-left text-sm"><%= @place["address"] %></div>
+      </div>
+    </button>
+    <.location_modal gmap_suggested_places={@gmap_suggested_places} />
+    <div
+      :if={@place}
+      data-place={Jason.encode!(@place)}
+      data-map-id={get_gmaps_id()}
+      id="google-map"
+      class="h-32"
+      phx-hook="Gmaps"
+      data-api-key={get_gmaps_api_key()}
+      phx-update="ignore"
+    >
+    </div>
+    """
+  end
+
+  def location_modal(assigns) do
+    ~H"""
+    <.modal id="locationModal">
+      <div class="dark:bg-black/50 backdrop-blur-lg rounded-md shadow-black shadow-lg">
+        <div
+          id="gmap-new-event-lookup2"
+          class="input-container -mt-2 -mx-1 rounded-t-md pb-1"
+          phx-hook="GmapLookup"
+          data-api-key={get_gmaps_api_key()}
+        >
+          <input
+            type="text"
+            id="locationModalTextarea"
+            class="bg-transparent dark:placeholder-white/40 outline-none focus:ring-0 border-none focus:outline-none focus:ring-0 w-full"
+            placeholder="Enter Location"
+          />
+          <div :if={@gmap_suggested_places == []}>&nbsp;</div>
+          <div :if={@gmap_suggested_places}>
+            <menu class="gmap-suggested-places">
+              <li :for={place <- @gmap_suggested_places}>
+                <button
+                  class="text-left w-full create-event-dropdown-menu-group-selector"
+                  tabindex="0"
+                  phx-click={JS.push("select-place", value: place) |> hide_modal("locationModal")}
+                >
+                  <.event_place_item name={place["name"]} location={place["address"]} />
+                </button>
+              </li>
+            </menu>
+          </div>
+        </div>
+      </div>
+    </.modal>
+    """
+  end
+
+  defp event_place_item(assigns) do
+    ~H"""
+    <div class="flex p-2 dark:text-slate-400 text-slate-500 hover:bg-gray-700/10 rounded-md cursor-pointer">
+      <div class="my-auto w-6"><.icon name="hero-map-pin" class="w-5 h5" /></div>
+      <div class="pl-2">
+        <div class="dark:text-slate-100 text-slate-900"><%= @name %></div>
+        <div class="text-sm max-w-md"><%= @location %></div>
+      </div>
+    </div>
+    """
+  end
+
   ### Reusable components
 
   def modal2(assigns) do
@@ -335,5 +414,34 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
       {zone_name, "GMT #{sign}#{hours}:#{remaingin_minutes}"}
     end)
+  end
+
+  @impl true
+  def handle_event("select-scope", %{"type" => type}, socket) do
+    {:noreply, assign(socket, :selected_scope, String.to_existing_atom(type))}
+  end
+
+  @impl true
+  def handle_event("gmap-suggested-places", places, socket) do
+    {:noreply, assign(socket, :gmap_suggested_places, places)}
+  end
+
+  @impl true
+  def handle_event("select-place", place, socket) do
+    {:noreply, assign(socket, :place, place)}
+  end
+
+  @impl true
+  def handle_event("deselect-place", _, socket) do
+    {:noreply, assign(socket, :place, nil)}
+  end
+
+  defp get_gmaps_api_key do
+    # TODO: to delete dev key
+    "AIzaSyCCubqJSWvbLIQJdsZXyMj7olwYanekI6M"
+  end
+
+  defp get_gmaps_id do
+    "300ffa0564ebe9c7"
   end
 end
