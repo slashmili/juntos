@@ -324,6 +324,57 @@ defmodule JuntoWeb.EventLive.NewEvent do
     """
   end
 
+  defp description(assigns) do
+    ~H"""
+    <button
+      class="flex gap-2 w-full px-3 py-2  animated create-event-button-style outline-none focus:outline-none"
+      phx-click={show_modal("eventDescriptionModal")}
+      type="button"
+    >
+      <div>
+        <.icon name="hero-document-text" class="w-5 h-5" />
+      </div>
+      <div>
+        <div class="text-left">Event Description</div>
+        <div class="text-sm text-left"></div>
+      </div>
+    </button>
+    <.modal id="eventDescriptionModal">
+      <div class="w-full max-w-2xl max-h-full bg-transparent shadow-lg backdrop-blur-lg shadow-black   bg-white/90 dark:bg-neutral-900/70  dark:text-white">
+        <div class="rounded-t-lg">
+          <div class="p-4 flex flex-col gap-2">
+            <div class="flex flex-row">
+              <div class="font-semibold text-lg">Event Description</div>
+              <button
+                type="button"
+                class="rounded-full p-1 hover-block-custom text-gray-400 bg-transparent rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center "
+                phx-click={hide_modal("eventDescriptionModal")}
+              >
+                <.icon name="hero-x-mark" class="w-4 h-4" />
+                <span class="sr-only">Close modal</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="p-4 md:p-5 space-y-4 bg-gray-950">
+          <.text_editor
+            name="desc"
+            placeholder="What's event about?"
+            class="prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none prose max-w-none min-h-20 max-h-64 overflow-y-auto "
+          />
+        </div>
+        <div class="rounded-b-2xl">
+          <div class="p-4">
+            <.button class="dark:bg-white bg-black dark:text-black text-white rounded-lg font-medium px-3 py-2">
+              Done
+            </.button>
+          </div>
+        </div>
+      </div>
+    </.modal>
+    """
+  end
+
   ### Reusable components
 
   def modal2(assigns) do
