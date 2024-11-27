@@ -206,7 +206,7 @@ defmodule JuntoWeb.BaseComponents do
       <.button phx-click="go" class="ml-2">Send!</.button>
   """
   attr :type, :string, default: nil
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   attr :rest, :global, include: ~w(disabled form name value)
 
   slot :inner_block, required: true
@@ -256,6 +256,7 @@ defmodule JuntoWeb.BaseComponents do
   attr :name, :any
   attr :label, :string, default: nil
   attr :value, :any
+  attr :class, :any, default: ""
 
   attr :type, :string,
     default: "text",
@@ -271,16 +272,20 @@ defmodule JuntoWeb.BaseComponents do
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
 
+  attr :"error-label-class", :string, default: nil, doc: "apply class to error section"
+
   attr :rest, :global,
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
-                multiple pattern placeholder readonly required rows size step)
+                multiple pattern placeholder readonly required rows size step row onInput)
 
   slot :inner_block
 
   def base_input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+
     assigns
     |> assign(field: nil, id: assigns.id || field.id)
-    |> assign(:errors, Enum.map(field.errors, &translate_error(&1)))
+    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
     |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
     |> assign_new(:value, fn -> field.value end)
     |> base_input()
@@ -339,14 +344,19 @@ defmodule JuntoWeb.BaseComponents do
         id={@id}
         name={@name}
         class={[
-          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6",
-          "min-h-[6rem] phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400",
-          @errors == [] && "border-zinc-300 focus:border-zinc-400",
+          @class,
+          @errors == [] && "",
           @errors != [] && "border-rose-400 focus:border-rose-400"
         ]}
         {@rest}
       ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
-      <.base_error :for={msg <- @errors}><%= msg %></.base_error>
+      <.base_error
+        :for={msg <- @errors}
+        error-label-class={assigns[:"error-label-class"]}
+        data-role={"error_#{@id}"}
+      >
+        <%= msg %>
+      </.base_error>
     </div>
     """
   end
@@ -362,14 +372,21 @@ defmodule JuntoWeb.BaseComponents do
         id={@id}
         value={Phoenix.HTML.Form.normalize_value(@type, @value)}
         class={[
-          "input input-bordered flex items-center gap-2",
+          "",
           "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400",
           @errors == [] && "border-zinc-300 focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
+          @errors != [] && "border-rose-400 focus:border-rose-400",
+          @class
         ]}
         {@rest}
       />
-      <.base_error :for={msg <- @errors}><%= msg %></.base_error>
+      <.base_error
+        :for={msg <- @errors}
+        error-label-class={assigns[:"error-label-class"]}
+        data-role={"error_#{@id}"}
+      >
+        <%= msg %>
+      </.base_error>
     </div>
     """
   end
@@ -392,11 +409,16 @@ defmodule JuntoWeb.BaseComponents do
   Generates a generic error message.
   """
   slot :inner_block, required: true
+  attr :"data-role", :string, default: nil
+  attr :"error-label-class", :string, default: nil
 
   def base_error(assigns) do
     ~H"""
-    <p class="mt-3 flex gap-3 text-sm leading-6 text-rose-600 phx-no-feedback:hidden">
-      <.base_icon name="hero-exclamation-circle-mini" class="mt-0.5 h-5 w-5 flex-none" />
+    <p
+      class={["phx-no-feedback:hidden", assigns[:"error-label-class"]]}
+      data-role={assigns[:"data-role"]}
+    >
+      <.base_icon name="hero-exclamation-circle-mini" class="" />
       <%= render_slot(@inner_block) %>
     </p>
     """

@@ -73,7 +73,7 @@ defmodule JuntoWeb.CoreComponents do
   def input_center(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     assigns
     |> assign(field: nil, id: assigns.id || field.id)
-    |> assign(:errors, Enum.map(field.errors, &translate_error(&1)))
+    |> assign(:errors, Enum.map(field.errors, &BaseComponents.translate_error(&1)))
     |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
     |> assign_new(:value, fn -> field.value end)
     |> input_center()
@@ -250,35 +250,7 @@ defmodule JuntoWeb.CoreComponents do
     |> JS.pop_focus()
   end
 
-  @doc """
-  Translates an error message using gettext.
-  """
-  def translate_error({msg, opts}) do
-    # When using gettext, we typically pass the strings we want
-    # to translate as a static argument:
-    #
-    #     # Translate the number of files with plural rules
-    #     dngettext("errors", "1 file", "%{count} files", count)
-    #
-    # However the error messages in our forms and APIs are generated
-    # dynamically, so we need to translate them by calling Gettext
-    # with our gettext backend as first argument. Translations are
-    # available in the errors.po file (as we use the "errors" domain).
-    if count = opts[:count] do
-      Gettext.dngettext(JuntoWeb.Gettext, "errors", msg, msg, count, opts)
-    else
-      Gettext.dgettext(JuntoWeb.Gettext, "errors", msg, opts)
-    end
-  end
-
-  @doc """
-  Translates the errors for a field from a keyword list of errors.
-  """
-  def translate_errors(errors, field) when is_list(errors) do
-    for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
-  end
-
-  attr :name, :string, required: true
+  attr :field, :any, required: true
   attr :class, :string, default: nil
   attr :value, :string, default: ""
   attr :placeholder, :string, default: ""
@@ -286,14 +258,15 @@ defmodule JuntoWeb.CoreComponents do
   def text_editor(assigns) do
     ~H"""
     <div
+      phx-update="ignore"
       phx-hook="TextEditor"
-      id={"editor-#{@name}"}
-      data-value={@value}
+      id={"editor-#{@field.id}"}
+      data-value={@field.value}
       data-class={@class}
       data-placeholder={@placeholder}
     >
-      <div data-editor={@name}></div>
-      <input type="hidden" name={@name} value={@value} data-editor-hidden={@name} />
+      <div data-editor={@field.id}></div>
+      <input type="hidden" name={@field.name} value={@field.value} data-editor-hidden={@field.name} />
     </div>
     """
   end
