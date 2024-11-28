@@ -177,7 +177,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
     <div class="flex flex-row text-sm">
       <div class="flex items-center opacity-60">Timezone</div>
       <div class="pl-3 grow flex justify-end"></div>
-      <CoreComponentsBackup.dropdown id="timezoneDropdown">
+      <.dropdown id="timezoneDropdown">
         <:button
           id="timezoneDropdownBtnBtn"
           dropdown-toggle="timezoneDropdown"
@@ -212,7 +212,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
             </ul>
           </div>
         </div>
-      </CoreComponentsBackup.dropdown>
+      </.dropdown>
     </div>
     """
   end
@@ -365,9 +365,9 @@ defmodule JuntoWeb.EventLive.NewEvent do
         </div>
         <div class="rounded-b-2xl">
           <div class="p-4">
-            <.button class="dark:bg-white bg-black dark:text-black text-white rounded-lg font-medium px-3 py-2">
+            <.base_button class="dark:bg-white bg-black dark:text-black text-white rounded-lg font-medium px-3 py-2">
               Done
-            </.button>
+            </.base_button>
           </div>
         </div>
       </div>
@@ -390,7 +390,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
 
   def header_dropdown(assigns) do
     ~H"""
-    <CoreComponentsBackup.dropdown id={@id}>
+    <.dropdown id={@id}>
       <:button id={@id <> "Btn"} dropdown-toggle={@id} class={@class <> "min-w-0"}>
         <div class="flex w-fit-d gap-2 px-4 py-1 items-center text-sm font-medium animated create-event-dropdown-style">
           <%= render_slot(@title) %>
@@ -407,7 +407,7 @@ defmodule JuntoWeb.EventLive.NewEvent do
       >
         <%= render_slot(@inner_block) %>
       </div>
-    </CoreComponentsBackup.dropdown>
+    </.dropdown>
     """
   end
 

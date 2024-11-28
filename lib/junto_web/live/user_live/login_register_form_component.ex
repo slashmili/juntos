@@ -8,10 +8,10 @@ defmodule JuntoWeb.UserLive.LoginRegisterFormComponent do
   def render(assigns) do
     ~H"""
     <div class="card-body">
-      <h2 class="card-title"><%= gettext "Welcome to Junto" %></h2>
+      <h2 class="card-title"><%= gettext("Welcome to Junto") %></h2>
 
       <%= render_slot(@subtitle) %>
-      <.simple_form
+      <.base_simple_form
         for={@form}
         id={@id}
         phx-target={@myself}
@@ -22,18 +22,18 @@ defmodule JuntoWeb.UserLive.LoginRegisterFormComponent do
         <.input_center
           field={@form[:email]}
           type="email"
-          label={gettext "Email"}
+          label={gettext("Email")}
           placeholder="you@email.com"
           icon="hero-envelope-solid"
           required
           autocomplete="email webauthn"
         />
         <:actions>
-          <.button phx-disable-with={@submit_loading} class="w-full max-w-sm">
-            <%= gettext "Continue with email" %>
-          </.button>
+          <.base_button phx-disable-with={@submit_loading} class="w-full max-w-sm">
+            <%= gettext("Continue with email") %>
+          </.base_button>
         </:actions>
-      </.simple_form>
+      </.base_simple_form>
     </div>
     """
   end
