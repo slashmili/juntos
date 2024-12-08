@@ -13,6 +13,7 @@ defmodule JuntoWeb.EventLive.CreateEventForm do
     field :end_time, :time
     field :end_date, :date
     field :end_datetime, :utc_datetime
+    field :timezone, :string
 
     embeds_one :location, Location, primary_key: false, on_replace: :delete do
       field :id, :string
@@ -30,6 +31,12 @@ defmodule JuntoWeb.EventLive.CreateEventForm do
     changeset(schema, attrs)
   end
 
+  def apply(attrs \\ %{}) do
+    attrs
+    |> new()
+    |> Ecto.Changeset.apply_action(:create)
+  end
+
   def changeset(schema, attrs) do
     schema
     |> Ecto.Changeset.cast(attrs, [
@@ -39,9 +46,10 @@ defmodule JuntoWeb.EventLive.CreateEventForm do
       :start_time,
       :end_date,
       :end_time,
+      :timezone,
       :description
     ])
-    |> Ecto.Changeset.validate_required([:name, :start_date, :end_date])
+    |> Ecto.Changeset.validate_required([:name, :start_date, :end_date, :timezone])
     |> maybe_cast_datetime(:start_date, :start_time, :start_datetime)
     |> maybe_cast_datetime(:end_date, :end_time, :end_datetime)
     |> maybe_validate_end_datetime()
@@ -117,6 +125,7 @@ defmodule JuntoWeb.EventLive.CreateEventForm do
 
     %{
       "scope" => "private",
+      "timezone" => "Europe/Berlin",
       "start_date" => Calendar.strftime(start_datetime, "%Y-%m-%d"),
       "start_time" => Calendar.strftime(start_datetime, "%H:%M"),
       "end_date" => Calendar.strftime(end_datetime, "%Y-%m-%d"),

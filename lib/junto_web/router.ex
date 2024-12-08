@@ -67,6 +67,7 @@ defmodule JuntoWeb.Router do
     live_session :require_authenticated_user,
       on_mount: [{JuntoWeb.UserAuth, :ensure_authenticated}] do
       live "/create", EventLive.Create
+      live "/home", EventLive.Home
     end
   end
 

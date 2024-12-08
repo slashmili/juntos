@@ -3,6 +3,7 @@ defmodule JuntoWeb.EventLive.Create do
   import JuntoWeb.EventLive.Components
 
   alias JuntoWeb.EventLive.CreateEventForm
+  alias Junto.Events
 
   @impl true
   def mount(_params, _session, socket) do
@@ -112,15 +113,16 @@ defmodule JuntoWeb.EventLive.Create do
   end
 
   @impl true
-  def handle_event("create-event", %{"create_event_form" => event_params}, socket) do
+  def handle_event("submit", %{"create_event_form" => event_params}, socket) do
     event_params = Map.put(event_params, "location", socket.assigns.place)
 
-    changeset =
-      event_params
-      |> CreateEventForm.new()
-      |> Map.put(:action, :validate)
-
-    {:noreply, assign_form(socket, changeset)}
+    with {:ok, params} <- CreateEventForm.apply(event_params),
+         {:ok, _event} <- Events.create(socket.assigns.current_user, Map.from_struct(params)) do
+      {:noreply, push_navigate(socket, to: ~p"/home")}
+    else
+      {:error, changeset} ->
+        {:noreply, assign_form(socket, changeset)}
+    end
   end
 
   @impl true

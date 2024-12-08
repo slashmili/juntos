@@ -32,8 +32,6 @@ defmodule Junto.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:shortuuid, "~> 3.0"},
-      {:ecto_shortuuid, "~> 0.2.0"},
       {:phoenix, "~> 1.7.11"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.10"},
@@ -60,6 +58,7 @@ defmodule Junto.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
+      {:typeid_elixir, "~> 1.0"},
       {:bandit, "~> 1.2"},
       {:tzdata, "~> 1.1"}
     ]
