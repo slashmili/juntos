@@ -85,6 +85,7 @@ defmodule JuntoWeb do
       # HTML escaping functionality
       import Phoenix.HTML
       # Core UI components and translation
+      import JuntoWeb.BaseComponents
       import JuntoWeb.CoreComponents
       import JuntoWeb.Gettext
 

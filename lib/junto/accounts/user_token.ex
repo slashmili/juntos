@@ -11,10 +11,8 @@ defmodule Junto.Accounts.UserToken do
   @session_validity_in_days 60
   @confirm_otp_in_minute 60
 
-  #@primary_key {:id, :binary_id, autogenerate: true}
-  #@foreign_key_type :binary_id
-  @primary_key {:id, Ecto.ShortUUID, autogenerate: true}
-  @foreign_key_type Ecto.ShortUUID
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
   schema "users_tokens" do
     field :token, :binary
     field :context, :string

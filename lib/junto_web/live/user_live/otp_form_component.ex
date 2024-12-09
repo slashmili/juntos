@@ -12,9 +12,9 @@ defmodule JuntoWeb.UserLive.OtpFormComponent do
         <.icon name="hero-chevron-left" class="" />
       </button>
       <div class="card-body">
-        <h2 class="card-title"><%= gettext "Enter Code" %></h2>
+        <h2 class="card-title"><%= gettext("Enter Code") %></h2>
         Please enter the code digit we sent to <%= @user.email %>.
-        <.simple_form
+        <.base_simple_form
           for={@otp_form}
           id={@id}
           phx-target={@myself}
@@ -25,10 +25,10 @@ defmodule JuntoWeb.UserLive.OtpFormComponent do
           method="post"
           phx-hook="InputOtpGroup"
         >
-          <.input type="hidden" field={@otp_form[:email]} />
+          <.base_input type="hidden" field={@otp_form[:email]} />
           <div class="hidden">
             <!-- had to do it since follow_trigger_action didn't notice the chagned :(-->
-            <.input type="text" field={@otp_form[:otp_token]} />
+            <.base_input type="text" field={@otp_form[:otp_token]} />
           </div>
           <div class="flex flex-row gap-2" phx-update="ignore" id={"#{@id}-otp-input-group"}>
             <.otp_input name="otp[]" />
@@ -38,23 +38,23 @@ defmodule JuntoWeb.UserLive.OtpFormComponent do
             <.otp_input name="otp[]" />
             <.otp_input name="otp[]" />
           </div>
-          <.error :if={@check_errors}>
+          <.base_error :if={@check_errors}>
             <span data-role="invalid-otp-code-error">
-              <%= gettext "Invalid Code" %>
+              <%= gettext("Invalid Code") %>
             </span>
-          </.error>
+          </.base_error>
 
           <:actions>
             <br />
-            <.button
+            <.base_button
               id="btn-otp-submit"
-              phx-disable-with={gettext "Creating account..."}
+              phx-disable-with={gettext("Creating account...")}
               class="w-full max-w-sm"
             >
               Create an account
-            </.button>
+            </.base_button>
           </:actions>
-        </.simple_form>
+        </.base_simple_form>
       </div>
     </div>
     """

@@ -1,9 +1,7 @@
 defmodule Junto.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
-  #@primary_key {:id, :binary_id, autogenerate: true}
-  @primary_key {:id, Ecto.ShortUUID, autogenerate: true}
-  @foreign_key_type Ecto.ShortUUID
+  @primary_key {:id, :binary_id, autogenerate: true}
   schema "users" do
     field :email, :string
     field :confirmed_at, :naive_datetime
