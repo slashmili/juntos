@@ -29,7 +29,7 @@ defmodule JuntoWeb.UserLoginLive do
           submit_loading="Signing in..."
         >
           <:subtitle>
-            <%= gettext "Sign in" %>
+            {gettext "Sign in"}
           </:subtitle>
         </.live_component>
 
@@ -73,7 +73,10 @@ defmodule JuntoWeb.UserLoginLive do
   end
 
   @impl true
-  def handle_info({JuntoWeb.UserLive.LoginRegisterFormComponent, {:user_not_found, params}}, socket) do
+  def handle_info(
+        {JuntoWeb.UserLive.LoginRegisterFormComponent, {:user_not_found, params}},
+        socket
+      ) do
     params_to_set = [
       user: params.user,
       otp: params.otp,
@@ -84,8 +87,6 @@ defmodule JuntoWeb.UserLoginLive do
 
     {:noreply, assign(socket, params_to_set)}
   end
-
-
 
   @impl true
   def handle_info(event, socket) do

@@ -28,7 +28,7 @@ defmodule JuntoWeb.EventLive.Components do
   def event_title_input(assigns) do
     ~H"""
     <div class="min-h-12">
-      <div class="sr-only"><%= gettext "Event name" %></div>
+      <div class="sr-only">{gettext "Event name"}</div>
       <.base_input
         type="textarea"
         field={@field}
@@ -68,9 +68,9 @@ defmodule JuntoWeb.EventLive.Components do
     >
       <div class="-z-[1]"><.base_icon name="hero-clock" class="w-4 h-4" /></div>
       <div class="min-w-0 text-left">
-        <div class="font-medium truncate"><%= date_to_text(@start_datetime) %></div>
+        <div class="font-medium truncate">{date_to_text(@start_datetime)}</div>
         <div class="text-sm truncate">
-          <%= time_to_text(@start_datetime, @end_datetime, @timezone) %>
+          {time_to_text(@start_datetime, @end_datetime, @timezone)}
         </div>
       </div>
     </button>
@@ -94,7 +94,7 @@ defmodule JuntoWeb.EventLive.Components do
         <div class="relative rounded-lg shadow-lg shadow-black bg-white/90 dark:bg-neutral-900/70 backdrop-blur-lg dark:text-white">
           <div class="p-4 flex flex-col gap-2">
             <div class="">
-              <div class="font-semibold text-lg"><%= gettext "Event Time" %></div>
+              <div class="font-semibold text-lg">{gettext "Event Time"}</div>
             </div>
             <.datepick_date
               date={@start_date}
@@ -119,7 +119,7 @@ defmodule JuntoWeb.EventLive.Components do
   defp datepick_date(assigns) do
     ~H"""
     <div class="flex flex-row">
-      <div class="flex items-center text-sm opacity-60"><%= @label %></div>
+      <div class="flex items-center text-sm opacity-60">{@label}</div>
       <div class="pl-3 grow flex justify-end">
         <.input_datetime date={@date} time={@time} datetime={@datetime} />
       </div>
@@ -161,7 +161,7 @@ defmodule JuntoWeb.EventLive.Components do
       ]}
     >
       <.base_error :for={msg <- Enum.map(@date.errors, &translate_error(&1))} :if={@date.errors}>
-        <%= msg %>
+        {msg}
       </.base_error>
     </div>
     """
@@ -170,7 +170,7 @@ defmodule JuntoWeb.EventLive.Components do
   defp datepick_timezone(assigns) do
     ~H"""
     <div class="flex flex-row text-sm">
-      <div class="flex items-center opacity-60"><%= gettext "Timezone" %></div>
+      <div class="flex items-center opacity-60">{gettext "Timezone"}</div>
       <div class="pl-3 grow flex justify-end"></div>
       <.dropdown id="timezoneDropdown">
         <:button
@@ -179,8 +179,8 @@ defmodule JuntoWeb.EventLive.Components do
           class="bg-transparent border-black/10 hover:border-black/40 dark:border-white/10 dark:hover:border-white/80 border rounded  px-1 py-2 focus:ring-0 focus:outline-none focus:border-black/40 dark:focus:border-white/80"
         >
           <div class="min-w-0 flex gap-2 m">
-            <div class="dark:text-white/50"><%= @timezone.offset_str %></div>
-            <div class="inline truncate"><%= @timezone.zone_short_name %></div>
+            <div class="dark:text-white/50">{@timezone.offset_str}</div>
+            <div class="inline truncate">{@timezone.zone_short_name}</div>
             <div><.icon name="hero-chevron-down " class="h-4 w-4" /></div>
           </div>
         </:button>
@@ -202,9 +202,9 @@ defmodule JuntoWeb.EventLive.Components do
                   class="flex text-left w-full hover:bg-black/10 dark:hover:bg-white/10 rounded-md py-1 px-2"
                   phx-click={JS.push("select-timezone", value: %{zone_name: timezone.zone_name})}
                 >
-                  <div class="truncate grow"><%= timezone.zone_name %></div>
+                  <div class="truncate grow">{timezone.zone_name}</div>
                   <div class="text-black/50 dark:text-white/50 base-1 flex justify-end">
-                    <%= timezone.offset_str %>
+                    {timezone.offset_str}
                   </div>
                 </button>
               </li>
@@ -264,18 +264,18 @@ defmodule JuntoWeb.EventLive.Components do
     >
       <div class="-z-[1]"><.icon name="hero-map-pin" class="w-5 h-5" /></div>
       <div :if={is_nil(@place)}>
-        <div class="text-left"><%= gettext "Add Event Location" %></div>
-        <div class="text-sm text-left"><%= gettext "Offline location or virutal link" %></div>
+        <div class="text-left">{gettext "Add Event Location"}</div>
+        <div class="text-sm text-left">{gettext "Offline location or virutal link"}</div>
       </div>
       <div :if={@place} class="grow">
-        <div class="text-left font-medium"><%= @place["name"] %></div>
-        <div class="text-left text-sm"><%= @place["address"] %></div>
+        <div class="text-left font-medium">{@place["name"]}</div>
+        <div class="text-left text-sm">{@place["address"]}</div>
       </div>
       <div :if={@place} class="pt-1 pr-1" phx-click="deselect-place" role="button">
         <div class="flex items-center justify-center rounded-full p-1 hover-block-custom">
           <.icon name="hero-x-mark" class="w-5 h-5 " />
         </div>
-        <div class="sr-only"><%= gettext "close" %></div>
+        <div class="sr-only">{gettext "close"}</div>
       </div>
     </button>
     <.location_modal gmap_suggested_places={@gmap_suggested_places} />
@@ -299,8 +299,8 @@ defmodule JuntoWeb.EventLive.Components do
     <div class="flex p-2 dark:text-slate-400 text-slate-500 hover:bg-gray-700/10 rounded-md cursor-pointer">
       <div class="my-auto w-6"><.icon name="hero-map-pin" class="w-5 h5" /></div>
       <div class="pl-2">
-        <div class="dark:text-slate-100 text-slate-900"><%= @name %></div>
-        <div class="text-sm max-w-md"><%= @location %></div>
+        <div class="dark:text-slate-100 text-slate-900">{@name}</div>
+        <div class="text-sm max-w-md">{@location}</div>
       </div>
     </div>
     """
@@ -365,9 +365,9 @@ defmodule JuntoWeb.EventLive.Components do
     <.header_dropdown id="scopeDropdown">
       <:title>
         <div class="whitespace-nowrap">
-          <.icon name={@event_scopes[@selected_scope].icon} class="w-4 h-4" /> <%= @event_scopes[
+          <.icon name={@event_scopes[@selected_scope].icon} class="w-4 h-4" /> {@event_scopes[
             @selected_scope
-          ].title %>
+          ].title}
         </div>
       </:title>
       <div class="!ml-[-15px] select-none z-50 pt-2 pb-2 px-1 w-72 create-event-dropdown-menu-style select-none">
@@ -391,8 +391,8 @@ defmodule JuntoWeb.EventLive.Components do
         <div class="flex p-2">
           <div class="my-auto w-6"><.icon name={scope.icon} class="w-4 h4" /></div>
           <div class="text-sm pl-2 text-left">
-            <div class="dark:text-slate-100 text-slate-900"><%= scope.title %></div>
-            <div><%= scope.desc %></div>
+            <div class="dark:text-slate-100 text-slate-900">{scope.title}</div>
+            <div>{scope.desc}</div>
           </div>
           <div class="my-auto w-6">
             <.icon :if={@selected_scope == scope.type} name="hero-check" class="w-4 h4" />
@@ -413,7 +413,7 @@ defmodule JuntoWeb.EventLive.Components do
     <.dropdown id={@id}>
       <:button id={@id <> "Btn"} dropdown-toggle={@id} class={@class <> "min-w-0"}>
         <div class="flex w-fit-d gap-2 px-4 py-1 items-center text-sm font-medium animated create-event-dropdown-style">
-          <%= render_slot(@title) %>
+          {render_slot(@title)}
 
           <div class="-mt-[4px]">
             <.icon name="hero-chevron-down text-sm font-medium" class="h-4 w-4" />
@@ -425,7 +425,7 @@ defmodule JuntoWeb.EventLive.Components do
         phx-hook="ListNavigator"
         data-list-navigator-button-id={@id <> "Btn"}
       >
-        <%= render_slot(@inner_block) %>
+        {render_slot(@inner_block)}
       </div>
     </.dropdown>
     """
@@ -448,7 +448,7 @@ defmodule JuntoWeb.EventLive.Components do
           phx-keydown={item[:"custom-phx-select"]}
           phx-key="Enter"
         >
-          <%= render_slot(item) %>
+          {render_slot(item)}
         </button>
       </li>
     </menu>

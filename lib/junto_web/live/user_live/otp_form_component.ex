@@ -12,8 +12,8 @@ defmodule JuntoWeb.UserLive.OtpFormComponent do
         <.icon name="hero-chevron-left" class="" />
       </button>
       <div class="card-body">
-        <h2 class="card-title"><%= gettext("Enter Code") %></h2>
-        Please enter the code digit we sent to <%= @user.email %>.
+        <h2 class="card-title">{gettext("Enter Code")}</h2>
+        Please enter the code digit we sent to {@user.email}.
         <.base_simple_form
           for={@otp_form}
           id={@id}
@@ -40,7 +40,7 @@ defmodule JuntoWeb.UserLive.OtpFormComponent do
           </div>
           <.base_error :if={@check_errors}>
             <span data-role="invalid-otp-code-error">
-              <%= gettext("Invalid Code") %>
+              {gettext("Invalid Code")}
             </span>
           </.base_error>
 
