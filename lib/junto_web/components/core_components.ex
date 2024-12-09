@@ -39,7 +39,7 @@ defmodule JuntoWeb.CoreComponents do
   def modal(assigns) do
     ~H"""
     <BaseComponents.base_modal id={@id} show={@show} on_cancel={@on_cancel}>
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </BaseComponents.base_modal>
     """
   end
@@ -84,7 +84,7 @@ defmodule JuntoWeb.CoreComponents do
     <div phx-feedback-for={@name}>
       <label class="form-control w-full max-w-sm">
         <div class="label">
-          <BaseComponents.base_label for={@id}><%= @label %></BaseComponents.base_label>
+          <BaseComponents.base_label for={@id}>{@label}</BaseComponents.base_label>
         </div>
 
         <label class={[
@@ -105,7 +105,7 @@ defmodule JuntoWeb.CoreComponents do
           />
         </label>
         <div class="label">
-          <.error2 :for={msg <- @errors}><%= msg %></.error2>
+          <.error2 :for={msg <- @errors}>{msg}</.error2>
         </div>
       </label>
     </div>
@@ -122,7 +122,7 @@ defmodule JuntoWeb.CoreComponents do
     <div></div>
     <p class="mt-3 flex gap-3 text-sm leading-6 text-rose-600 phx-no-feedback:hidden">
       <.icon name="hero-exclamation-circle-mini" class="mt-0.5 h-5 w-5 flex-none" />
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </p>
     """
   end
@@ -153,10 +153,10 @@ defmodule JuntoWeb.CoreComponents do
       data-flowbit-dropdown-custom-delay={@button[:"toggle-delay"]}
       phx-hook="FlowbitDropdown"
     >
-      <%= render_slot(@button) %>
+      {render_slot(@button)}
     </button>
     <div class={["hidden ", @class]} id={@id}>
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </div>
     """
   end

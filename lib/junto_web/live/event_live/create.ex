@@ -49,7 +49,7 @@ defmodule JuntoWeb.EventLive.Create do
     <JuntoWeb.EventLive.Components.dropdown_list_button>
       <:item :for={group <- @all_groups}>
         <div class="flex p-2 create-event-dropdown-menu-group-selector ">
-          <%= group %>
+          {group}
         </div>
       </:item>
       <:item>

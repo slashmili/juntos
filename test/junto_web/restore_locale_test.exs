@@ -40,8 +40,6 @@ defmodule JuntoWeb.RestoreLocaleTest do
       assert Gettext.get_locale(JuntoWeb.Gettext) == "de"
     end
 
-
-
     test "falls back to en when locale is invalid", %{socket: socket} do
       assert {:cont, _} = SUT.on_mount(:default, %{"locale" => "fo"}, %{}, socket)
       assert Gettext.get_locale(JuntoWeb.Gettext) == "en"

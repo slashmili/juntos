@@ -90,7 +90,6 @@ defmodule JuntoWeb.UserLoginLiveTest do
       |> form("#login-form", user: %{email: email})
       |> render_submit()
 
-
       assert has_element?(lv, "#otp-form")
     end
   end

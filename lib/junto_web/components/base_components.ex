@@ -64,7 +64,7 @@ defmodule JuntoWeb.BaseComponents do
               class="relative hidden rounded-2xl bg-transparent transition"
             >
               <div id={"#{@id}-content"}>
-                <%= render_slot(@inner_block) %>
+                {render_slot(@inner_block)}
               </div>
             </.focus_wrap>
           </div>
@@ -109,9 +109,9 @@ defmodule JuntoWeb.BaseComponents do
       <p :if={@title} class="flex items-center gap-1.5 text-sm font-semibold leading-6">
         <.base_icon :if={@kind == :info} name="hero-information-circle-mini" class="h-4 w-4" />
         <.base_icon :if={@kind == :error} name="hero-exclamation-circle-mini" class="h-4 w-4" />
-        <%= @title %>
+        {@title}
       </p>
-      <p class="mt-2 text-sm leading-5"><%= msg %></p>
+      <p class="mt-2 text-sm leading-5">{msg}</p>
       <button type="button" class="group absolute top-1 right-1 p-2" aria-label={gettext("close")}>
         <.base_icon name="hero-x-mark-solid" class="h-5 w-5 opacity-40 group-hover:opacity-70" />
       </button>
@@ -142,7 +142,7 @@ defmodule JuntoWeb.BaseComponents do
         phx-connected={base_hide("#client-error")}
         hidden
       >
-        <%= gettext("Attempting to reconnect") %>
+        {gettext("Attempting to reconnect")}
         <.base_icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
       </.base_flash>
 
@@ -154,7 +154,7 @@ defmodule JuntoWeb.BaseComponents do
         phx-connected={base_hide("#server-error")}
         hidden
       >
-        <%= gettext("Hang in there while we get back on track") %>
+        {gettext("Hang in there while we get back on track")}
         <.base_icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
       </.base_flash>
     </div>
@@ -188,9 +188,9 @@ defmodule JuntoWeb.BaseComponents do
     ~H"""
     <.form :let={f} for={@for} as={@as} {@rest}>
       <div class="">
-        <%= render_slot(@inner_block, f) %>
+        {render_slot(@inner_block, f)}
         <div :for={action <- @actions} class="">
-          <%= render_slot(action, f) %>
+          {render_slot(action, f)}
         </div>
       </div>
     </.form>
@@ -222,7 +222,7 @@ defmodule JuntoWeb.BaseComponents do
       ]}
       {@rest}
     >
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </button>
     """
   end
@@ -310,9 +310,9 @@ defmodule JuntoWeb.BaseComponents do
           class="rounded border-zinc-300 text-zinc-900 focus:ring-0"
           {@rest}
         />
-        <%= @label %>
+        {@label}
       </label>
-      <.base_error :for={msg <- @errors}><%= msg %></.base_error>
+      <.base_error :for={msg <- @errors}>{msg}</.base_error>
     </div>
     """
   end
@@ -320,7 +320,7 @@ defmodule JuntoWeb.BaseComponents do
   def base_input(%{type: "select"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.base_label for={@id}><%= @label %></.base_label>
+      <.base_label for={@id}>{@label}</.base_label>
       <select
         id={@id}
         name={@name}
@@ -328,10 +328,10 @@ defmodule JuntoWeb.BaseComponents do
         multiple={@multiple}
         {@rest}
       >
-        <option :if={@prompt} value=""><%= @prompt %></option>
-        <%= Phoenix.HTML.Form.options_for_select(@options, @value) %>
+        <option :if={@prompt} value="">{@prompt}</option>
+        {Phoenix.HTML.Form.options_for_select(@options, @value)}
       </select>
-      <.base_error :for={msg <- @errors}><%= msg %></.base_error>
+      <.base_error :for={msg <- @errors}>{msg}</.base_error>
     </div>
     """
   end
@@ -339,7 +339,7 @@ defmodule JuntoWeb.BaseComponents do
   def base_input(%{type: "textarea"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.base_label for={@id}><%= @label %></.base_label>
+      <.base_label for={@id}>{@label}</.base_label>
       <textarea
         id={@id}
         name={@name}
@@ -355,7 +355,7 @@ defmodule JuntoWeb.BaseComponents do
         error-label-class={assigns[:"error-label-class"]}
         data-role={"error_#{@id}"}
       >
-        <%= msg %>
+        {msg}
       </.base_error>
     </div>
     """
@@ -365,7 +365,7 @@ defmodule JuntoWeb.BaseComponents do
   def base_input(assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.base_label for={@id}><%= @label %></.base_label>
+      <.base_label for={@id}>{@label}</.base_label>
       <input
         type={@type}
         name={@name}
@@ -385,7 +385,7 @@ defmodule JuntoWeb.BaseComponents do
         error-label-class={assigns[:"error-label-class"]}
         data-role={"error_#{@id}"}
       >
-        <%= msg %>
+        {msg}
       </.base_error>
     </div>
     """
@@ -400,7 +400,7 @@ defmodule JuntoWeb.BaseComponents do
   def base_label(assigns) do
     ~H"""
     <label for={@for} class="block">
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </label>
     """
   end
@@ -419,7 +419,7 @@ defmodule JuntoWeb.BaseComponents do
       data-role={assigns[:"data-role"]}
     >
       <.base_icon name="hero-exclamation-circle-mini" class="" />
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </p>
     """
   end
@@ -438,13 +438,13 @@ defmodule JuntoWeb.BaseComponents do
     <header class={[@actions != [] && "flex items-center justify-between gap-6", @class]}>
       <div>
         <h1 class="text-lg font-semibold leading-8 text-zinc-800">
-          <%= render_slot(@inner_block) %>
+          {render_slot(@inner_block)}
         </h1>
         <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-zinc-600">
-          <%= render_slot(@subtitle) %>
+          {render_slot(@subtitle)}
         </p>
       </div>
-      <div class="flex-none"><%= render_slot(@actions) %></div>
+      <div class="flex-none">{render_slot(@actions)}</div>
     </header>
     """
   end
@@ -485,9 +485,9 @@ defmodule JuntoWeb.BaseComponents do
       <table class="w-[40rem] mt-11 sm:w-full">
         <thead class="text-sm text-left leading-6 text-zinc-500">
           <tr>
-            <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal"><%= col[:label] %></th>
+            <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal">{col[:label]}</th>
             <th :if={@action != []} class="relative p-0 pb-4">
-              <span class="sr-only"><%= gettext("Actions") %></span>
+              <span class="sr-only">{gettext("Actions")}</span>
             </th>
           </tr>
         </thead>
@@ -505,7 +505,7 @@ defmodule JuntoWeb.BaseComponents do
               <div class="block py-4 pr-6">
                 <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-zinc-50 sm:rounded-l-xl" />
                 <span class={["relative", i == 0 && "font-semibold text-zinc-900"]}>
-                  <%= render_slot(col, @row_item.(row)) %>
+                  {render_slot(col, @row_item.(row))}
                 </span>
               </div>
             </td>
@@ -516,7 +516,7 @@ defmodule JuntoWeb.BaseComponents do
                   :for={action <- @action}
                   class="relative ml-4 font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
                 >
-                  <%= render_slot(action, @row_item.(row)) %>
+                  {render_slot(action, @row_item.(row))}
                 </span>
               </div>
             </td>
@@ -546,8 +546,8 @@ defmodule JuntoWeb.BaseComponents do
     <div class="mt-14">
       <dl class="-my-4 divide-y divide-zinc-100">
         <div :for={item <- @item} class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
-          <dt class="w-1/4 flex-none text-zinc-500"><%= item.title %></dt>
-          <dd class="text-zinc-700"><%= render_slot(item) %></dd>
+          <dt class="w-1/4 flex-none text-zinc-500">{item.title}</dt>
+          <dd class="text-zinc-700">{render_slot(item)}</dd>
         </div>
       </dl>
     </div>
@@ -572,7 +572,7 @@ defmodule JuntoWeb.BaseComponents do
         class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
       >
         <.base_icon name="hero-arrow-left-solid" class="h-3 w-3" />
-        <%= render_slot(@inner_block) %>
+        {render_slot(@inner_block)}
       </.link>
     </div>
     """

@@ -16,7 +16,7 @@ defmodule JuntoWeb.EventLive.Home do
     ~H"""
     <dl>
       <div :for={event <- @events} data-role="event">
-        <dt><%= event.name %></dt>
+        <dt>{event.name}</dt>
       </div>
     </dl>
     """
