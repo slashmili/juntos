@@ -6,6 +6,7 @@ defmodule Junto.Events do
   alias Junto.Accounts.User
   alias Junto.Events.Event
   alias Junto.Repo
+  import Ecto.Query, warn: false
 
   def create(%User{} = creator, attrs \\ %{}) do
     %Event{}
@@ -15,6 +16,7 @@ defmodule Junto.Events do
   end
 
   def all() do
-    Repo.all(Event)
+    q = from e in Event, order_by: e.start_datetime
+    Repo.all(q)
   end
 end

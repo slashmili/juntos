@@ -5,6 +5,7 @@ import textEditor from "./hooks/text-editor"
 import listNavigator from "./hooks/list-navigator"
 import fdropdown from "./hooks/flowbit-dropdown"
 import dialog from "./hooks/dialog"
+import eventGroupByDate from "./hooks/event-group-by-date"
 
 let Hooks = {
   ...inputOptGroup,
@@ -13,7 +14,8 @@ let Hooks = {
   ...textEditor,
   ...listNavigator,
   ...fdropdown,
-  ...dialog
+  ...dialog,
+  ...eventGroupByDate
 }
 
 export default Hooks
