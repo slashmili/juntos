@@ -52,6 +52,7 @@ defmodule Junto.MixProject do
        depth: 1},
       {:swoosh, "~> 1.5"},
       {:finch, "~> 0.13"},
+      {:req, "~> 0.5.8"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
@@ -59,7 +60,10 @@ defmodule Junto.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:typeid_elixir, "~> 1.0"},
       {:bandit, "~> 1.2"},
-      {:tzdata, "~> 1.1"}
+      {:tzdata, "~> 1.1"},
+      {:assent, "~> 0.2.9"},
+      {:nimble_options, "~> 1.0"},
+      {:mox, "~> 1.0", only: :test}
     ]
   end
 

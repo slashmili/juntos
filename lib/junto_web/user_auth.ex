@@ -5,7 +5,9 @@ defmodule JuntoWeb.UserAuth do
   import Phoenix.Controller
 
   alias Junto.Accounts
+  alias Junto.Accounts.AuthProvider
 
+  @auth_provider_impl Application.compile_env(:junto, __MODULE__)[:auth_provider] || AuthProvider
   # Make the remember me cookie valid for 60 days.
   # If you want bump or reduce this value, also change
   # the token expiry itself in UserToken.
@@ -34,6 +36,15 @@ defmodule JuntoWeb.UserAuth do
     |> put_token_in_session(token)
     |> maybe_write_remember_me_cookie(token, params)
     |> redirect(to: user_return_to || signed_in_path(conn))
+  end
+
+  @spec attempt_to_log_in_external_user(Plug.Conn.t(), map()) ::
+          {:ok, Plug.Conn.t()} | {:error, :no_user_found}
+  def attempt_to_log_in_external_user(conn, user) do
+    case Accounts.get_user_by_email(user[:email]) do
+      nil -> {:error, :no_user_found}
+      user -> {:ok, log_in_user(conn, user)}
+    end
   end
 
   defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do
@@ -209,6 +220,49 @@ defmodule JuntoWeb.UserAuth do
       |> redirect(to: ~p"/users/log_in")
       |> halt()
     end
+  end
+
+  @provider_types Enum.map(AuthProvider.provider_types(), &to_string/1)
+
+  @spec external_auth_request(Plug.Conn.t(), String.t()) ::
+          {:ok, Plug.Conn.t(), String.t()} | {:error, atom}
+  def external_auth_request(conn, provider) when provider in @provider_types do
+    provider = String.to_existing_atom(provider)
+    url = &url(~p"/users/auth/#{&1}/callback")
+
+    case AuthProvider.request(provider, url) do
+      {:ok, %{url: url, session_params: %{state: state}}} ->
+        conn = put_session(conn, :auth_initiated, state)
+        {:ok, conn, url}
+
+      {:error, _} = error ->
+        error
+    end
+  end
+
+  def external_auth_request(_, _) do
+    {:error, :provider_not_supported}
+  end
+
+  @spec external_auth_request(Plug.Conn.t(), String.t()) ::
+          {:ok, Plug.Conn.t(), map()} | {:error, atom}
+  def external_auth_callback(conn, provider, params) when provider in @provider_types do
+    provider = String.to_existing_atom(provider)
+    url = &url(~p"/users/auth/#{&1}/callback")
+
+    case @auth_provider_impl.callback(provider, params, %{}, url) do
+      {:ok, %{user: user}} ->
+        user = AuthProvider.user_to_map(user)
+        conn = put_session(conn, :auth_inflight, Jason.encode!(user))
+        {:ok, conn, user}
+
+      {:error, _} ->
+        {:error, :faild_to_get_user}
+    end
+  end
+
+  def external_auth_callback(_, _, _) do
+    {:error, :provider_not_supported}
   end
 
   defp put_token_in_session(conn, token) do

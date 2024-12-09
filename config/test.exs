@@ -29,5 +29,17 @@ config :swoosh, :api_client, false
 # Print only warnings and errors during test
 config :logger, level: :warning
 
+config :junto, JuntoWeb.UserAuth, auth_provider: Junto.Accounts.AuthProvider.Mock
+
+config :junto, Junto.Accounts.AuthProvider,
+  github: [
+    client_id: "github_client_id",
+    client_secret: "github_client_secret"
+  ],
+  google: [
+    client_id: "google_client_id",
+    client_secret: "google_client_secret"
+  ]
+
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime

@@ -15,6 +15,22 @@ defmodule Junto.AccountsFixtures do
     })
   end
 
+  def external_auth_user_github(attrs \\ %{}) do
+    default = %{
+      "email" => "user@localhost.com",
+      "email_verified" => true,
+      "name" => "User",
+      "picture" => "https://avatars.githubusercontent.com/u/1?v=4",
+      "preferred_username" => "username",
+      "profile" => "https://github.com/username",
+      "sub" => 1
+    }
+
+    %{
+      user: Map.merge(default, attrs)
+    }
+  end
+
   def user_fixture(attrs \\ %{}) do
     {:ok, user} =
       attrs
