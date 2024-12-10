@@ -27,8 +27,12 @@ defmodule Junto.AccountsFixtures do
     }
 
     %{
-      user: Map.merge(default, attrs)
+      user: Junto.Accounts.ExternalUser.new(Map.merge(default, attrs))
     }
+  end
+
+  def external_user_fixture(attrs \\ %{}) do
+    external_auth_user_github(attrs)[:user]
   end
 
   def user_fixture(attrs \\ %{}) do

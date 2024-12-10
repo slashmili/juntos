@@ -271,48 +271,56 @@ defmodule JuntoWeb.UserAuthTest do
     end
   end
 
+  describe "external_user_set_sessions/2" do
+    test "sets session", %{conn: conn} do
+      external_user = external_user_fixture()
+
+      refute get_session(conn, :auth_inflight)
+      assert conn = UserAuth.external_user_set_sessions(conn, external_user)
+
+      assert Jason.decode!(get_session(conn, :auth_inflight), keys: :atoms) ==
+               Map.from_struct(external_user)
+    end
+  end
+
+  describe "external_user_from_sessions/2" do
+    test "fetches session", %{conn: conn} do
+      external_user = external_user_fixture()
+
+      conn = put_session(conn, :auth_inflight, Jason.encode!(external_user))
+      assert user = UserAuth.external_user_from_sessions(conn)
+
+      assert user == external_user
+    end
+  end
+
   describe "external_auth_callback/3" do
-    test "gets back user", %{conn: conn} do
+    test "gets back user" do
       Junto.Accounts.AuthProvider.Mock
       |> expect(:callback, fn :github, _params, _session_params, _redirect_uri_fn ->
         {:ok, external_auth_user_github()}
       end)
 
-      assert {:ok, _, user} = UserAuth.external_auth_callback(conn, "github", %{})
-      assert user[:email] == "user@localhost.com"
-      assert user[:sub] == "1"
-      assert user[:name] == "User"
-      assert user[:picture] == "https://avatars.githubusercontent.com/u/1?v=4"
-      assert user[:email_verified] == true
+      assert {:ok, user} = UserAuth.external_auth_callback("github", %{})
+      assert user.email == "user@localhost.com"
+      assert user.sub == "1"
+      assert user.name == "User"
+      assert user.picture == "https://avatars.githubusercontent.com/u/1?v=4"
+      assert user.email_verified == true
     end
 
-    test "gets session", %{conn: conn} do
-      external_user = external_auth_user_github()
-
-      Junto.Accounts.AuthProvider.Mock
-      |> expect(:callback, fn :github, _params, _session_params, _redirect_uri_fn ->
-        {:ok, external_user}
-      end)
-
-      refute get_session(conn, :auth_inflight)
-      assert {:ok, conn, _} = UserAuth.external_auth_callback(conn, "github", %{})
-
-      assert Jason.decode!(get_session(conn, :auth_inflight), keys: :atoms) ==
-               Junto.Accounts.AuthProvider.user_to_map(external_user[:user])
-    end
-
-    test "returns error when fail to get user info", %{conn: conn} do
+    test "returns error when fail to get user info" do
       Junto.Accounts.AuthProvider.Mock
       |> expect(:callback, fn :github, _params, _session_params, _redirect_uri_fn ->
         {:error, %Assent.MissingParamError{expected_key: "code", params: %{}}}
       end)
 
-      assert {:error, :faild_to_get_user} = UserAuth.external_auth_callback(conn, "github", %{})
+      assert {:error, :faild_to_get_user} = UserAuth.external_auth_callback("github", %{})
     end
 
-    test "returns error when invalid auth provider is provided", %{conn: conn} do
+    test "returns error when invalid auth provider is provided" do
       assert {:error, :provider_not_supported} =
-               UserAuth.external_auth_callback(conn, "invalid-provider", %{})
+               UserAuth.external_auth_callback("invalid-provider", %{})
     end
   end
 
@@ -320,10 +328,7 @@ defmodule JuntoWeb.UserAuthTest do
     test "logs in existing user", %{conn: conn} do
       user = user_fixture()
 
-      external_user =
-        Junto.Accounts.AuthProvider.user_to_map(
-          external_auth_user_github(%{"email" => user.email})[:user]
-        )
+      external_user = external_auth_user_github(%{"email" => user.email})[:user]
 
       assert {:ok, conn} = UserAuth.attempt_to_log_in_external_user(conn, external_user)
 
@@ -332,8 +337,7 @@ defmodule JuntoWeb.UserAuthTest do
     end
 
     test "returns error when user not found", %{conn: conn} do
-      external_user =
-        Junto.Accounts.AuthProvider.user_to_map(external_auth_user_github()[:user])
+      external_user = external_auth_user_github()[:user]
 
       assert {:error, :no_user_found} =
                UserAuth.attempt_to_log_in_external_user(conn, external_user)

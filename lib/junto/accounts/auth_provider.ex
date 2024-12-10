@@ -2,11 +2,25 @@ defmodule Junto.Accounts.ExternalAuthProviderBehaviour do
   @callback callback(atom(), map(), map(), function) :: {:ok, map()} | {:error, term()}
 end
 
+defmodule Junto.Accounts.ExternalUser do
+  @derive Jason.Encoder
+  defstruct [:email, :sub, :name, :email_verified, :picture]
+
+  def new(attrs) do
+    %__MODULE__{
+      email: attrs["email"],
+      sub: to_string(attrs["sub"]),
+      name: attrs["given_name"] || attrs["name"],
+      email_verified: attrs["email_verified"],
+      picture: attrs["picture"]
+    }
+  end
+end
+
 defmodule Junto.Accounts.AuthProvider do
   @moduledoc """
     Implement External Auth Providers
   """
-
   @behaviour Junto.Accounts.ExternalAuthProviderBehaviour
 
   alias Assent.Config
@@ -22,19 +36,18 @@ defmodule Junto.Accounts.AuthProvider do
   def callback(provider, params, session_params, redirect_uri_fn, config \\ []) do
     config = Keyword.merge(config!(provider, redirect_uri_fn), config)
 
-    config
-    |> Assent.Config.put(:session_params, session_params)
-    |> config[:strategy].callback(params)
-  end
+    result =
+      config
+      |> Assent.Config.put(:session_params, session_params)
+      |> config[:strategy].callback(params)
 
-  def user_to_map(user) do
-    %{
-      email: user["email"],
-      sub: to_string(user["sub"]),
-      name: user["given_name"] || user["name"],
-      email_verified: user["email_verified"],
-      picture: user["picture"]
-    }
+    case result do
+      {:ok, %{user: user} = params} ->
+        {:ok, %{params | user: Junto.Accounts.ExternalUser.new(user)}}
+
+      rest ->
+        rest
+    end
   end
 
   defp config!(provider, redirect_uri_fn) do

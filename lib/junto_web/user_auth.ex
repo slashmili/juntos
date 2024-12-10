@@ -38,10 +38,8 @@ defmodule JuntoWeb.UserAuth do
     |> redirect(to: user_return_to || signed_in_path(conn))
   end
 
-  @spec attempt_to_log_in_external_user(Plug.Conn.t(), map()) ::
-          {:ok, Plug.Conn.t()} | {:error, :no_user_found}
-  def attempt_to_log_in_external_user(conn, user) do
-    case Accounts.get_user_by_email(user[:email]) do
+  def attempt_to_log_in_external_user(%Plug.Conn{} = conn, %Accounts.ExternalUser{} = user) do
+    case Accounts.get_user_by_email(user.email) do
       nil -> {:error, :no_user_found}
       user -> {:ok, log_in_user(conn, user)}
     end
@@ -224,9 +222,7 @@ defmodule JuntoWeb.UserAuth do
 
   @provider_types Enum.map(AuthProvider.provider_types(), &to_string/1)
 
-  @spec external_auth_request(Plug.Conn.t(), String.t()) ::
-          {:ok, Plug.Conn.t(), String.t()} | {:error, atom}
-  def external_auth_request(conn, provider) when provider in @provider_types do
+  def external_auth_request(%Plug.Conn{} = conn, provider) when provider in @provider_types do
     provider = String.to_existing_atom(provider)
     url = &url(~p"/users/auth/#{&1}/callback")
 
@@ -244,25 +240,32 @@ defmodule JuntoWeb.UserAuth do
     {:error, :provider_not_supported}
   end
 
-  @spec external_auth_request(Plug.Conn.t(), String.t()) ::
-          {:ok, Plug.Conn.t(), map()} | {:error, atom}
-  def external_auth_callback(conn, provider, params) when provider in @provider_types do
+  def external_auth_callback(provider, params) when provider in @provider_types do
     provider = String.to_existing_atom(provider)
     url = &url(~p"/users/auth/#{&1}/callback")
 
     case @auth_provider_impl.callback(provider, params, %{}, url) do
       {:ok, %{user: user}} ->
-        user = AuthProvider.user_to_map(user)
-        conn = put_session(conn, :auth_inflight, Jason.encode!(user))
-        {:ok, conn, user}
+        {:ok, user}
 
       {:error, _} ->
         {:error, :faild_to_get_user}
     end
   end
 
-  def external_auth_callback(_, _, _) do
+  def external_auth_callback(_, _) do
     {:error, :provider_not_supported}
+  end
+
+  def external_user_set_sessions(%Plug.Conn{} = conn, %Accounts.ExternalUser{} = user) do
+    put_session(conn, :auth_inflight, Jason.encode!(user))
+  end
+
+  def external_user_from_sessions(conn) do
+    if user_json = get_session(conn, :auth_inflight) do
+      {:ok, user} = Jason.decode(user_json)
+      Accounts.ExternalUser.new(user)
+    end
   end
 
   defp put_token_in_session(conn, token) do

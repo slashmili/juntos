@@ -58,6 +58,7 @@ defmodule JuntoWeb.Router do
       live "/users/reset_password/:token", UserResetPasswordLive, :edit
 
       scope "/users/auth" do
+        get "/register", UserAuthController, :new
         get "/:provider", UserAuthController, :auth_new
         get "/:provider/callback", UserAuthController, :callback
       end
