@@ -39,7 +39,10 @@ defmodule JuntoWeb.UserAuth do
   end
 
   def attempt_to_log_in_external_user(%Plug.Conn{} = conn, %Accounts.ExternalAuthUser{} = user) do
-    case Accounts.get_user_by_email(user.email) do
+    lookup_result =
+      Accounts.get_user_by_email(user.email) || Accounts.get_user_by_external_auth_user(user)
+
+    case lookup_result do
       nil -> {:error, :no_user_found}
       user -> {:ok, log_in_user(conn, user)}
     end

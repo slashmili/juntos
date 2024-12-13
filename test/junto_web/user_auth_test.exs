@@ -333,7 +333,17 @@ defmodule JuntoWeb.UserAuthTest do
       assert {:ok, conn} = UserAuth.attempt_to_log_in_external_user(conn, external_user)
 
       assert token = get_session(conn, :user_token)
-      assert Accounts.get_user_by_session_token(token)
+      assert Accounts.get_user_by_session_token(token).id == user.id
+    end
+
+    test "logs in based on sub rather than email", %{conn: conn} do
+      user = user_fixture(%{email: "somerandomemail@localhost.com"})
+      external_auth_user = external_auth_user_fixture(%{"email" => "another_email@localhost.com"})
+      external_user_fixtrue(%{user: user})
+
+      assert {:ok, conn} = UserAuth.attempt_to_log_in_external_user(conn, external_auth_user)
+      assert token = get_session(conn, :user_token)
+      assert Accounts.get_user_by_session_token(token).id == user.id
     end
 
     test "returns error when user not found", %{conn: conn} do

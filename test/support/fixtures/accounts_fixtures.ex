@@ -36,6 +36,13 @@ defmodule Junto.AccountsFixtures do
     external_auth_user_github(attrs)[:user]
   end
 
+  def external_user_fixtrue(attrs \\ %{}) do
+    user = attrs[:user] || attrs["user"] || user_fixture()
+    external_auth_user = external_auth_user_fixture(attrs)
+    {:ok, external_user} = Junto.Accounts.create_external_user(user, external_auth_user)
+    external_user
+  end
+
   def user_fixture(attrs \\ %{}) do
     {:ok, user} =
       attrs
