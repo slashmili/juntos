@@ -1,7 +1,7 @@
-defmodule Junto.Accounts.ExternalUserTest do
+defmodule Junto.Accounts.ExternalAuthUserTest do
   use ExUnit.Case, async: true
 
-  alias Junto.Accounts.ExternalUser, as: SUT
+  alias Junto.Accounts.ExternalAuthUser, as: SUT
 
   describe "new/1" do
     test "maps github response" do

@@ -273,7 +273,7 @@ defmodule JuntoWeb.UserAuthTest do
 
   describe "external_user_set_sessions/2" do
     test "sets session", %{conn: conn} do
-      external_user = external_user_fixture()
+      external_user = external_auth_user_fixture()
 
       refute get_session(conn, :auth_inflight)
       assert conn = UserAuth.external_user_set_sessions(conn, external_user)
@@ -285,7 +285,7 @@ defmodule JuntoWeb.UserAuthTest do
 
   describe "external_user_from_sessions/2" do
     test "fetches session", %{conn: conn} do
-      external_user = external_user_fixture()
+      external_user = external_auth_user_fixture()
 
       conn = put_session(conn, :auth_inflight, Jason.encode!(external_user))
       assert user = UserAuth.external_user_from_sessions(conn)

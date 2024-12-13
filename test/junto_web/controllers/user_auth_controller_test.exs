@@ -73,7 +73,7 @@ defmodule JuntoWeb.UserAuthControllerTest do
 
     test "renders confirmation form", %{conn: conn} do
       conn = Plug.Test.init_test_session(conn, %{})
-      external_auth_user = external_user_fixture()
+      external_auth_user = external_auth_user_fixture()
 
       conn =
         JuntoWeb.UserAuth.external_user_set_sessions(conn, external_auth_user)
@@ -85,7 +85,7 @@ defmodule JuntoWeb.UserAuthControllerTest do
     test "logs in user when user exists", %{conn: conn} do
       user = user_fixture()
 
-      external_auth_user = external_user_fixture(%{"email" => user.email})
+      external_auth_user = external_auth_user_fixture(%{"email" => user.email})
 
       conn =
         conn

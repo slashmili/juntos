@@ -23,15 +23,16 @@ defmodule Junto.AccountsFixtures do
       "picture" => "https://avatars.githubusercontent.com/u/1?v=4",
       "preferred_username" => "username",
       "profile" => "https://github.com/username",
-      "sub" => 1
+      "sub" => 1,
+      "provider" => "github"
     }
 
     %{
-      user: Junto.Accounts.ExternalUser.new(Map.merge(default, attrs))
+      user: Junto.Accounts.ExternalAuthUser.new(Map.merge(default, attrs))
     }
   end
 
-  def external_user_fixture(attrs \\ %{}) do
+  def external_auth_user_fixture(attrs \\ %{}) do
     external_auth_user_github(attrs)[:user]
   end
 

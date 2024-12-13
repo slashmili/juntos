@@ -38,7 +38,7 @@ defmodule JuntoWeb.UserAuth do
     |> redirect(to: user_return_to || signed_in_path(conn))
   end
 
-  def attempt_to_log_in_external_user(%Plug.Conn{} = conn, %Accounts.ExternalUser{} = user) do
+  def attempt_to_log_in_external_user(%Plug.Conn{} = conn, %Accounts.ExternalAuthUser{} = user) do
     case Accounts.get_user_by_email(user.email) do
       nil -> {:error, :no_user_found}
       user -> {:ok, log_in_user(conn, user)}
@@ -257,14 +257,14 @@ defmodule JuntoWeb.UserAuth do
     {:error, :provider_not_supported}
   end
 
-  def external_user_set_sessions(%Plug.Conn{} = conn, %Accounts.ExternalUser{} = user) do
+  def external_user_set_sessions(%Plug.Conn{} = conn, %Accounts.ExternalAuthUser{} = user) do
     put_session(conn, :auth_inflight, Jason.encode!(user))
   end
 
   def external_user_from_sessions(conn) do
     if user_json = get_session(conn, :auth_inflight) do
       {:ok, user} = Jason.decode(user_json)
-      Accounts.ExternalUser.new(user)
+      Accounts.ExternalAuthUser.new(user)
     end
   end
 

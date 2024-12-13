@@ -2,21 +2,6 @@ defmodule Junto.Accounts.ExternalAuthProviderBehaviour do
   @callback callback(atom(), map(), map(), function) :: {:ok, map()} | {:error, term()}
 end
 
-defmodule Junto.Accounts.ExternalUser do
-  @derive Jason.Encoder
-  defstruct [:email, :sub, :name, :email_verified, :picture]
-
-  def new(attrs) do
-    %__MODULE__{
-      email: attrs["email"],
-      sub: to_string(attrs["sub"]),
-      name: attrs["given_name"] || attrs["name"],
-      email_verified: attrs["email_verified"],
-      picture: attrs["picture"]
-    }
-  end
-end
-
 defmodule Junto.Accounts.AuthProvider do
   @moduledoc """
     Implement External Auth Providers
@@ -43,7 +28,8 @@ defmodule Junto.Accounts.AuthProvider do
 
     case result do
       {:ok, %{user: user} = params} ->
-        {:ok, %{params | user: Junto.Accounts.ExternalUser.new(user)}}
+        user = Map.put(user, "provider", provider)
+        {:ok, %{params | user: Junto.Accounts.ExternalAuthUser.new(user)}}
 
       rest ->
         rest
