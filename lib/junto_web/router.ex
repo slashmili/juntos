@@ -59,6 +59,7 @@ defmodule JuntoWeb.Router do
 
       scope "/users/auth" do
         get "/register", UserAuthController, :new
+        post "/register", UserAuthController, :create
         get "/:provider", UserAuthController, :auth_new
         get "/:provider/callback", UserAuthController, :callback
       end

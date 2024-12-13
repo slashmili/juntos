@@ -48,6 +48,17 @@ defmodule JuntoWeb.UserAuthController do
     end
   end
 
+  def create(conn, _parmas) do
+    with external_user when not is_nil(external_user) <-
+           UserAuth.external_user_from_sessions(conn),
+         {:ok, user} <- Junto.Accounts.create_user_by_external_auth_user(external_user) do
+      UserAuth.log_in_user(conn, user)
+    else
+      _ ->
+        redirect_when_error_with_flash(conn, gettext("Something went wrong, try again"))
+    end
+  end
+
   defp redirect_when_invalid_provider(conn) do
     redirect_when_error_with_flash(conn, gettext("Invalid Auth provider"))
   end

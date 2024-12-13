@@ -97,4 +97,25 @@ defmodule JuntoWeb.UserAuthControllerTest do
       assert Accounts.get_user_by_session_token(token)
     end
   end
+
+  describe "POST /users/auth/register" do
+    test "creates user and user_external when user confirm", %{conn: conn} do
+      external_auth_user = external_auth_user_fixture()
+
+      conn =
+        conn
+        |> Plug.Test.init_test_session(%{})
+        |> JuntoWeb.UserAuth.external_user_set_sessions(external_auth_user)
+        |> post(~p"/users/auth/register", external_user: %{confirm: true})
+
+      assert token = get_session(conn, :user_token)
+      assert Accounts.get_user_by_session_token(token)
+    end
+
+    test "redirects back to log in page with errorm", %{conn: conn} do
+      conn = post(conn, ~p"/users/auth/register", external_user: %{confirm: true})
+      assert redirected_to(conn, 302) =~ "/users/log_in"
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) =~ "Something went wrong"
+    end
+  end
 end
