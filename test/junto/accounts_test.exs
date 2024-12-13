@@ -2,6 +2,7 @@ defmodule Junto.AccountsTest do
   use Junto.DataCase
 
   alias Junto.Accounts
+  alias Junto.Accounts, as: SUT
 
   import Junto.AccountsFixtures
   alias Junto.Accounts.{User, UserToken}
@@ -181,6 +182,49 @@ defmodule Junto.AccountsTest do
       assert Accounts.confirm_user_with_otp(user, token) == :error
       refute Repo.get!(User, user.id).confirmed_at
       assert Repo.get_by(UserToken, user_id: user.id)
+    end
+  end
+
+  alias Junto.Accounts.ExternalUser
+
+  describe "create_external_user/2" do
+    test "creates an external user" do
+      user = user_fixture()
+
+      external_auth_user =
+        external_auth_user_fixture(%{
+          "email" => user.email,
+          "provider" => "github",
+          "sub" => "123"
+        })
+
+      assert {:ok, %ExternalUser{} = external_user} =
+               SUT.create_external_user(user, external_auth_user)
+
+      assert external_user.email == user.email
+      assert external_user.sub == "123"
+      assert external_user.provider == "github"
+    end
+  end
+
+  describe "get_user_by_external_auth_user/1" do
+    test "looks up user by external user" do
+      user = user_fixture()
+
+      external_auth_user = external_auth_user_fixture(%{"email" => user.email})
+
+      assert {:ok, _} = SUT.create_external_user(user, external_auth_user)
+
+      assert found_user = SUT.get_user_by_external_auth_user(external_auth_user)
+      assert found_user.id == user.id
+    end
+  end
+
+  describe "create_user_by_external_auth_user/1" do
+    test "creates user by external auth user" do
+      external_auth_user = external_auth_user_fixture()
+      assert {:ok, _user} = SUT.create_user_by_external_auth_user(external_auth_user)
+      assert SUT.get_user_by_external_auth_user(external_auth_user)
     end
   end
 end

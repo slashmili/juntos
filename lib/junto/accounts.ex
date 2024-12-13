@@ -6,7 +6,7 @@ defmodule Junto.Accounts do
   import Ecto.Query, warn: false
   alias Junto.Repo
 
-  alias Junto.Accounts.{User, UserToken, UserNotifier}
+  alias Junto.Accounts.{User, UserToken, UserNotifier, ExternalAuthUser, ExternalUser}
 
   ## Database getters
 
@@ -154,5 +154,34 @@ defmodule Junto.Accounts do
 
   def active_user?(user) do
     user.confirmed_at != nil
+  end
+
+  def create_external_user(%User{} = user, %ExternalAuthUser{} = params) do
+    %ExternalUser{}
+    |> ExternalUser.changeset(Map.from_struct(params))
+    |> Ecto.Changeset.put_change(:user_id, user.id)
+    |> Repo.insert()
+  end
+
+  def get_user_by_external_auth_user(%ExternalAuthUser{} = params) do
+    query =
+      from eu in ExternalUser,
+        where: eu.provider == ^params.provider and eu.sub == ^params.sub,
+        preload: [:user]
+
+    if eu = Repo.one(query) do
+      eu.user
+    else
+      nil
+    end
+  end
+
+  def create_user_by_external_auth_user(%ExternalAuthUser{} = params) do
+    Repo.transaction(fn ->
+      attrs = %{name: params.name, email: params.email}
+      {:ok, user} = register_user(attrs)
+      {:ok, _external_user} = create_external_user(user, params)
+      Repo.update!(User.confirm_changeset(user))
+    end)
   end
 end

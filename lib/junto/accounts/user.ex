@@ -4,6 +4,7 @@ defmodule Junto.Accounts.User do
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "users" do
     field :email, :string
+    field :name, :string
     field :confirmed_at, :naive_datetime
 
     field :otp_token, :string, virtual: true
@@ -28,7 +29,7 @@ defmodule Junto.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :otp_token])
+    |> cast(attrs, [:email, :name, :otp_token])
     |> validate_email(opts)
   end
 
