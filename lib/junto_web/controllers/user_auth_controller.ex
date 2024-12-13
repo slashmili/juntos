@@ -2,6 +2,7 @@ defmodule JuntoWeb.UserAuthController do
   use JuntoWeb, :controller
 
   alias JuntoWeb.UserAuth
+  alias Junto.Accounts
 
   def auth_new(conn, %{"provider" => provider}) do
     with {:ok, conn, url} <- UserAuth.external_auth_request(conn, provider) do
@@ -14,14 +15,15 @@ defmodule JuntoWeb.UserAuthController do
 
   def callback(conn, %{"provider" => provider} = params) do
     case UserAuth.external_auth_callback(provider, params) do
-      {:ok, external_user} ->
-        case UserAuth.attempt_to_log_in_external_user(conn, external_user) do
+      {:ok, external_auth_user} ->
+        case UserAuth.attempt_to_log_in_external_user(conn, external_auth_user) do
           {:ok, conn} ->
+            maybe_create_external_user(conn, external_auth_user)
             conn
 
           {:error, :no_user_found} ->
             conn
-            |> UserAuth.external_user_set_sessions(external_user)
+            |> UserAuth.external_user_set_sessions(external_auth_user)
             |> redirect(to: ~p"/users/auth/register")
         end
 
@@ -51,7 +53,7 @@ defmodule JuntoWeb.UserAuthController do
   def create(conn, _parmas) do
     with external_user when not is_nil(external_user) <-
            UserAuth.external_user_from_sessions(conn),
-         {:ok, user} <- Junto.Accounts.create_user_by_external_auth_user(external_user) do
+         {:ok, user} <- Accounts.create_user_by_external_auth_user(external_user) do
       UserAuth.log_in_user(conn, user)
     else
       _ ->
@@ -67,5 +69,14 @@ defmodule JuntoWeb.UserAuthController do
     conn
     |> put_flash(:error, error)
     |> redirect(to: ~p"/users/log_in")
+  end
+
+  def maybe_create_external_user(conn, external_auth_user) do
+    user =
+      conn
+      |> get_session(:user_token)
+      |> Accounts.get_user_by_session_token()
+
+    Accounts.create_external_user(user, external_auth_user)
   end
 end

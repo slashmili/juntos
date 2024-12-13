@@ -63,6 +63,33 @@ defmodule JuntoWeb.UserAuthControllerTest do
       assert token = get_session(conn, :user_token)
       assert Accounts.get_user_by_session_token(token)
     end
+
+    test "creates external_user when there is a user with same email", %{conn: conn} do
+      user = user_fixture()
+      external_auth_user = external_auth_user_github(%{"email" => user.email})
+
+      Junto.Accounts.AuthProvider.Mock
+      |> expect(:callback, fn :github, _params, _session_params, _redirect_uri_fn ->
+        {:ok, external_auth_user}
+      end)
+
+      assert get(conn, ~p"/users/auth/github/callback")
+      assert Accounts.get_user_by_external_auth_user(external_auth_user[:user])
+    end
+
+    test "skips creating external_user when there is a user with same email", %{conn: conn} do
+      user = user_fixture()
+      external_auth_user = external_auth_user_github(%{"email" => user.email})
+      external_user_fixtrue(%{"user" => user, "email" => user.email})
+
+      Junto.Accounts.AuthProvider.Mock
+      |> expect(:callback, fn :github, _params, _session_params, _redirect_uri_fn ->
+        {:ok, external_auth_user}
+      end)
+
+      assert get(conn, ~p"/users/auth/github/callback")
+      assert Accounts.get_user_by_external_auth_user(external_auth_user[:user])
+    end
   end
 
   describe "GET /users/auth/register" do

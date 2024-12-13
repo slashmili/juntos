@@ -18,5 +18,6 @@ defmodule Junto.Accounts.ExternalUser do
     |> cast(attrs, [:sub, :provider, :email])
     |> validate_required([:sub, :provider, :email])
     |> foreign_key_constraint(:user_id)
+    |> unique_constraint([:sub, :provider])
   end
 end
