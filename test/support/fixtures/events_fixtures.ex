@@ -25,7 +25,7 @@ defmodule Junto.EventsFixtures do
       creator: Junto.AccountsFixtures.user_fixture()
     }
 
-    params = Map.merge(default, attrs)
+    params = Map.merge(default, Map.new(attrs))
 
     {:ok, event} = Events.create(params[:creator], params)
     event

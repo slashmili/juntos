@@ -43,6 +43,6 @@ defmodule JuntoWeb.EventLive.CreateTest do
       |> render_submit()
       |> follow_redirect(conn, ~p"/home")
 
-    assert has_element?(lv, "[data-role=event]", params.name)
+    assert has_element?(lv, "[data-role=event-card]", params.name)
   end
 end
