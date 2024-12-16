@@ -59,4 +59,47 @@ defmodule Junto.EventsTest do
              }
     end
   end
+
+  describe "list_user_events/1" do
+    test "list events that was created by the user" do
+      user = user_fixture()
+      created_event = event_fixture(%{creator: user})
+      _other_events = event_fixture()
+
+      assert [event] = SUT.list_user_events(user)
+      assert event.id == created_event.id
+    end
+
+    test "list upcoming events" do
+      user = user_fixture()
+
+      created_event =
+        event_fixture(%{
+          creator: user,
+          start_datetime: ~U[2024-12-16 08:00:00.0Z],
+          end_datetime: ~U[2024-12-16 18:00:00.0Z]
+        })
+
+      now = ~U[2024-12-16 15:05:28.784212Z]
+
+      assert [event] = SUT.list_user_events(user, [SUT.upcoming_event_filter(now)])
+      assert event.id == created_event.id
+    end
+
+    test "list past events" do
+      user = user_fixture()
+
+      created_event =
+        event_fixture(%{
+          creator: user,
+          start_datetime: ~U[2024-12-16 08:00:00.0Z],
+          end_datetime: ~U[2024-12-16 18:00:00.0Z]
+        })
+
+      now = ~U[2024-12-16 19:05:28.784212Z]
+
+      assert [event] = SUT.list_user_events(user, [SUT.past_event_filter(now)])
+      assert event.id == created_event.id
+    end
+  end
 end
