@@ -15,7 +15,7 @@ defmodule Junto.Chrono do
       Europe/Berlin Europe/Madrid Europe/Rome
       Europe/Amsterdam Europe/Paris Europe/Dublin
       Europe/Stockholm Europe/London Europe/Copenhagen Europe/Helsinki
-      Asia/Kolkata Asia/Singapore Australia/Sydney
+      Asia/Kolkata Asia/Tokyo Asia/Singapore Australia/Sydney
     )
 
     def get_list_of_timezones(datetime \\ nil) do

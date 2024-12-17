@@ -13,7 +13,7 @@ defmodule JuntoWeb.EventLive.CreateEventForm do
     field :end_time, :time
     field :end_date, :date
     field :end_datetime, :utc_datetime
-    field :timezone, :string
+    field :time_zone, :string
 
     embeds_one :location, Location, primary_key: false, on_replace: :delete do
       field :id, :string
@@ -46,10 +46,10 @@ defmodule JuntoWeb.EventLive.CreateEventForm do
       :start_time,
       :end_date,
       :end_time,
-      :timezone,
+      :time_zone,
       :description
     ])
-    |> Ecto.Changeset.validate_required([:name, :start_date, :end_date, :timezone])
+    |> Ecto.Changeset.validate_required([:name, :start_date, :end_date, :time_zone])
     |> maybe_cast_datetime(:start_date, :start_time, :start_datetime)
     |> maybe_cast_datetime(:end_date, :end_time, :end_datetime)
     |> maybe_validate_end_datetime()
@@ -97,23 +97,22 @@ defmodule JuntoWeb.EventLive.CreateEventForm do
   end
 
   defp maybe_cast_datetime(changeset, date_key, time_key, cast_to_key) do
-    datetime = to_datetime(changeset.changes[date_key], changeset.changes[time_key])
+    time_zone = Map.get(changeset.changes, :time_zone, "UTC")
+    datetime = to_datetime(changeset.changes[date_key], changeset.changes[time_key], time_zone)
     Ecto.Changeset.change(changeset, %{cast_to_key => datetime})
   end
 
-  defp to_datetime(nil, _) do
+  defp to_datetime(nil, _, _) do
     nil
   end
 
-  defp to_datetime(date, nil) do
-    to_datetime(date, ~T[00:00:00])
+  defp to_datetime(date, nil, time_zone) do
+    to_datetime(date, ~T[00:00:00], time_zone)
   end
 
-  defp to_datetime(date, time) do
-    datetime_str = Date.to_iso8601(date) <> "T" <> Time.to_iso8601(time) <> "Z"
-
-    case DateTime.from_iso8601(datetime_str) do
-      {:ok, datetime, _} -> datetime
+  defp to_datetime(date, time, time_zone) do
+    case DateTime.new(date, time, time_zone) do
+      {:ok, datetime} -> datetime
       _ -> nil
     end
   end
@@ -125,7 +124,7 @@ defmodule JuntoWeb.EventLive.CreateEventForm do
 
     %{
       "scope" => "private",
-      "timezone" => "Europe/Berlin",
+      "time_zone" => "UTC",
       "start_date" => Calendar.strftime(start_datetime, "%Y-%m-%d"),
       "start_time" => Calendar.strftime(start_datetime, "%H:%M"),
       "end_date" => Calendar.strftime(end_datetime, "%Y-%m-%d"),

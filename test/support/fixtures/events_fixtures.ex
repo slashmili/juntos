@@ -8,14 +8,16 @@ defmodule Junto.EventsFixtures do
   def unique_event_name, do: "Event ##{System.unique_integer()}"
 
   def event_fixture(attrs \\ %{}) do
-    {:ok, timezone} = Junto.Chrono.Timezone.get_timezone("Europe/Berlin")
+    datetime =
+      :second
+      |> DateTime.utc_now()
+      |> DateTime.shift_zone!("Europe/Berlin")
 
     default = %{
       name: unique_event_name(),
       description: "description ....",
-      start_datetime: DateTime.utc_now(),
-      end_datetime: DateTime.utc_now(),
-      timezone: timezone.zone_name,
+      start_datetime: datetime,
+      end_datetime: datetime,
       scope: :private,
       location: %{
         id: "929292",

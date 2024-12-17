@@ -9,10 +9,14 @@ defmodule Junto.Events.Event do
   schema "events" do
     field :name, :string
     field :scope, Ecto.Enum, values: [:private, :public]
-    field :start_datetime, :utc_datetime
-    field :end_datetime, :utc_datetime
-    field :timezone, :string
+    field :start_datetime_utc, :utc_datetime
+    field :end_datetime_utc, :utc_datetime
+    field :time_zone, :string
     field :description, :string
+
+    # virtual fields to be filled with time_zone from *_utc fields
+    field :start_datetime, :utc_datetime, virtual: true
+    field :end_datetime, :utc_datetime, virtual: true
 
     embeds_one :location, Location, primary_key: false, on_replace: :delete do
       field :id, :string
@@ -30,13 +34,34 @@ defmodule Junto.Events.Event do
     |> cast(attrs, [
       :name,
       :description,
-      :scope,
-      :start_datetime,
-      :end_datetime,
-      :timezone
+      :scope
     ])
+    |> cast_datetime(attrs)
     |> cast_embed(:location, with: &location_chageset/2)
-    |> validate_required([:name, :scope, :start_datetime, :end_datetime, :timezone])
+    |> validate_required([:name, :scope])
+  end
+
+  def cast_datetime(changeset, %{start_datetime: %DateTime{}, end_datetime: %DateTime{}} = attrs) do
+    start_datetime = attrs[:start_datetime]
+    end_datetime = attrs[:end_datetime]
+
+    time_zone =
+      if start_datetime.time_zone == "Etc/UTC" do
+        "UTC"
+      else
+        start_datetime.time_zone
+      end
+
+    changeset
+    |> put_change(:start_datetime_utc, DateTime.shift_zone!(start_datetime, "Etc/UTC"))
+    |> put_change(:end_datetime_utc, DateTime.shift_zone!(end_datetime, "Etc/UTC"))
+    |> put_change(:time_zone, time_zone)
+  end
+
+  def cast_datetime(changeset, _) do
+    changeset
+    |> add_error(:end_datetime, "can't be blank", validation: :required)
+    |> add_error(:start_datetime, "can't be blank", validation: :required)
   end
 
   defp location_chageset(schema, params) do

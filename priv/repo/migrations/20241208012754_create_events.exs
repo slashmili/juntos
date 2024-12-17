@@ -6,9 +6,9 @@ defmodule Junto.Repo.Migrations.CreateEvents do
       add :id, :binary_id, primary_key: true
       add :name, :string, null: false
       add :scope, :string, null: false
-      add :start_datetime, :utc_datetime, null: false
-      add :end_datetime, :utc_datetime, null: false
-      add :timezone, :string, null: false
+      add :start_datetime_utc, :utc_datetime, null: false
+      add :end_datetime_utc, :utc_datetime, null: false
+      add :time_zone, :string, null: false
       add :description, :string
       add :location, :map
 

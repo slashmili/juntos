@@ -5,13 +5,34 @@ defmodule JuntoWeb.EventLive.CreateEventFormTest do
 
   describe "changeset/2" do
     test "casts to full start_datetime" do
+      expected_datetime = DateTime.new!(~D[2020-01-01], ~T[01:01:00], "UTC")
+
       changeset = SUT.changeset(%SUT{}, %{start_date: "2020-01-01", start_time: "01:01"})
-      assert changeset.changes.start_datetime == ~U[2020-01-01 01:01:00Z]
+
+      assert changeset.changes.start_datetime == expected_datetime
     end
 
     test "casts to full end_datetime" do
+      expected_datetime = DateTime.new!(~D[2020-01-01], ~T[00:00:00], "UTC")
+
       changeset = SUT.changeset(%SUT{}, %{end_date: "2020-01-01"})
-      assert changeset.changes.end_datetime == ~U[2020-01-01 00:00:00Z]
+
+      assert changeset.changes.end_datetime == expected_datetime
+    end
+
+    test "casts to full end_datetime/start_datetime with time zone" do
+      expected_start_datetime = DateTime.new!(~D[2020-01-01], ~T[00:00:00], "America/Sao_Paulo")
+      expected_end_datetime = DateTime.new!(~D[2020-01-02], ~T[00:00:00], "America/Sao_Paulo")
+
+      changeset =
+        SUT.changeset(%SUT{}, %{
+          start_date: "2020-01-01",
+          end_date: "2020-01-02",
+          time_zone: "America/Sao_Paulo"
+        })
+
+      assert changeset.changes.start_datetime == expected_start_datetime
+      assert changeset.changes.end_datetime == expected_end_datetime
     end
 
     test "handles when no datetmie is provided" do
@@ -29,7 +50,7 @@ defmodule JuntoWeb.EventLive.CreateEventFormTest do
         })
 
       assert Junto.DataCase.errors_on(changeset).end_date == [
-               "must be after 2020-01-01 13:00:00Z"
+               "must be after 2020-01-01 13:00:00+00:00 UTC UTC"
              ]
     end
 
