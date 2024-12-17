@@ -8,7 +8,10 @@ defmodule JuntoWeb.EventLive.Create do
   @impl true
   def mount(_params, _session, socket) do
     changeset = CreateEventForm.new()
-    {:ok, time_zone_struct} = Junto.Chrono.Timezone.get_timezone("UTC")
+
+    time_zone = get_connect_params(socket)["timeZone"] || "UTC"
+
+    {:ok, time_zone_struct} = Junto.Chrono.Timezone.get_timezone(time_zone)
 
     {:ok,
      socket

@@ -27,10 +27,11 @@ import topbar from "../vendor/topbar"
 import hooks from "./hooks"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
+let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 let liveSocket = new LiveSocket("/live", Socket, {
   hooks: hooks,
   longPollFallbackMs: 2500,
-  params: {_csrf_token: csrfToken, navigator_language: navigator.language}
+  params: {_csrf_token: csrfToken, navigator_language: navigator.language, timeZone: timeZone}
 })
 
 // Show progress bar on live navigation and form submits
