@@ -51,13 +51,13 @@ defmodule JuntoWeb.EventLive.HomeTest do
     event_fixture(
       name: "upcoming",
       creator: creator,
-      end_datetime: DateTime.shift(DateTime.utc_now(), %Duration{hour: 1})
+      end_datetime: DateTime.shift(DateTime.utc_now(:second), %Duration{hour: 1})
     )
 
     event_fixture(
       name: "past",
       creator: creator,
-      end_datetime: DateTime.shift(DateTime.utc_now(), %Duration{hour: -1})
+      end_datetime: DateTime.shift(DateTime.utc_now(:second), %Duration{hour: -1})
     )
 
     :ok

@@ -8,7 +8,7 @@ defmodule JuntoWeb.EventLive.Create do
   @impl true
   def mount(_params, _session, socket) do
     changeset = CreateEventForm.new()
-    {:ok, timezone} = Junto.Chrono.Timezone.get_timezone("Europe/Berlin")
+    {:ok, time_zone_struct} = Junto.Chrono.Timezone.get_timezone("UTC")
 
     {:ok,
      socket
@@ -17,7 +17,7 @@ defmodule JuntoWeb.EventLive.Create do
        place: nil,
        selected_scope: :private,
        force_rerender_map: false,
-       timezone: timezone
+       time_zone_value: time_zone_struct
      )
      |> assign_form(changeset)}
   end
@@ -96,8 +96,9 @@ defmodule JuntoWeb.EventLive.Create do
 
   @impl true
   def handle_event("select-timezone", %{"zone_name" => zone_name}, socket) do
-    {:ok, timezone} = Junto.Chrono.Timezone.get_timezone(zone_name)
-    {:noreply, assign(socket, :timezone, timezone)}
+    {:ok, time_zone_struct} = Junto.Chrono.Timezone.get_timezone(zone_name)
+    IO.inspect(time_zone_struct)
+    {:noreply, assign(socket, :time_zone_value, time_zone_struct)}
   end
 
   @impl true

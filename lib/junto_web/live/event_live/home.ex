@@ -26,7 +26,7 @@ defmodule JuntoWeb.EventLive.Home do
               <button
                 id="upcommingEventSlider"
                 type="button"
-                class="py-1 px-2  rounded-md basis-1/2 animated h-full"
+                class="py-1 px-2  rounded-md basis-1/2 animated dark:hover:text-white h-full"
                 phx-click={toggle_upcoming_past_events(0)}
               >
                 {gettext "Upcoming"}
@@ -51,7 +51,12 @@ defmodule JuntoWeb.EventLive.Home do
       </header>
       <div class="px-4" id="eventListWrapper" phx-hook="EventGroupByDate">
         <ul>
-          <div :for={event <- @events} class="pt-4" data-role="event-card">
+          <div
+            :for={event <- @events}
+            class="pt-4"
+            data-role="event-card"
+            data-time-zone={event.time_zone}
+          >
             <div
               class="hidden"
               data-start-date={Junto.Chrono.Formatter.strftime(event.start_datetime, "%Y-%m-%d")}

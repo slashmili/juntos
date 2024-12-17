@@ -45,4 +45,24 @@ defmodule JuntoWeb.EventLive.CreateTest do
 
     assert has_element?(lv, "[data-role=event-card]", params.name)
   end
+
+  test "stores event dates in Asia/Tokyo", %{conn: conn} do
+    {:ok, lv, _html} = live(conn, ~p"/create")
+
+    params = %{
+      name: "Hello Tokyo 👋",
+      start_date: "2024-12-29",
+      start_time: "01:00",
+      end_date: "2024-12-29",
+      end_time: "01:00"
+    }
+
+    {:ok, lv, _html} =
+      lv
+      |> form("#createEventForm", create_event_form: params)
+      |> render_submit(%{create_event_form: %{time_zone: "Asia/Tokyo"}})
+      |> follow_redirect(conn, ~p"/home")
+
+    assert has_element?(lv, "[data-time-zone^=Asia]")
+  end
 end

@@ -70,7 +70,7 @@ defmodule JuntoWeb.EventLive.Components do
       <div class="min-w-0 text-left">
         <div class="font-medium truncate">{date_to_text(@start_datetime)}</div>
         <div class="text-sm truncate">
-          {time_to_text(@start_datetime, @end_datetime, @timezone)}
+          {time_to_text(@start_datetime, @end_datetime, @time_zone_value)}
         </div>
       </div>
     </button>
@@ -82,7 +82,8 @@ defmodule JuntoWeb.EventLive.Components do
       end_datetime={@end_datetime}
       end_date={@end_date}
       end_time={@end_time}
-      timezone={@timezone}
+      time_zone={@time_zone}
+      time_zone_value={@time_zone_value}
     />
     """
   end
@@ -108,7 +109,7 @@ defmodule JuntoWeb.EventLive.Components do
               datetime={@end_datetime}
               label={gettext "End"}
             />
-            <.datepick_timezone timezone={@timezone} />
+            <.datepick_timezone time_zone={@time_zone} time_zone_value={@time_zone_value} />
           </div>
         </div>
       </div>
@@ -169,6 +170,7 @@ defmodule JuntoWeb.EventLive.Components do
 
   defp datepick_timezone(assigns) do
     ~H"""
+    <.base_input type="hidden" field={@time_zone} value={@time_zone_value.zone_name} />
     <div class="flex flex-row text-sm">
       <div class="flex items-center opacity-60">{gettext "Timezone"}</div>
       <div class="pl-3 grow flex justify-end"></div>
@@ -179,8 +181,8 @@ defmodule JuntoWeb.EventLive.Components do
           class="bg-transparent border-black/10 hover:border-black/40 dark:border-white/10 dark:hover:border-white/80 border rounded  px-1 py-2 focus:ring-0 focus:outline-none focus:border-black/40 dark:focus:border-white/80"
         >
           <div class="min-w-0 flex gap-2 m">
-            <div class="dark:text-white/50">{@timezone.offset_str}</div>
-            <div class="inline truncate">{@timezone.zone_short_name}</div>
+            <div class="dark:text-white/50">{@time_zone_value.offset_str}</div>
+            <div class="inline truncate">{@time_zone_value.zone_short_name}</div>
             <div><.icon name="hero-chevron-down " class="h-4 w-4" /></div>
           </div>
         </:button>
