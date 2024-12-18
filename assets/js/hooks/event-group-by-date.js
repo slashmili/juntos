@@ -1,7 +1,6 @@
 export default {
   EventGroupByDate: {
     mounted() {
-     console.log('mounted') 
       const dates = this.el.querySelectorAll('[data-start-date]')
       const [dateHead, ...datesTail] = dates
       let prevDate = dateHead
@@ -15,7 +14,7 @@ export default {
 
     },
     updated() {
-     console.log('updated') 
+      this.mounted()
     }
   }
 }
