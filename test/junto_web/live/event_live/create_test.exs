@@ -65,4 +65,14 @@ defmodule JuntoWeb.EventLive.CreateTest do
 
     assert has_element?(lv, "[data-time-zone^=Asia]")
   end
+
+  test "changes time zone when click on a different time zone", %{conn: conn} do
+    {:ok, lv, _html} = live(conn, ~p"/create")
+
+    refute has_element?(lv, "[data-role=time_zone_value][value^=Europe]")
+
+    render_click(lv, "select-timezone", %{zone_name: "Europe/Berlin"})
+
+    assert has_element?(lv, "[data-role=time_zone_value][value^=Europe]")
+  end
 end

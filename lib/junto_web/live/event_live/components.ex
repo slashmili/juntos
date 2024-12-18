@@ -170,7 +170,12 @@ defmodule JuntoWeb.EventLive.Components do
 
   defp datepick_timezone(assigns) do
     ~H"""
-    <.base_input type="hidden" field={@time_zone} value={@time_zone_value.zone_name} />
+    <.base_input
+      type="hidden"
+      field={@time_zone}
+      value={@time_zone_value.zone_name}
+      data-role="time_zone_value"
+    />
     <div class="flex flex-row text-sm">
       <div class="flex items-center opacity-60">{gettext "Timezone"}</div>
       <div class="pl-3 grow flex justify-end"></div>

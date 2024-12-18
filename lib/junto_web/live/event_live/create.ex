@@ -9,19 +9,15 @@ defmodule JuntoWeb.EventLive.Create do
   def mount(_params, _session, socket) do
     changeset = CreateEventForm.new()
 
-    time_zone = get_connect_params(socket)["timeZone"] || "UTC"
-
-    {:ok, time_zone_struct} = Junto.Chrono.Timezone.get_timezone(time_zone)
-
     {:ok,
      socket
      |> assign(
        gmap_suggested_places: [],
        place: nil,
        selected_scope: :private,
-       force_rerender_map: false,
-       time_zone_value: time_zone_struct
+       force_rerender_map: false
      )
+     |> assign_time_zone()
      |> assign_form(changeset)}
   end
 
@@ -99,9 +95,7 @@ defmodule JuntoWeb.EventLive.Create do
 
   @impl true
   def handle_event("select-timezone", %{"zone_name" => zone_name}, socket) do
-    {:ok, time_zone_struct} = Junto.Chrono.Timezone.get_timezone(zone_name)
-    IO.inspect(time_zone_struct)
-    {:noreply, assign(socket, :time_zone_value, time_zone_struct)}
+    {:noreply, assign_time_zone(socket, zone_name)}
   end
 
   @impl true
@@ -137,5 +131,17 @@ defmodule JuntoWeb.EventLive.Create do
   defp assign_form(socket, changeset) do
     form = to_form(changeset)
     assign(socket, :form, form)
+  end
+
+  defp assign_time_zone(socket, zone_name \\ nil) do
+    time_zone = zone_name || get_connect_params(socket)["timeZone"]
+
+    {:ok, time_zone_struct} =
+      case Junto.Chrono.Timezone.get_timezone(time_zone) do
+        {:ok, _} = result -> result
+        _ -> Junto.Chrono.Timezone.get_timezone("UTC")
+      end
+
+    assign(socket, :time_zone_value, time_zone_struct)
   end
 end
