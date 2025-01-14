@@ -6,10 +6,12 @@ const fs = require("fs")
 const path = require("path")
 
 module.exports = {
+  important: ".juntos-web",
   content: [
     "./js/**/*.js",
     "../lib/juntos_web.ex",
-    "../lib/juntos_web/**/*.*ex"
+    "../lib/juntos_web/**/*.*ex",
+    "../storybook/**/*.*exs"
   ],
   theme: {
     extend: {

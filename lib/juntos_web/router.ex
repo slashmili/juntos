@@ -1,5 +1,6 @@
 defmodule JuntosWeb.Router do
   use JuntosWeb, :router
+  import PhoenixStorybook.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -12,6 +13,15 @@ defmodule JuntosWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+  end
+
+  scope "/" do
+    storybook_assets()
+  end
+
+  scope "/", JuntosWeb do
+    pipe_through(:browser)
+    live_storybook("/storybook", backend_module: JuntosWeb.Storybook)
   end
 
   scope "/", JuntosWeb do

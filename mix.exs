@@ -57,7 +57,8 @@ defmodule Juntos.MixProject do
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.5"}
+      {:bandit, "~> 1.5"},
+      {:phoenix_storybook, "~> 0.8.0"}
     ]
   end
 
@@ -78,6 +79,7 @@ defmodule Juntos.MixProject do
       "assets.deploy": [
         "tailwind juntos --minify",
         "esbuild juntos --minify",
+        "tailwind storybook --minify",
         "phx.digest"
       ]
     ]

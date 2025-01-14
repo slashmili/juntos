@@ -26,7 +26,8 @@ config :juntos, JuntosWeb.Endpoint,
   secret_key_base: "q7WZhDL8FDu6cyk4bNx6Qir4f5YZ3w09u1cBxPkoXrNmihYTHL0HVr6OQVL9jYou",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:juntos, ~w(--sourcemap=inline --watch)]},
-    tailwind: {Tailwind, :install_and_run, [:juntos, ~w(--watch)]}
+    tailwind: {Tailwind, :install_and_run, [:juntos, ~w(--watch)]},
+    storybook_tailwind: {Tailwind, :install_and_run, [:storybook, ~w(--watch)]}
   ]
 
 # ## SSL Support
@@ -58,7 +59,8 @@ config :juntos, JuntosWeb.Endpoint,
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/juntos_web/(controllers|live|components)/.*(ex|heex)$"
+      ~r"lib/juntos_web/(controllers|live|components)/.*(ex|heex)$",
+      ~r"storybook/.*(exs)$"
     ]
   ]
 
