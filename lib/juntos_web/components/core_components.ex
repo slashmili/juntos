@@ -136,6 +136,30 @@ defmodule JuntosWeb.CoreComponents do
   end
 
   @doc """
+  Render Hero section
+  """
+
+  slot :title, doc: "the title block", required: true
+  slot :subtitle, doc: "the optional subtitle block"
+  slot :body, doc: "the optional body block"
+
+  def hero(assigns) do
+    ~H"""
+    <section class="max-w-md text-center pt-8 flex gap-2 flex-col">
+      <div class="text-3xl font-semibold text-slate-900 dark:text-slate-200">
+        {render_slot(@title)}
+      </div>
+      <div :if={@subtitle} class="text-base font-normal text-slate-500 dark:text-slate-400">
+        {render_slot(@subtitle)}
+      </div>
+      <div :if={@body} class="text-base font-normal text-slate-900 dark:text-slate-200">
+        {render_slot(@body)}
+      </div>
+    </section>
+    """
+  end
+
+  @doc """
   Renders flash notices.
 
   ## Examples
