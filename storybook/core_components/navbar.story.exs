@@ -14,16 +14,6 @@ defmodule Storybook.Components.CoreComponents.Navbar do
         slots: [
           "Click me!"
         ]
-      },
-      %Variation{
-        id: :disabled,
-        attributes: %{
-          type: "button",
-          disabled: true
-        },
-        slots: [
-          "Click me!"
-        ]
       }
     ]
   end

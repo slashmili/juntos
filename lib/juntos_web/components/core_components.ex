@@ -117,11 +117,21 @@ defmodule JuntosWeb.CoreComponents do
     colors
   end
 
+  attr :logged_in, :boolean, default: false
+
   def navbar(assigns) do
     ~H"""
-    <div class="text-blue-500 dark:text-red-100">
-      Hello!
-    </div>
+    <navbar class="flex max-w-6xl w-full pt-2 py-4 shadow">
+      <div class="flex">
+        <.button variant="link" icon_right="logo"></.button>
+        <.button variant="link" icon_right="hero-magnifying-glass"></.button>
+      </div>
+      <div :if={@logged_in} class="grow flex justify-end">
+        <.button variant="outline" size="md">Create event</.button>
+        <.button variant="link" icon_right="hero-bell"></.button>
+        <.button variant="link" icon_right="hero-user-solid"></.button>
+      </div>
+    </navbar>
     """
   end
 
@@ -236,6 +246,47 @@ defmodule JuntosWeb.CoreComponents do
   def icon(%{name: "hero-" <> _} = assigns) do
     ~H"""
     <span class={[@name, @class]} />
+    """
+  end
+
+  def icon(%{name: "logo"} = assigns) do
+    ~H"""
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clip-path="url(#clip0_139_1721)">
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M18 2H6C3.79086 2 2 3.79086 2 6V18C2 20.2091 3.79086 22 6 22H18C20.2091 22 22 20.2091 22 18V6C22 3.79086 20.2091 2 18 2ZM6 0C2.68629 0 0 2.68629 0 6V18C0 21.3137 2.68629 24 6 24H18C21.3137 24 24 21.3137 24 18V6C24 2.68629 21.3137 0 18 0H6Z"
+          fill="#475569"
+        />
+        <circle
+          cx="7.27037"
+          cy="17.0709"
+          r="2.3125"
+          transform="rotate(-45 7.27037 17.0709)"
+          fill="#475569"
+        />
+        <circle
+          cx="12.0082"
+          cy="12.0081"
+          r="2.3125"
+          transform="rotate(-45 12.0082 12.0081)"
+          fill="#475569"
+        />
+        <circle
+          cx="17.0709"
+          cy="7.27039"
+          r="2.3125"
+          transform="rotate(-45 17.0709 7.27039)"
+          fill="#475569"
+        />
+      </g>
+      <defs>
+        <clipPath id="clip0_139_1721">
+          <rect width="24" height="24" fill="white" />
+        </clipPath>
+      </defs>
+    </svg>
     """
   end
 
