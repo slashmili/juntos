@@ -48,7 +48,7 @@ defmodule JuntosWeb.CoreComponents do
         @variant_class,
         @size_class,
         @class,
-        "flex gap-1  font-medium  max-w-md"
+        "flex gap-1 justify-center font-medium  max-w-md"
       ]}
       {@rest}
     >
@@ -121,7 +121,7 @@ defmodule JuntosWeb.CoreComponents do
 
   def navbar(assigns) do
     ~H"""
-    <navbar class="flex max-w-6xl w-full pt-2 py-4 shadow">
+    <navbar class="flex max-w-6xl w-full pt-2 py-4">
       <div class="flex">
         <.button variant="link" icon_right="logo"></.button>
         <.button variant="link" icon_right="hero-magnifying-glass"></.button>
@@ -336,6 +336,52 @@ defmodule JuntosWeb.CoreComponents do
         </clipPath>
       </defs>
     </svg>
+    """
+  end
+
+  def icon(%{name: "google"} = assigns) do
+    ~H"""
+    <span class={[@name, @class]}>
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <mask id="mask0_157_484" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0">
+          <path d="M24 0H0V24H24V0Z" fill="white" />
+        </mask>
+        <g mask="url(#mask0_157_484)">
+          <path
+            d="M23.52 12.2727C23.52 11.4218 23.4437 10.6036 23.3018 9.81812H12V14.46H18.4582C18.18 15.96 17.3346 17.2309 16.0637 18.0818V21.0927H19.9418C22.2109 19.0036 23.52 15.9272 23.52 12.2727Z"
+            fill="#4285F4"
+          />
+          <path
+            d="M12 24C15.24 24 17.9563 22.9254 19.9417 21.0928L16.0636 18.0819C14.9891 18.8019 13.6145 19.2273 12 19.2273C8.87448 19.2273 6.22908 17.1163 5.2854 14.28H1.27632V17.3891C3.25092 21.3109 7.30908 24 12 24Z"
+            fill="#34A853"
+          />
+          <path
+            d="M5.2854 14.2799C5.0454 13.5599 4.90908 12.7908 4.90908 11.9999C4.90908 11.209 5.0454 10.4399 5.2854 9.71992V6.61084H1.27632C0.463679 8.23084 0 10.0636 0 11.9999C0 13.9362 0.463679 15.769 1.27632 17.389L5.2854 14.2799Z"
+            fill="#FBBC04"
+          />
+          <path
+            d="M12 4.77276C13.7617 4.77276 15.3436 5.37816 16.5872 6.56724L20.0291 3.1254C17.9509 1.18908 15.2345 0 12 0C7.30908 0 3.25092 2.68908 1.27632 6.61092L5.2854 9.72C6.22908 6.88368 8.87448 4.77276 12 4.77276Z"
+            fill="#E94235"
+          />
+        </g>
+      </svg>
+    </span>
+    """
+  end
+
+  def icon(%{name: "github"} = assigns) do
+    ~H"""
+    <span class={[@name, @class]}>
+      <svg viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M9.5 18.9999C4.5 20.4999 4.5 16.4999 2.5 15.9999M16.5 21.9999V18.1299C16.5375 17.6531 16.4731 17.1737 16.311 16.7237C16.1489 16.2737 15.8929 15.8634 15.56 15.5199C18.7 15.1699 22 13.9799 22 8.51994C21.9997 7.12376 21.4627 5.78114 20.5 4.76994C20.9559 3.54844 20.9236 2.19829 20.41 0.999938C20.41 0.999938 19.23 0.649938 16.5 2.47994C14.208 1.85876 11.792 1.85876 9.5 2.47994C6.77 0.649938 5.59 0.999938 5.59 0.999938C5.07638 2.19829 5.04414 3.54844 5.5 4.76994C4.53013 5.78864 3.99252 7.1434 4 8.54994C4 13.9699 7.3 15.1599 10.44 15.5499C10.111 15.8899 9.85726 16.2953 9.69531 16.7399C9.53335 17.1844 9.46681 17.658 9.5 18.1299V21.9999"
+          stroke="#0F172A"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </span>
     """
   end
 
