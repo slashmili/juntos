@@ -19,74 +19,214 @@ defmodule JuntosWeb.CoreComponents do
 
   alias Phoenix.LiveView.JS
 
-  @doc """
-  Renders a modal.
+  attr :variant, :string,
+    values: ~w(primary secondary link outline),
+    default: "primary",
+    doc: "the button variant style"
 
-  ## Examples
+  attr :size, :string, default: "lg", values: ~w(lg md)
+  attr :type, :string, default: "submit", values: ~w(submit button reset)
+  attr :class, :any, default: nil
+  attr :icon_right, :string, default: nil
+  attr :icon_left, :string, default: nil
+  attr :rest, :global, include: ~w(disabled form name value)
 
-      <.modal id="confirm-modal">
-        This is a modal.
-      </.modal>
-
-  JS commands may be passed to the `:on_cancel` to configure
-  the closing/cancel event, for example:
-
-      <.modal id="confirm" on_cancel={JS.navigate(~p"/posts")}>
-        This is another modal.
-      </.modal>
-
-  """
-  attr :id, :string, required: true
-  attr :show, :boolean, default: false
-  attr :on_cancel, JS, default: %JS{}
   slot :inner_block, required: true
 
-  def modal(assigns) do
+  @doc """
+  Renders a button.
+  """
+  def button(assigns) do
+    assigns = Map.put(assigns, :variant_class, button_variant_class(assigns))
+    assigns = Map.put(assigns, :size_class, button_size_class(assigns))
+    assigns = Map.put(assigns, :icon_class, button_icon_class(assigns))
+
     ~H"""
-    <div
-      id={@id}
-      phx-mounted={@show && show_modal(@id)}
-      phx-remove={hide_modal(@id)}
-      data-cancel={JS.exec(@on_cancel, "phx-remove")}
-      class="relative z-50 hidden"
+    <button
+      type={@type}
+      class={[
+        @variant_class,
+        @size_class,
+        @class,
+        "flex gap-1 justify-center font-medium  max-w-md"
+      ]}
+      {@rest}
     >
-      <div id={"#{@id}-bg"} class="bg-zinc-50/90 fixed inset-0 transition-opacity" aria-hidden="true" />
-      <div
-        class="fixed inset-0 overflow-y-auto"
-        aria-labelledby={"#{@id}-title"}
-        aria-describedby={"#{@id}-description"}
-        role="dialog"
-        aria-modal="true"
-        tabindex="0"
-      >
-        <div class="flex min-h-full items-center justify-center">
-          <div class="w-full max-w-3xl p-4 sm:p-6 lg:py-8">
-            <.focus_wrap
-              id={"#{@id}-container"}
-              phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
-              phx-key="escape"
-              phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
-              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-2xl bg-white p-14 shadow-lg ring-1 transition"
-            >
-              <div class="absolute top-6 right-5">
-                <button
-                  phx-click={JS.exec("data-cancel", to: "##{@id}")}
-                  type="button"
-                  class="-m-3 flex-none p-3 opacity-20 hover:opacity-40"
-                  aria-label={gettext("close")}
-                >
-                  <.icon name="hero-x-mark-solid" class="h-5 w-5" />
-                </button>
-              </div>
-              <div id={"#{@id}-content"}>
-                {render_slot(@inner_block)}
-              </div>
-            </.focus_wrap>
-          </div>
+      <.icon :if={@icon_left} name={@icon_left} class={@icon_class} />
+      {render_slot(@inner_block)}
+      <.icon :if={@icon_right} name={@icon_right} class={@icon_class} />
+    </button>
+    """
+  end
+
+  defp button_icon_class(assigns) do
+    case assigns[:size] do
+      "md" -> "w-4 h-4"
+      _ -> "w-6 h-6"
+    end
+  end
+
+  defp button_size_class(assigns) do
+    case assigns[:size] do
+      "md" -> "rounded-full p-3"
+      _ -> "rounded-lg px-3 py-3 px-2"
+    end
+  end
+
+  defp button_variant_class(%{variant: "secondary"} = assigns) do
+    colors =
+      if assigns[:rest][:disabled] do
+        "bg-gray-200 text-gray-400"
+      else
+        "bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-200"
+      end
+
+    colors
+  end
+
+  defp button_variant_class(%{variant: "outline"} = assigns) do
+    colors =
+      if assigns[:rest][:disabled] do
+        "bg-gray-200 text-gray-400 border-gray-300 dark:bg-gray-900 dark:text-gray-700 dark:border-gray-700"
+      else
+        "bg-slate-50 text-slate-900 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600"
+      end
+
+    ["border-2", colors]
+  end
+
+  defp button_variant_class(%{variant: "link"} = assigns) do
+    colors =
+      if assigns[:rest][:disabled] do
+        "bg-gray-200 text-gray-400 dark:bg-gray-900 dark:text-gray-700"
+      else
+        "text-slate-600 dark:text-slate-400"
+      end
+
+    ["border-0", colors]
+  end
+
+  defp button_variant_class(assigns) do
+    colors =
+      if assigns[:rest][:disabled] do
+        "bg-gray-200 text-gray-400"
+      else
+        "bg-violet-700 text-slate-50"
+      end
+
+    colors
+  end
+
+  attr :logged_in, :boolean, default: false
+
+  def navbar(assigns) do
+    ~H"""
+    <navbar class="flex max-w-6xl w-full pt-2 py-4">
+      <div class="flex">
+        <.button variant="link" icon_right="logo"></.button>
+        <.button variant="link" icon_right="hero-magnifying-glass"></.button>
+      </div>
+      <div :if={@logged_in} class="grow flex justify-end">
+        <.button variant="outline" size="md">Create event</.button>
+        <.button variant="link" icon_right="hero-bell"></.button>
+        <.button variant="link" icon_right="hero-user-solid"></.button>
+      </div>
+    </navbar>
+    """
+  end
+
+  @doc """
+  Render Hero section
+  """
+
+  slot :title, doc: "the title block", required: true
+  slot :subtitle, doc: "the optional subtitle block"
+  slot :body, doc: "the optional body block"
+
+  def hero(assigns) do
+    ~H"""
+    <section class="max-w-md text-center pt-8 flex gap-2 flex-col">
+      <div class="text-3xl font-semibold text-slate-900 dark:text-slate-200">
+        {render_slot(@title)}
+      </div>
+      <div :if={@subtitle} class="text-base font-normal text-slate-500 dark:text-slate-400">
+        {render_slot(@subtitle)}
+      </div>
+      <div :if={@body} class="text-base font-normal text-slate-900 dark:text-slate-200">
+        {render_slot(@body)}
+      </div>
+    </section>
+    """
+  end
+
+  attr :id, :any, default: nil
+  attr :name, :any
+  attr :value, :any
+  attr :label, :string, default: nil
+  attr :placeholder, :string, default: nil
+
+  attr :icon_left, :string, default: nil
+  attr :icon_right, :string, default: nil
+
+  attr :type, :string,
+    default: "text",
+    values: ~w(email hidden text)
+
+  attr :rest, :global,
+    include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
+                      multiple pattern placeholder readonly required rows size step row onInput)
+
+  def input_text(assigns) do
+    ~H"""
+    <section>
+      <label class="text-slate-600 dark:text-slate-400 pb-0.5 text-sm" for={@id}>{@label}</label>
+      <div class="px-3 py-2 border border-slate-400 rounded-lg flex gap-2 text-slate-400 dark:text-slate-500 focus-within:text-slate-900 dark:focus-within:text-slate-400 focus-within:border-2">
+        <div :if={@icon_left}>
+          <.icon name={@icon_left} class="w-6 h-6" />
+        </div>
+        <input
+          id={@id}
+          class="border-0 p-0 m-0 outline-none text-slate-900 dark:text-slate-400 placeholder-slate-400  dark:placeholder-slate-500 focus:ring-0 bg-transparent"
+          type={@type}
+          placeholder={@placeholder}
+          {@rest}
+        />
+        <div :if={@icon_right}>
+          <.icon name={@icon_right} class="w-6 h-6" />
         </div>
       </div>
-    </div>
+    </section>
     """
+  end
+
+  attr :id, :any, default: nil
+  attr :name, :any
+  attr :label, :string, default: nil
+  attr :value, :any
+
+  attr :type, :string,
+    default: "text",
+    values: ~w(email hidden text)
+
+  attr :field, Phoenix.HTML.FormField,
+    doc: "a form field struct retrieved from the form, for example: @form[:email]"
+
+  attr :errors, :list, default: []
+
+  attr :rest, :global,
+    include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
+                      multiple pattern placeholder readonly required rows size step row onInput)
+
+  slot :inner_block
+
+  def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+
+    assigns
+    |> assign(field: nil, id: assigns.id || field.id)
+    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
+    |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
+    |> assign_new(:value, fn -> field.value end)
   end
 
   @doc """
@@ -177,400 +317,6 @@ defmodule JuntosWeb.CoreComponents do
   end
 
   @doc """
-  Renders a simple form.
-
-  ## Examples
-
-      <.simple_form for={@form} phx-change="validate" phx-submit="save">
-        <.input field={@form[:email]} label="Email"/>
-        <.input field={@form[:username]} label="Username" />
-        <:actions>
-          <.button>Save</.button>
-        </:actions>
-      </.simple_form>
-  """
-  attr :for, :any, required: true, doc: "the data structure for the form"
-  attr :as, :any, default: nil, doc: "the server side parameter to collect all input under"
-
-  attr :rest, :global,
-    include: ~w(autocomplete name rel action enctype method novalidate target multipart),
-    doc: "the arbitrary HTML attributes to apply to the form tag"
-
-  slot :inner_block, required: true
-  slot :actions, doc: "the slot for form actions, such as a submit button"
-
-  def simple_form(assigns) do
-    ~H"""
-    <.form :let={f} for={@for} as={@as} {@rest}>
-      <div class="mt-10 space-y-8 bg-white">
-        {render_slot(@inner_block, f)}
-        <div :for={action <- @actions} class="mt-2 flex items-center justify-between gap-6">
-          {render_slot(action, f)}
-        </div>
-      </div>
-    </.form>
-    """
-  end
-
-  @doc """
-  Renders a button.
-
-  ## Examples
-
-      <.button>Send!</.button>
-      <.button phx-click="go" class="ml-2">Send!</.button>
-  """
-  attr :type, :string, default: nil
-  attr :class, :string, default: nil
-  attr :rest, :global, include: ~w(disabled form name value)
-
-  slot :inner_block, required: true
-
-  def button(assigns) do
-    ~H"""
-    <button
-      type={@type}
-      class={[
-        "phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3",
-        "text-sm font-semibold leading-6 text-white active:text-white/80",
-        @class
-      ]}
-      {@rest}
-    >
-      {render_slot(@inner_block)}
-    </button>
-    """
-  end
-
-  @doc """
-  Renders an input with label and error messages.
-
-  A `Phoenix.HTML.FormField` may be passed as argument,
-  which is used to retrieve the input name, id, and values.
-  Otherwise all attributes may be passed explicitly.
-
-  ## Types
-
-  This function accepts all HTML input types, considering that:
-
-    * You may also set `type="select"` to render a `<select>` tag
-
-    * `type="checkbox"` is used exclusively to render boolean values
-
-    * For live file uploads, see `Phoenix.Component.live_file_input/1`
-
-  See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
-  for more information. Unsupported types, such as hidden and radio,
-  are best written directly in your templates.
-
-  ## Examples
-
-      <.input field={@form[:email]} type="email" />
-      <.input name="my-input" errors={["oh no!"]} />
-  """
-  attr :id, :any, default: nil
-  attr :name, :any
-  attr :label, :string, default: nil
-  attr :value, :any
-
-  attr :type, :string,
-    default: "text",
-    values: ~w(checkbox color date datetime-local email file month number password
-               range search select tel text textarea time url week)
-
-  attr :field, Phoenix.HTML.FormField,
-    doc: "a form field struct retrieved from the form, for example: @form[:email]"
-
-  attr :errors, :list, default: []
-  attr :checked, :boolean, doc: "the checked flag for checkbox inputs"
-  attr :prompt, :string, default: nil, doc: "the prompt for select inputs"
-  attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
-  attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
-
-  attr :rest, :global,
-    include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
-                multiple pattern placeholder readonly required rows size step)
-
-  def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
-    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
-
-    assigns
-    |> assign(field: nil, id: assigns.id || field.id)
-    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
-    |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
-    |> assign_new(:value, fn -> field.value end)
-    |> input()
-  end
-
-  def input(%{type: "checkbox"} = assigns) do
-    assigns =
-      assign_new(assigns, :checked, fn ->
-        Phoenix.HTML.Form.normalize_value("checkbox", assigns[:value])
-      end)
-
-    ~H"""
-    <div>
-      <label class="flex items-center gap-4 text-sm leading-6 text-zinc-600">
-        <input type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
-        <input
-          type="checkbox"
-          id={@id}
-          name={@name}
-          value="true"
-          checked={@checked}
-          class="rounded border-zinc-300 text-zinc-900 focus:ring-0"
-          {@rest}
-        />
-        {@label}
-      </label>
-      <.error :for={msg <- @errors}>{msg}</.error>
-    </div>
-    """
-  end
-
-  def input(%{type: "select"} = assigns) do
-    ~H"""
-    <div>
-      <.label for={@id}>{@label}</.label>
-      <select
-        id={@id}
-        name={@name}
-        class="mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
-        multiple={@multiple}
-        {@rest}
-      >
-        <option :if={@prompt} value="">{@prompt}</option>
-        {Phoenix.HTML.Form.options_for_select(@options, @value)}
-      </select>
-      <.error :for={msg <- @errors}>{msg}</.error>
-    </div>
-    """
-  end
-
-  def input(%{type: "textarea"} = assigns) do
-    ~H"""
-    <div>
-      <.label for={@id}>{@label}</.label>
-      <textarea
-        id={@id}
-        name={@name}
-        class={[
-          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 min-h-[6rem]",
-          @errors == [] && "border-zinc-300 focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
-        ]}
-        {@rest}
-      >{Phoenix.HTML.Form.normalize_value("textarea", @value)}</textarea>
-      <.error :for={msg <- @errors}>{msg}</.error>
-    </div>
-    """
-  end
-
-  # All other inputs text, datetime-local, url, password, etc. are handled here...
-  def input(assigns) do
-    ~H"""
-    <div>
-      <.label for={@id}>{@label}</.label>
-      <input
-        type={@type}
-        name={@name}
-        id={@id}
-        value={Phoenix.HTML.Form.normalize_value(@type, @value)}
-        class={[
-          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6",
-          @errors == [] && "border-zinc-300 focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
-        ]}
-        {@rest}
-      />
-      <.error :for={msg <- @errors}>{msg}</.error>
-    </div>
-    """
-  end
-
-  @doc """
-  Renders a label.
-  """
-  attr :for, :string, default: nil
-  slot :inner_block, required: true
-
-  def label(assigns) do
-    ~H"""
-    <label for={@for} class="block text-sm font-semibold leading-6 text-zinc-800">
-      {render_slot(@inner_block)}
-    </label>
-    """
-  end
-
-  @doc """
-  Generates a generic error message.
-  """
-  slot :inner_block, required: true
-
-  def error(assigns) do
-    ~H"""
-    <p class="mt-3 flex gap-3 text-sm leading-6 text-rose-600">
-      <.icon name="hero-exclamation-circle-mini" class="mt-0.5 h-5 w-5 flex-none" />
-      {render_slot(@inner_block)}
-    </p>
-    """
-  end
-
-  @doc """
-  Renders a header with title.
-  """
-  attr :class, :string, default: nil
-
-  slot :inner_block, required: true
-  slot :subtitle
-  slot :actions
-
-  def header(assigns) do
-    ~H"""
-    <header class={[@actions != [] && "flex items-center justify-between gap-6", @class]}>
-      <div>
-        <h1 class="text-lg font-semibold leading-8 text-zinc-800">
-          {render_slot(@inner_block)}
-        </h1>
-        <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-zinc-600">
-          {render_slot(@subtitle)}
-        </p>
-      </div>
-      <div class="flex-none">{render_slot(@actions)}</div>
-    </header>
-    """
-  end
-
-  @doc ~S"""
-  Renders a table with generic styling.
-
-  ## Examples
-
-      <.table id="users" rows={@users}>
-        <:col :let={user} label="id">{user.id}</:col>
-        <:col :let={user} label="username">{user.username}</:col>
-      </.table>
-  """
-  attr :id, :string, required: true
-  attr :rows, :list, required: true
-  attr :row_id, :any, default: nil, doc: "the function for generating the row id"
-  attr :row_click, :any, default: nil, doc: "the function for handling phx-click on each row"
-
-  attr :row_item, :any,
-    default: &Function.identity/1,
-    doc: "the function for mapping each row before calling the :col and :action slots"
-
-  slot :col, required: true do
-    attr :label, :string
-  end
-
-  slot :action, doc: "the slot for showing user actions in the last table column"
-
-  def table(assigns) do
-    assigns =
-      with %{rows: %Phoenix.LiveView.LiveStream{}} <- assigns do
-        assign(assigns, row_id: assigns.row_id || fn {id, _item} -> id end)
-      end
-
-    ~H"""
-    <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
-      <table class="w-[40rem] mt-11 sm:w-full">
-        <thead class="text-sm text-left leading-6 text-zinc-500">
-          <tr>
-            <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal">{col[:label]}</th>
-            <th :if={@action != []} class="relative p-0 pb-4">
-              <span class="sr-only">{gettext("Actions")}</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody
-          id={@id}
-          phx-update={match?(%Phoenix.LiveView.LiveStream{}, @rows) && "stream"}
-          class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700"
-        >
-          <tr :for={row <- @rows} id={@row_id && @row_id.(row)} class="group hover:bg-zinc-50">
-            <td
-              :for={{col, i} <- Enum.with_index(@col)}
-              phx-click={@row_click && @row_click.(row)}
-              class={["relative p-0", @row_click && "hover:cursor-pointer"]}
-            >
-              <div class="block py-4 pr-6">
-                <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-zinc-50 sm:rounded-l-xl" />
-                <span class={["relative", i == 0 && "font-semibold text-zinc-900"]}>
-                  {render_slot(col, @row_item.(row))}
-                </span>
-              </div>
-            </td>
-            <td :if={@action != []} class="relative w-14 p-0">
-              <div class="relative whitespace-nowrap py-4 text-right text-sm font-medium">
-                <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-zinc-50 sm:rounded-r-xl" />
-                <span
-                  :for={action <- @action}
-                  class="relative ml-4 font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
-                >
-                  {render_slot(action, @row_item.(row))}
-                </span>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    """
-  end
-
-  @doc """
-  Renders a data list.
-
-  ## Examples
-
-      <.list>
-        <:item title="Title">{@post.title}</:item>
-        <:item title="Views">{@post.views}</:item>
-      </.list>
-  """
-  slot :item, required: true do
-    attr :title, :string, required: true
-  end
-
-  def list(assigns) do
-    ~H"""
-    <div class="mt-14">
-      <dl class="-my-4 divide-y divide-zinc-100">
-        <div :for={item <- @item} class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
-          <dt class="w-1/4 flex-none text-zinc-500">{item.title}</dt>
-          <dd class="text-zinc-700">{render_slot(item)}</dd>
-        </div>
-      </dl>
-    </div>
-    """
-  end
-
-  @doc """
-  Renders a back navigation link.
-
-  ## Examples
-
-      <.back navigate={~p"/posts"}>Back to posts</.back>
-  """
-  attr :navigate, :any, required: true
-  slot :inner_block, required: true
-
-  def back(assigns) do
-    ~H"""
-    <div class="mt-16">
-      <.link
-        navigate={@navigate}
-        class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
-      >
-        <.icon name="hero-arrow-left-solid" class="h-3 w-3" />
-        {render_slot(@inner_block)}
-      </.link>
-    </div>
-    """
-  end
-
-  @doc """
   Renders a [Heroicon](https://heroicons.com).
 
   Heroicons come in three styles – outline, solid, and mini.
@@ -594,6 +340,93 @@ defmodule JuntosWeb.CoreComponents do
   def icon(%{name: "hero-" <> _} = assigns) do
     ~H"""
     <span class={[@name, @class]} />
+    """
+  end
+
+  def icon(%{name: "logo"} = assigns) do
+    ~H"""
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clip-path="url(#clip0_139_1721)">
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M18 2H6C3.79086 2 2 3.79086 2 6V18C2 20.2091 3.79086 22 6 22H18C20.2091 22 22 20.2091 22 18V6C22 3.79086 20.2091 2 18 2ZM6 0C2.68629 0 0 2.68629 0 6V18C0 21.3137 2.68629 24 6 24H18C21.3137 24 24 21.3137 24 18V6C24 2.68629 21.3137 0 18 0H6Z"
+          fill="#475569"
+        />
+        <circle
+          cx="7.27037"
+          cy="17.0709"
+          r="2.3125"
+          transform="rotate(-45 7.27037 17.0709)"
+          fill="#475569"
+        />
+        <circle
+          cx="12.0082"
+          cy="12.0081"
+          r="2.3125"
+          transform="rotate(-45 12.0082 12.0081)"
+          fill="#475569"
+        />
+        <circle
+          cx="17.0709"
+          cy="7.27039"
+          r="2.3125"
+          transform="rotate(-45 17.0709 7.27039)"
+          fill="#475569"
+        />
+      </g>
+      <defs>
+        <clipPath id="clip0_139_1721">
+          <rect width="24" height="24" fill="white" />
+        </clipPath>
+      </defs>
+    </svg>
+    """
+  end
+
+  def icon(%{name: "google"} = assigns) do
+    ~H"""
+    <span class={[@name, @class]}>
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <mask id="mask0_157_484" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0">
+          <path d="M24 0H0V24H24V0Z" fill="white" />
+        </mask>
+        <g mask="url(#mask0_157_484)">
+          <path
+            d="M23.52 12.2727C23.52 11.4218 23.4437 10.6036 23.3018 9.81812H12V14.46H18.4582C18.18 15.96 17.3346 17.2309 16.0637 18.0818V21.0927H19.9418C22.2109 19.0036 23.52 15.9272 23.52 12.2727Z"
+            fill="#4285F4"
+          />
+          <path
+            d="M12 24C15.24 24 17.9563 22.9254 19.9417 21.0928L16.0636 18.0819C14.9891 18.8019 13.6145 19.2273 12 19.2273C8.87448 19.2273 6.22908 17.1163 5.2854 14.28H1.27632V17.3891C3.25092 21.3109 7.30908 24 12 24Z"
+            fill="#34A853"
+          />
+          <path
+            d="M5.2854 14.2799C5.0454 13.5599 4.90908 12.7908 4.90908 11.9999C4.90908 11.209 5.0454 10.4399 5.2854 9.71992V6.61084H1.27632C0.463679 8.23084 0 10.0636 0 11.9999C0 13.9362 0.463679 15.769 1.27632 17.389L5.2854 14.2799Z"
+            fill="#FBBC04"
+          />
+          <path
+            d="M12 4.77276C13.7617 4.77276 15.3436 5.37816 16.5872 6.56724L20.0291 3.1254C17.9509 1.18908 15.2345 0 12 0C7.30908 0 3.25092 2.68908 1.27632 6.61092L5.2854 9.72C6.22908 6.88368 8.87448 4.77276 12 4.77276Z"
+            fill="#E94235"
+          />
+        </g>
+      </svg>
+    </span>
+    """
+  end
+
+  def icon(%{name: "github"} = assigns) do
+    ~H"""
+    <span class={[@name, @class]}>
+      <svg viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M9.5 18.9999C4.5 20.4999 4.5 16.4999 2.5 15.9999M16.5 21.9999V18.1299C16.5375 17.6531 16.4731 17.1737 16.311 16.7237C16.1489 16.2737 15.8929 15.8634 15.56 15.5199C18.7 15.1699 22 13.9799 22 8.51994C21.9997 7.12376 21.4627 5.78114 20.5 4.76994C20.9559 3.54844 20.9236 2.19829 20.41 0.999938C20.41 0.999938 19.23 0.649938 16.5 2.47994C14.208 1.85876 11.792 1.85876 9.5 2.47994C6.77 0.649938 5.59 0.999938 5.59 0.999938C5.07638 2.19829 5.04414 3.54844 5.5 4.76994C4.53013 5.78864 3.99252 7.1434 4 8.54994C4 13.9699 7.3 15.1599 10.44 15.5499C10.111 15.8899 9.85726 16.2953 9.69531 16.7399C9.53335 17.1844 9.46681 17.658 9.5 18.1299V21.9999"
+          stroke="#0F172A"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </span>
     """
   end
 

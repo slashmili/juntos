@@ -7,6 +7,7 @@ const path = require("path")
 
 module.exports = {
   important: ".juntos-web",
+  darkMode: ["selector"],
   content: [
     "./js/**/*.js",
     "../lib/juntos_web.ex",
