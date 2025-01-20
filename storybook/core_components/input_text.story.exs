@@ -8,6 +8,7 @@ defmodule Storybook.Components.CoreComponents.InputText do
       %Variation{
         id: :default,
         attributes: %{
+          id: "storybook-ex01",
           label: "Label",
           placeholder: "Placeholder",
           icon_right: "hero-x-mark",

@@ -159,22 +159,37 @@ defmodule JuntosWeb.CoreComponents do
     """
   end
 
-  attr :placeholder, :string, default: ""
+  attr :id, :any, default: nil
+  attr :name, :any
+  attr :value, :any
+  attr :label, :string, default: nil
+  attr :placeholder, :string, default: nil
+
   attr :icon_left, :string, default: nil
   attr :icon_right, :string, default: nil
+
+  attr :type, :string,
+    default: "text",
+    values: ~w(email hidden text)
+
+  attr :rest, :global,
+    include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
+                      multiple pattern placeholder readonly required rows size step row onInput)
 
   def input_text(assigns) do
     ~H"""
     <section>
-      <div class="text-slate-600 dark:text-slate-400 pb-0.5">{@label}</div>
+      <label class="text-slate-600 dark:text-slate-400 pb-0.5 text-sm" for={@id}>{@label}</label>
       <div class="px-3 py-2 border border-slate-400 rounded-lg flex gap-2 text-slate-400 dark:text-slate-500 focus-within:text-slate-900 dark:focus-within:text-slate-400 focus-within:border-2">
         <div :if={@icon_left}>
           <.icon name={@icon_left} class="w-6 h-6" />
         </div>
         <input
+          id={@id}
           class="border-0 p-0 m-0 outline-none text-slate-900 dark:text-slate-400 placeholder-slate-400  dark:placeholder-slate-500 focus:ring-0 bg-transparent"
-          type="text"
+          type={@type}
           placeholder={@placeholder}
+          {@rest}
         />
         <div :if={@icon_right}>
           <.icon name={@icon_right} class="w-6 h-6" />
@@ -182,6 +197,36 @@ defmodule JuntosWeb.CoreComponents do
       </div>
     </section>
     """
+  end
+
+  attr :id, :any, default: nil
+  attr :name, :any
+  attr :label, :string, default: nil
+  attr :value, :any
+
+  attr :type, :string,
+    default: "text",
+    values: ~w(email hidden text)
+
+  attr :field, Phoenix.HTML.FormField,
+    doc: "a form field struct retrieved from the form, for example: @form[:email]"
+
+  attr :errors, :list, default: []
+
+  attr :rest, :global,
+    include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
+                      multiple pattern placeholder readonly required rows size step row onInput)
+
+  slot :inner_block
+
+  def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+
+    assigns
+    |> assign(field: nil, id: assigns.id || field.id)
+    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
+    |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
+    |> assign_new(:value, fn -> field.value end)
   end
 
   @doc """
