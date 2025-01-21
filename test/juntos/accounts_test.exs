@@ -30,4 +30,25 @@ defmodule Juntos.AccountsTest do
       assert "has already been taken" in errors_on(changeset).email
     end
   end
+
+  describe "generate_user_session_token/1" do
+    setup do
+      %{user: user_fixture()}
+    end
+
+    test "generates a token", %{user: user} do
+      token = SUT.generate_user_session_token(user)
+      assert user_token = Repo.get_by(SUT.UserToken, token: token)
+      assert user_token.context == "session"
+
+      # Creating the same token for another user should fail
+      assert_raise Ecto.ConstraintError, fn ->
+        Repo.insert!(%SUT.UserToken{
+          token: user_token.token,
+          user_id: user_fixture().id,
+          context: "session"
+        })
+      end
+    end
+  end
 end
