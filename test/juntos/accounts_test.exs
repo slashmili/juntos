@@ -51,4 +51,26 @@ defmodule Juntos.AccountsTest do
       end
     end
   end
+
+  describe "get_user_by_session_token/1" do
+    setup do
+      user = user_fixture()
+      token = SUT.generate_user_session_token(user)
+      %{user: user, token: token}
+    end
+
+    test "returns user by token", %{user: user, token: token} do
+      assert session_user = SUT.get_user_by_session_token(token)
+      assert session_user.id == user.id
+    end
+
+    test "does not return user for invalid token" do
+      refute SUT.get_user_by_session_token("oops")
+    end
+
+    test "does not return user for expired token", %{token: token} do
+      {1, nil} = Repo.update_all(SUT.UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+      refute SUT.get_user_by_session_token(token)
+    end
+  end
 end
