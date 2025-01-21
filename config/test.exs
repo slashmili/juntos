@@ -35,3 +35,13 @@ config :phoenix, :plug_init_mode, :runtime
 # Enable helpful, but potentially expensive runtime checks
 config :phoenix_live_view,
   enable_expensive_runtime_checks: true
+
+config :juntos, Juntos.Accounts.ExternalAuthProvider,
+  github: [
+    client_id: "github_client_id",
+    client_secret: "github_client_secret"
+  ],
+  google: [
+    client_id: "google_client_id",
+    client_secret: "google_client_secret"
+  ]

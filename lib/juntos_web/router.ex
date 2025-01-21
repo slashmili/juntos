@@ -29,6 +29,13 @@ defmodule JuntosWeb.Router do
 
     get "/", PageController, :home
     live "/users/log_in", UserLoginLive, :new
+
+    scope "/users/auth" do
+      get "/register", UserExternalAuthController, :new
+      post "/register", UserExternalAuthController, :create
+      get "/:provider", UserExternalAuthController, :auth_new
+      get "/:provider/callback", UserExternalAuthController, :callback
+    end
   end
 
   # Other scopes may use custom stacks.

@@ -1,6 +1,8 @@
 defmodule Juntos.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Juntos.Accounts
+
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "users" do
     field :email, :string
@@ -25,7 +27,22 @@ defmodule Juntos.Accounts.User do
       submitting the form), this option can be set to `false`.
       Defaults to `true`.
   """
-  def registration_changeset(user, attrs, opts \\ []) do
+  def registration_changeset(user, attrs, opts \\ [])
+
+  def registration_changeset(
+        user,
+        %Accounts.ExternalAuthProvider.User{} = external_user,
+        opts
+      ) do
+    attrs = Map.from_struct(external_user)
+
+    user
+    |> cast(attrs, [:email, :name])
+    |> confirm_changeset()
+    |> validate_email(opts)
+  end
+
+  def registration_changeset(user, attrs, opts) do
     user
     |> cast(attrs, [:email, :name])
     |> validate_email(opts)

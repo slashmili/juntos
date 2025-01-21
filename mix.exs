@@ -58,7 +58,11 @@ defmodule Juntos.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:phoenix_storybook, "~> 0.8.0"}
+      {:phoenix_storybook, "~> 0.8.0"},
+      {:assent, "~> 0.3.0"},
+      {:nimble_options, "~> 1.1"},
+      {:req, "~> 0.5.8"},
+      {:mimic, "~> 1.10", only: :test}
     ]
   end
 

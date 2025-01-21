@@ -83,5 +83,15 @@ config :phoenix_live_view,
   # Enable helpful, but potentially expensive runtime checks
   enable_expensive_runtime_checks: true
 
+config :juntos, Juntos.Accounts.ExternalAuthProvider,
+  github: [
+    client_id: System.get_env("OAUTH_GITHUB_CLIENT_ID"),
+    client_secret: System.get_env("OAUTH_GITHUB_CLIENT_SECRET")
+  ],
+  google: [
+    client_id: System.get_env("OAUTH_GOOGLE_CLIENT_ID"),
+    client_secret: System.get_env("OAUTH_GOOGLE_CLIENT_SECRET")
+  ]
+
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false

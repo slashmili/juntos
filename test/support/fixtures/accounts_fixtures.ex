@@ -29,4 +29,24 @@ defmodule Juntos.AccountsFixtures do
       user
     end
   end
+
+  def valid_user_extenral_auth_attributes(attrs \\ %{}) do
+    Enum.into(attrs, %{
+      "email" => unique_user_email(),
+      "email_verified" => true,
+      "name" => "User",
+      "picture" => "https://avatars.githubusercontent.com/u/1?v=4",
+      "preferred_username" => "username",
+      "profile" => "https://github.com/username",
+      "sub" => 1
+    })
+  end
+
+  def user_external_auth_fixture(attrs \\ %{}) do
+    provider = attrs[:provider] || attrs["provider"] || :github
+
+    attrs
+    |> valid_user_extenral_auth_attributes()
+    |> Juntos.Accounts.ExternalAuthProvider.User.new(provider)
+  end
 end

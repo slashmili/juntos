@@ -13,6 +13,9 @@ defmodule JuntosWeb.UserAuth do
   @remember_me_cookie "_juntos_web_user_remember_me"
   @remember_me_options [sign: true, max_age: @max_age, same_site: "Lax"]
 
+  @external_auth_inflight_key :external_auth_inflight
+  @external_auth_state_key :external_auth_state
+
   @doc """
   Logs the user in.
 
@@ -34,6 +37,72 @@ defmodule JuntosWeb.UserAuth do
     |> put_token_in_session(token)
     |> maybe_write_remember_me_cookie(token, params)
     |> redirect(to: user_return_to || signed_in_path(conn))
+  end
+
+  @doc """
+  Set conn to redirect to external auth
+
+  It also sets `external_auth_state` into session for later validatoin
+  """
+
+  @provider_types Enum.map(Accounts.ExternalAuthProvider.provider_types(), &to_string/1)
+  def external_auth_redirect(conn, provider) when provider in @provider_types do
+    provider = String.to_existing_atom(provider)
+    url = &url(~p"/users/auth/#{&1}/callback")
+
+    case Accounts.ExternalAuthProvider.authorize_url(provider, url) do
+      {:ok, %{url: url, session_params: %{state: state}}} ->
+        {:ok,
+         conn
+         |> put_session(@external_auth_state_key, state)
+         |> redirect(external: url)}
+
+      {:error, _} = error ->
+        error
+    end
+  end
+
+  def external_auth_redirect(_, _) do
+    {:error, :provider_not_supported}
+  end
+
+  @doc """
+  Retrives user info and attempt to log in the user if there is an account already with the user's email
+  Otherwise it sets a session and redirects user to /users/auth/register
+  """
+  def external_auth_user_log_in(conn, provider, params) when provider in @provider_types do
+    provider = String.to_existing_atom(provider)
+    url = &url(~p"/users/auth/#{&1}/callback")
+
+    session_state = get_session(conn, @external_auth_state_key)
+
+    with {:ok, user} <-
+           Accounts.ExternalAuthProvider.user_info(provider, params, session_state, url) do
+      # || Accounts.get_user_by_external_auth_user(user)
+      lookup_result = Accounts.get_user_by_email(user.email)
+
+      case lookup_result do
+        nil ->
+          {:ok,
+           conn
+           |> put_session(@external_auth_inflight_key, Jason.encode!(user))
+           |> redirect(to: ~p"/users/auth/register")}
+
+        user ->
+          {:ok, log_in_user(conn, user)}
+      end
+    end
+  end
+
+  def external_auth_user_log_in(_coon, _provider, _params) do
+    {:error, :provider_not_supported}
+  end
+
+  def external_auth_user_from_sessions(conn) do
+    if user_json = get_session(conn, @external_auth_inflight_key) do
+      {:ok, user} = Jason.decode(user_json)
+      Accounts.ExternalAuthProvider.User.new(user, nil)
+    end
   end
 
   defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do
