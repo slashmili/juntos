@@ -13,7 +13,7 @@ kill_signal = 'SIGTERM'
   release_command = '/app/bin/migrate'
 
 [env]
-  PHX_HOST = 'juntos-snowy-wave-8086.fly.dev'
+  PHX_HOST = 'staging.juntos.now'
   PORT = '8080'
 
 [http_service]
