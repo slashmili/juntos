@@ -35,10 +35,10 @@ defmodule JuntosWeb.UserLoginLive do
   defp external_auth_section(assigns) do
     ~H"""
     <section class="flex flex-col gap-2">
-      <.button variant="outline">
+      <.button type="link" variant="outline" href={~p"/users/auth/google"}>
         <.icon name="google" class="w-6 h-6" /> Continue with Google
       </.button>
-      <.button variant="outline">
+      <.button type="link" variant="outline" href={~p"/users/auth/github"}>
         <.icon name="github" class="w-6 h-6" /> Continue with Github
       </.button>
     </section>

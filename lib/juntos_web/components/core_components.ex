@@ -25,17 +25,39 @@ defmodule JuntosWeb.CoreComponents do
     doc: "the button variant style"
 
   attr :size, :string, default: "lg", values: ~w(lg md)
-  attr :type, :string, default: "submit", values: ~w(submit button reset)
+  attr :type, :string, default: "submit", values: ~w(submit button reset link)
   attr :class, :any, default: nil
   attr :icon_right, :string, default: nil
   attr :icon_left, :string, default: nil
-  attr :rest, :global, include: ~w(disabled form name value)
+  attr :rest, :global, include: ~w(disabled form name value href)
 
   slot :inner_block, required: true
 
   @doc """
   Renders a button.
   """
+  def button(%{type: "link"} = assigns) do
+    assigns = Map.put(assigns, :variant_class, button_variant_class(assigns))
+    assigns = Map.put(assigns, :size_class, button_size_class(assigns))
+    assigns = Map.put(assigns, :icon_class, button_icon_class(assigns))
+
+    ~H"""
+    <.link
+      class={[
+        @variant_class,
+        @size_class,
+        @class,
+        "flex gap-1 justify-center font-medium  max-w-md"
+      ]}
+      {@rest}
+    >
+      <.icon :if={@icon_left} name={@icon_left} class={@icon_class} />
+      {render_slot(@inner_block)}
+      <.icon :if={@icon_right} name={@icon_right} class={@icon_class} />
+    </.link>
+    """
+  end
+
   def button(assigns) do
     assigns = Map.put(assigns, :variant_class, button_variant_class(assigns))
     assigns = Map.put(assigns, :size_class, button_size_class(assigns))
