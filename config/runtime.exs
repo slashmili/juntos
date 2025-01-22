@@ -65,6 +65,16 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
+  config :juntos, Juntos.Accounts.ExternalAuthProvider,
+    github: [
+      client_id: System.get_env("OAUTH_GITHUB_CLIENT_ID"),
+      client_secret: System.get_env("OAUTH_GITHUB_CLIENT_SECRET")
+    ],
+    google: [
+      client_id: System.get_env("OAUTH_GOOGLE_CLIENT_ID"),
+      client_secret: System.get_env("OAUTH_GOOGLE_CLIENT_SECRET")
+    ]
+
   # ## SSL Support
   #
   # To get SSL working, you will need to add the `https` key
