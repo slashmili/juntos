@@ -59,10 +59,12 @@ defmodule Juntos.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
       {:phoenix_storybook, "~> 0.8.0"},
+      {:sqids, "~> 0.2.0"},
       {:assent, "~> 0.3.0"},
       {:nimble_options, "~> 1.1"},
       {:req, "~> 0.5.8"},
-      {:mimic, "~> 1.10", only: :test}
+      {:mimic, "~> 1.10", only: :test},
+      {:phoenix_test, "~> 0.5.1", only: :test}
     ]
   end
 

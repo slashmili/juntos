@@ -217,8 +217,87 @@ defmodule JuntosWeb.CoreComponents do
     """
   end
 
+  @doc """
+  Renders an input with label and error messages.
+
+  A `Phoenix.HTML.FormField` may be passed as argument,
+  which is used to retrieve the input name, id, and values.
+  Otherwise all attributes may be passed explicitly.
+
+  ## Types
+
+  This function accepts all HTML input types, considering that:
+
+    * You may also set `type="select"` to render a `<select>` tag
+
+    * `type="checkbox"` is used exclusively to render boolean values
+
+    * For live file uploads, see `Phoenix.Component.live_file_input/1`
+
+  See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
+  for more information. Unsupported types, such as hidden and radio,
+  are best written directly in your templates.
+
+  ## Examples
+
+      <.input field={@form[:email]} type="email" />
+      <.input name="my-input" errors={["oh no!"]} />
+  """
   attr :id, :any, default: nil
   attr :name, :any
+  attr :label, :string, default: nil
+  attr :value, :any
+
+  attr :type, :string,
+    default: "text",
+    values: ~w(checkbox color date datetime-local email file month number password
+               range search select tel text textarea time url week)
+
+  attr :field, Phoenix.HTML.FormField,
+    doc: "a form field struct retrieved from the form, for example: @form[:email]"
+
+  attr :errors, :list, default: []
+  attr :checked, :boolean, doc: "the checked flag for checkbox inputs"
+  attr :prompt, :string, default: nil, doc: "the prompt for select inputs"
+  attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
+  attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
+
+  attr :rest, :global,
+    include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
+                multiple pattern placeholder readonly required rows size step)
+
+  def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+
+    assigns
+    |> assign(field: nil, id: assigns.id || field.id)
+    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
+    |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
+    |> assign_new(:value, fn -> field.value end)
+    |> input()
+  end
+
+  def input(%{type: "text"} = assigns) do
+    input_text(assigns)
+  end
+
+  def input(%{type: "datetime-local"} = assigns) do
+    input_text(assigns)
+  end
+
+  attr :field, Phoenix.HTML.FormField, doc: "label for this field"
+  slot :inner_block, required: true
+
+  def label_for(%{field: %Phoenix.HTML.FormField{}} = assigns) do
+    ~H"""
+    <label for={@field.id}>
+      {render_slot(@inner_block)}
+    </label>
+    """
+  end
+
+  attr :id, :any, default: nil
+  attr :name, :any, default: nil
   attr :value, :any
   attr :label, :string, default: nil
   attr :placeholder, :string, default: nil
@@ -229,6 +308,8 @@ defmodule JuntosWeb.CoreComponents do
   attr :type, :string,
     default: "text",
     values: ~w(email hidden text)
+
+  attr :errors, :list, default: []
 
   attr :rest, :global,
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
@@ -244,6 +325,7 @@ defmodule JuntosWeb.CoreComponents do
         </div>
         <input
           id={@id}
+          name={@name}
           class="border-0 p-0 m-0 outline-none text-slate-900 dark:text-slate-400 placeholder-slate-400  dark:placeholder-slate-500 focus:ring-0 bg-transparent"
           type={@type}
           placeholder={@placeholder}
@@ -254,37 +336,8 @@ defmodule JuntosWeb.CoreComponents do
         </div>
       </div>
     </section>
+    <p :if={@errors != []} data-role="error-for-input">{@errors}</p>
     """
-  end
-
-  attr :id, :any, default: nil
-  attr :name, :any
-  attr :label, :string, default: nil
-  attr :value, :any
-
-  attr :type, :string,
-    default: "text",
-    values: ~w(email hidden text)
-
-  attr :field, Phoenix.HTML.FormField,
-    doc: "a form field struct retrieved from the form, for example: @form[:email]"
-
-  attr :errors, :list, default: []
-
-  attr :rest, :global,
-    include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
-                      multiple pattern placeholder readonly required rows size step row onInput)
-
-  slot :inner_block
-
-  def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
-    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
-
-    assigns
-    |> assign(field: nil, id: assigns.id || field.id)
-    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
-    |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
-    |> assign_new(:value, fn -> field.value end)
   end
 
   @doc """
@@ -370,6 +423,14 @@ defmodule JuntosWeb.CoreComponents do
         {gettext("Hang in there while we get back on track")}
         <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
       </.flash>
+    </div>
+    """
+  end
+
+  def page_wrapper(assigns) do
+    ~H"""
+    <div class="flex justify-center">
+      {render_slot(@inner_block)}
     </div>
     """
   end

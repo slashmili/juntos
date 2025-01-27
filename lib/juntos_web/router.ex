@@ -1,6 +1,7 @@
 defmodule JuntosWeb.Router do
   use JuntosWeb, :router
   import PhoenixStorybook.Router
+  import JuntosWeb.UserAuth
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -9,6 +10,7 @@ defmodule JuntosWeb.Router do
     plug :put_root_layout, html: {JuntosWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
   pipeline :api do
@@ -36,6 +38,20 @@ defmodule JuntosWeb.Router do
       get "/:provider", UserExternalAuthController, :auth_new
       get "/:provider/callback", UserExternalAuthController, :callback
     end
+  end
+
+  scope "/", JuntosWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live_session :require_authenticated_user,
+      on_mount: [{JuntosWeb.UserAuth, :ensure_authenticated}] do
+      live "/new", EventLive.New
+    end
+  end
+
+  scope "/", JuntosWeb do
+    pipe_through :browser
+    live "/*path", EventLive.Show
   end
 
   # Other scopes may use custom stacks.
