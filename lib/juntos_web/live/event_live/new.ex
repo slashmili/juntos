@@ -66,7 +66,7 @@ defmodule JuntosWeb.EventLive.New do
       <:label>{gettext "Location"}*</:label>
       <:label_body>{gettext "Go in-person or oline. Add a spot if it's in-person"}</:label_body>
       <:input>
-        <.input_text type="text" placeholder={gettext "Search location"} />
+        <.input_text type="text" class="bg-slate-100" placeholder={gettext "Search location"} />
       </:input>
     </.form_item>
     """
@@ -81,9 +81,14 @@ defmodule JuntosWeb.EventLive.New do
         </.label_for>
       </:label>
       <:input>
-        <.input field={@form[:start_datetime]} type="datetime-local" />
-        <.input field={@form[:end_datetime]} type="datetime-local" />
-        <.input field={@form[:time_zone]} type="text" />
+        <div class="flex justify-end">
+          <JuntosWeb.EventLive.Components.datepicker
+            id="new-event-datepicker"
+            start_datetime_field={@form[:start_datetime]}
+            end_datetime_field={@form[:end_datetime]}
+            time_zone_field={@form[:time_zone]}
+          />
+        </div>
       </:input>
     </.form_item>
     """
