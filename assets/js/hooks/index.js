@@ -1,17 +1,22 @@
 let Hooks = {}
 
 Hooks.EventDatepickerLocalDateTime =  {
-    mounted() {
+  mounted() {
+    this.setCurrentDatetime();
+  },
+  updated() {
+    this.setCurrentDatetime();
+  },
+  setCurrentDatetime() {
     const startDateTimeInput = document.getElementById(this.el.dataset['startDatetimeId']);
     const endDateTimeInput = document.getElementById(this.el.dataset['endDatetimeId']);
     const timeZoneInput = document.getElementById(this.el.dataset['timeZoneId']);
-    
 
-    let now = new Date();
-    let startDate = new Date(now);
+    const now = new Date();
+    const startDate = new Date(now);
     startDate.setMinutes(0, 0, 0);
 
-    let endDate = new Date(startDate);
+    const endDate = new Date(startDate);
     endDate.setHours(startDate.getHours() + 1);
 
     // Check if the end time is 00:00 and adjust the date to the next day
@@ -19,8 +24,15 @@ Hooks.EventDatepickerLocalDateTime =  {
       endDate.setDate(endDate.getDate() + 1);
     }
 
+
     function formatDateTime(date) {
-      return date.toISOString().slice(0, 16);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
     }
 
     if(! startDateTimeInput.value) {
@@ -30,7 +42,7 @@ Hooks.EventDatepickerLocalDateTime =  {
       endDateTimeInput.value = formatDateTime(endDate);
     }
     let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    timeZoneInput.value = timeZone
+    timeZoneInput.value = timeZone;
   }
 }
 
