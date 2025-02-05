@@ -1,6 +1,7 @@
 defmodule Juntos.Events do
   alias Juntos.Events.Event
   alias Juntos.{Repo, UrlShortner}
+  alias Juntos.Events.Uploaders.CoverImage
 
   def change_event(event \\ %Event{}, attr \\ %{}) do
     Event.create_changeset(event, attr)
@@ -31,5 +32,18 @@ defmodule Juntos.Events do
 
   defp create_uuid do
     Ecto.UUID.generate()
+  end
+
+  def event_cover_url(event) do
+    %{
+      media_type: to_file_ext(event.cover_image.file_name),
+      webp: CoverImage.url({event.cover_image, event}, :webp400x400),
+      original: CoverImage.url({event.cover_image, event}, :original),
+      jpg: CoverImage.url({event.cover_image, event}, :jpg400x400)
+    }
+  end
+
+  defp to_file_ext(file_name) do
+    file_name |> Path.extname() |> String.trim(".") |> String.to_atom()
   end
 end

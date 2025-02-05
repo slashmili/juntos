@@ -47,3 +47,8 @@ config :juntos, Juntos.Accounts.ExternalAuthProvider,
   ]
 
 config :phoenix_test, :endpoint, JuntosWeb.Endpoint
+
+config :waffle,
+  storage: Waffle.Storage.Local,
+  storage_dir_prefix: "priv/waffle/test",
+  asset_host: "localhost:4000"

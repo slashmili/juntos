@@ -286,11 +286,12 @@ defmodule JuntosWeb.CoreComponents do
   end
 
   attr :field, Phoenix.HTML.FormField, doc: "label for this field"
+  attr :class, :any, default: []
   slot :inner_block, required: true
 
   def label_for(%{field: %Phoenix.HTML.FormField{}} = assigns) do
     ~H"""
-    <label for={@field.id}>
+    <label for={@field.id} class={@class}>
       {render_slot(@inner_block)}
     </label>
     """

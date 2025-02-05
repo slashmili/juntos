@@ -52,7 +52,7 @@ defmodule JuntosWeb.EventLive.Components do
           type="hidden"
           name={@time_zone_field.name}
           id={@time_zone_field.id}
-          value={@time_zone_field.value}
+          value={@time_zone_field.value || "UTC"}
         />
       </div>
     </div>
