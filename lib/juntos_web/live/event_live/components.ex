@@ -58,4 +58,33 @@ defmodule JuntosWeb.EventLive.Components do
     </div>
     """
   end
+
+  attr :id, :string, required: true
+  attr :api_key, :string, required: true
+
+  def location_finder(assigns) do
+    ~H"""
+    <div id={@id} phx-hook="LocationFinder" data-api-key={@api_key}>
+      <div class="mt-2 grid grid-cols-1">
+        <input
+          type="text"
+          class="col-start-1 row-start-1 block w-full rounded-md bg-white
+      py-1.5 pl-10 pr-10 text-base
+      focus:outline focus:outline-2 focus:-outline-offset-2  sm:pr-9 "
+          autocomplete="new-password"
+          data-1p-ignore
+        />
+        <.icon
+          name="hero-map-pin"
+          class="input-leading-icon pointer-events-none col-start-1 row-start-1 ml-3 size-5 self-center text-gray-400 sm:size-4"
+        />
+        <.icon
+          name="hero-x-mark"
+          class="input-trailing-icon hidden cursor-pointer col-start-1 row-start-1 mr-3 size-5 self-center justify-self-end text-gray-400"
+        />
+      </div>
+      <ul class="" role="listbox"></ul>
+    </div>
+    """
+  end
 end

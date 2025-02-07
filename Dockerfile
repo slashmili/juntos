@@ -17,6 +17,17 @@ ARG DEBIAN_VERSION=bullseye-20250113-slim
 
 ARG BUILDER_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
 ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
+ARG NODE_BUILDER_IMAGE="node:lts-bullseye"
+
+FROM ${NODE_BUILDER_IMAGE} as node-builder
+
+# prepare build dir
+RUN mkdir -p /app/assets
+WORKDIR /app
+# set build ENV
+COPY assets/package.json assets/package-lock.json ./assets/
+RUN cd assets && npm ci --production
+
 
 FROM ${BUILDER_IMAGE} as builder
 
@@ -50,6 +61,7 @@ COPY priv priv
 COPY lib lib
 
 COPY assets assets
+COPY --from=node-builder --chown=nobody:root /app/assets ./assets
 COPY storybook storybook
 
 # compile assets
