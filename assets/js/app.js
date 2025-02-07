@@ -46,3 +46,11 @@ liveSocket.connect()
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
+window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', event => {
+  document.documentElement.classList.toggle('dark', !event.matches);
+});
+
+// Remove dark mode if system prefers light
+if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+  document.documentElement.classList.remove('dark');
+}
