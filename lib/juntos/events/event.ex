@@ -1,13 +1,14 @@
 defmodule Juntos.Events.Event do
   use Ecto.Schema
+  use Waffle.Ecto.Schema
   import Ecto.Changeset
 
-  alias Juntos.{Accounts, Chrono}
+  alias Juntos.{Accounts, Chrono, Events}
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "events" do
     field :name, :string
-    field :cover_image, :string
+    field :cover_image, Events.Uploaders.CoverImage.Type
     field :start_datetime, :naive_datetime
     field :end_datetime, :naive_datetime
     field :time_zone, :string
@@ -35,6 +36,7 @@ defmodule Juntos.Events.Event do
       :time_zone,
       :slug
     ])
+    |> cast_attachments(attrs, [:cover_image], allow_paths: true)
     |> validate_inclusion(:time_zone, Chrono.TimeZone.known_timezones())
     |> cast_embed(:location, with: &location_chageset/2)
     |> validate_required([:name, :start_datetime, :end_datetime, :time_zone, :slug])

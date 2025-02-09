@@ -9,7 +9,8 @@ defmodule JuntosWeb.EventLive.New do
     {:ok,
      socket
      |> assign(:uploaded_cover, [])
-     |> allow_upload(:cover, accept: ~w(.jpg .jpeg .png .webp), max_entries: 1)
+     |> assign(:page_title, "Create a new event")
+     |> allow_upload(:cover, accept: ~w(.jpg .jpeg .gif .png .webp), max_entries: 1)
      |> assign_form(changeset)}
   end
 
@@ -25,7 +26,28 @@ defmodule JuntosWeb.EventLive.New do
 
   @impl Phoenix.LiveView
   def handle_event("save", params, socket) do
-    case Events.create_event(params["event"], socket.assigns.current_user) do
+    upload_result =
+      consume_uploaded_entries(socket, :cover, fn meta, entry ->
+        image_plug_upload =
+          %Plug.Upload{
+            content_type: entry.client_type,
+            filename: entry.client_name,
+            path: meta.path
+          }
+
+        {:postpone, image_plug_upload}
+      end)
+
+    event_params =
+      case upload_result do
+        [image_plug_upload] ->
+          Map.put(params["event"], "cover_image", image_plug_upload)
+
+        _ ->
+          params["event"]
+      end
+
+    case Events.create_event(event_params, socket.assigns.current_user) do
       {:ok, event} ->
         {:noreply, redirect(socket, to: ~p"/#{event.slug}")}
 
@@ -79,6 +101,9 @@ defmodule JuntosWeb.EventLive.New do
         <.label_for field={@form[:start_datetime]}>
           {gettext "Event Date"}*
         </.label_for>
+        <.label_for field={@form[:end_datetime]} class="hidden">
+          {gettext "Event End Date"}*
+        </.label_for>
       </:label>
       <:input>
         <div class="flex justify-end">
@@ -110,7 +135,9 @@ defmodule JuntosWeb.EventLive.New do
   defp cover_input(assigns) do
     ~H"""
     <.form_item>
-      <:label>{gettext "Cover image"}</:label>
+      <:label>
+        <label for={@uploads.cover.ref}>{gettext "Cover image"}</label>
+      </:label>
       <:label_body>{gettext "Skip the upload? We'll pick a cool image for you!"}</:label_body>
       <:input>
         <section phx-drop-target={@uploads.cover.ref}>
@@ -141,7 +168,7 @@ defmodule JuntosWeb.EventLive.New do
   defp event_form(assigns) do
     ~H"""
     <div class="max-w-6xl  pt-6 px-4 pb-4  w-[680px] flex flex-col gap-4" data-role="new-event">
-      <.simple_form for={@form} phx-change="validate" phx-submit="save">
+      <.simple_form for={@form} phx-change="validate" phx-submit="save" id="createEvent">
         {render_slot(@inner_block)}
       </.simple_form>
     </div>

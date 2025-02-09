@@ -95,3 +95,8 @@ config :juntos, Juntos.Accounts.ExternalAuthProvider,
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+config :waffle,
+  storage: Waffle.Storage.Local,
+  storage_dir_prefix: "priv/waffle/dev",
+  asset_host: "http://localhost:4000"

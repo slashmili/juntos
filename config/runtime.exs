@@ -75,6 +75,15 @@ if config_env() == :prod do
       client_secret: System.get_env("OAUTH_GOOGLE_CLIENT_SECRET")
     ]
 
+  config :waffle,
+    storage: Waffle.Storage.S3,
+    bucket: {:system, "AWS_S3_BUCKET"},
+    asset_host: {:system, "AWS_ASSET_HOST"}
+
+  config :ex_aws, :s3,
+    scheme: "https://",
+    host: {:system, "AWS_ENDPOINT_URL_S3"}
+
   # ## SSL Support
   #
   # To get SSL working, you will need to add the `https` key
