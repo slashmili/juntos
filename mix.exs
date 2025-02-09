@@ -65,6 +65,7 @@ defmodule Juntos.MixProject do
       {:req, "~> 0.5.8"},
       {:mimic, "~> 1.10", only: :test},
       {:phoenix_test, "~> 0.5.1", only: :test},
+      {:phoenix_test_playwright, "~> 0.4", only: :test, runtime: false},
       # Start Upload Deps
       {:waffle, "~> 1.1"},
       {:waffle_ecto, "~> 0.0.12"},

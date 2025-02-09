@@ -2,5 +2,8 @@
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.8",
     "@trevoreyre/autocomplete-js": "^3.0.3"
+  },
+  "devDependencies": {
+    "playwright": "^1.50.1"
   }
 }

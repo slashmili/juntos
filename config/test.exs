@@ -52,3 +52,16 @@ config :waffle,
   storage: Waffle.Storage.Local,
   storage_dir_prefix: "priv/waffle/test",
   asset_host: "localhost:4000"
+
+config :phoenix_test, otp_app: :your_app
+config :juntos, JuntosWeb.Endpoint, server: true
+
+config :phoenix_test,
+  otp_app: :juntos,
+  playwright: [
+    browser: :chromium,
+    headless: System.get_env("PW_HEADLESS", "true") in ~w(t true),
+    js_logger: false,
+    screenshot: System.get_env("PW_SCREENSHOT", "false") in ~w(t true),
+    trace: System.get_env("PW_TRACE", "false") in ~w(t true)
+  ]
