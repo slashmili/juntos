@@ -49,11 +49,6 @@ defmodule JuntosWeb.Router do
     end
   end
 
-  scope "/", JuntosWeb do
-    pipe_through :browser
-    live "/*path", EventLive.Show
-  end
-
   # Other scopes may use custom stacks.
   # scope "/api", JuntosWeb do
   #   pipe_through :api
@@ -74,5 +69,10 @@ defmodule JuntosWeb.Router do
       live_dashboard "/dashboard", metrics: JuntosWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  scope "/", JuntosWeb do
+    pipe_through :browser
+    live "/*path", EventLive.Show
   end
 end
