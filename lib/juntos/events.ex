@@ -34,6 +34,15 @@ defmodule Juntos.Events do
     Ecto.UUID.generate()
   end
 
+  def event_cover_url(%{cover_image: nil}) do
+    %{
+      media_type: nil,
+      webp: nil,
+      original: nil,
+      jpg: nil
+    }
+  end
+
   def event_cover_url(event) do
     %{
       media_type: to_file_ext(event.cover_image.file_name),
