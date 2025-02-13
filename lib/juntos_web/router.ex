@@ -31,6 +31,7 @@ defmodule JuntosWeb.Router do
 
     get "/", PageController, :home
     live "/users/log_in", UserLoginLive, :new
+    post "/users/log_in", UserSessionController, :create
 
     scope "/users/auth" do
       get "/register", UserExternalAuthController, :new

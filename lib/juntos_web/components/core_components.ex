@@ -107,11 +107,9 @@ defmodule JuntosWeb.CoreComponents do
   def simple_form(assigns) do
     ~H"""
     <.form :let={f} for={@for} as={@as} {@rest}>
-      <div class="">
-        {render_slot(@inner_block, f)}
-        <div :for={action <- @actions} class="">
-          {render_slot(action, f)}
-        </div>
+      {render_slot(@inner_block, f)}
+      <div :for={action <- @actions} class="">
+        {render_slot(action, f)}
       </div>
     </.form>
     """
@@ -277,11 +275,7 @@ defmodule JuntosWeb.CoreComponents do
     |> input()
   end
 
-  def input(%{type: "text"} = assigns) do
-    input_text(assigns)
-  end
-
-  def input(%{type: "datetime-local"} = assigns) do
+  def input(%{type: type} = assigns) when type in ~w(text email datetime-local) do
     input_text(assigns)
   end
 
@@ -329,6 +323,7 @@ defmodule JuntosWeb.CoreComponents do
           name={@name}
           class="border-0 p-0 m-0 outline-none text-slate-900 dark:text-slate-400 placeholder-slate-400  dark:placeholder-slate-500 focus:ring-0 bg-transparent"
           type={@type}
+          value={@value}
           placeholder={@placeholder}
           {@rest}
         />

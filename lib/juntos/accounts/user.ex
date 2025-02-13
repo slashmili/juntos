@@ -9,6 +9,8 @@ defmodule Juntos.Accounts.User do
     field :name, :string
     field :confirmed_at, :naive_datetime
 
+    field :otp_code, :string, virtual: true
+
     timestamps(type: :utc_datetime_usec)
   end
 
@@ -69,8 +71,17 @@ defmodule Juntos.Accounts.User do
   @doc """
   Confirms the account by setting `confirmed_at`.
   """
+
   def confirm_changeset(user) do
-    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+    now = now(user)
     change(user, confirmed_at: now)
+  end
+
+  defp now(%Accounts.User{} = user) do
+    user.confirmed_at || NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+  end
+
+  defp now(_) do
+    NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
   end
 end

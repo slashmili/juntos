@@ -87,9 +87,7 @@ defmodule JuntosWeb.EventLive.New do
     <.form_item>
       <:label>{gettext "Location"}*</:label>
       <:label_body>{gettext "Go in-person or oline. Add a spot if it's in-person"}</:label_body>
-      <:input>
-        <.input_text type="text" class="bg-slate-100" placeholder={gettext "Search location"} />
-      </:input>
+      <:input></:input>
     </.form_item>
     """
   end

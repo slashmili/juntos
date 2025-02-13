@@ -49,4 +49,25 @@ defmodule Juntos.AccountsFixtures do
     |> valid_user_extenral_auth_attributes()
     |> Juntos.Accounts.ExternalAuthProvider.User.new(provider)
   end
+
+  def fetch_otp_code do
+    import Swoosh.TestAssertions
+    import ExUnit.Assertions
+    test_pid = self()
+
+    assert_email_sent(fn email ->
+      otp_pattern = ~r/One-Time-Code:\s*\n\s*(\w+)\s*\n/
+      token_pattern = ~r{confirm/([\w-]+)\n\n}
+
+      [[_, otp_code]] = Regex.scan(otp_pattern, email.text_body)
+
+      [[_, otp_token]] = Regex.scan(token_pattern, email.text_body)
+      send(test_pid, {:otp_code, otp_code})
+      send(test_pid, {:otp_token, otp_token})
+    end)
+
+    assert_received({:otp_code, otp_code})
+    # assert_received({:otp_token, otp_token})
+    otp_code
+  end
 end

@@ -73,4 +73,33 @@ defmodule Juntos.AccountsTest do
       refute SUT.get_user_by_session_token(token)
     end
   end
+
+  describe "create_otp_session/1" do
+    setup do
+      %{user: user_fixture()}
+    end
+
+    test "creates otp sessions", %{user: user} do
+      assert otp_session = SUT.create_otp_session(user)
+      assert otp_session.user_token.user_id == user.id
+      assert otp_session.user.id == user.id
+      assert String.length(otp_session.otp_code) == 6
+    end
+  end
+
+  describe "validate_user_with_otp/2" do
+    setup do
+      %{user: user_fixture()}
+    end
+
+    test "returns user token when token is valid", %{user: user} do
+      assert otp_session = SUT.create_otp_session(user)
+      assert {:ok, user_token} = SUT.validate_user_with_otp(user, otp_session.url_token)
+      assert user_token.user_id == user.id
+    end
+
+    test "returns error when token is invalid", %{user: user} do
+      assert :error = SUT.validate_user_with_otp(user, "foobar")
+    end
+  end
 end
