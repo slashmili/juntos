@@ -53,17 +53,7 @@ jobs:
         run: mix deps.get --quiet --no-archives-check
 
       - name: Run unittest tests
-        run: mix test --exclude feature
-        env:
-          MIX_ENV: test
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: juntos_test
-      - name: Run feature tests
-        run: |
-          npm --prefix assets i
-          npm --prefix assets exec playwright install chromium --with-deps
-          mix test --only feature
+        run: mix test
         env:
           MIX_ENV: test
           POSTGRES_USER: postgres

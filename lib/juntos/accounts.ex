@@ -1,5 +1,19 @@
 defmodule Juntos.Accounts.OtpSession do
   defstruct [:otp_code, :url_token, :user, :user_token]
+
+  def generate_otp_token(user) do
+    default = [otp_generator: &__MODULE__.do_generate_otp_token/1]
+
+    otp_generator = Application.get_env(:juntos, __MODULE__, default)[:otp_generator]
+
+    otp_generator.(user)
+  end
+
+  def do_generate_otp_token(_user) do
+    otp_code = :crypto.strong_rand_bytes(3) |> Base.encode16()
+    otp_token = otp_code <> :crypto.strong_rand_bytes(29)
+    {otp_code, otp_token}
+  end
 end
 
 defmodule Juntos.Accounts do
@@ -69,8 +83,7 @@ defmodule Juntos.Accounts do
   end
 
   def create_otp_session(user) do
-    otp_code = :crypto.strong_rand_bytes(3) |> Base.encode16()
-    otp_token = otp_code <> :crypto.strong_rand_bytes(29)
+    {otp_code, otp_token} = Juntos.Accounts.OtpSession.generate_otp_token(user)
 
     {encoded_token, user_token} =
       UserToken.build_otp_token(user, "otp", otp_token)

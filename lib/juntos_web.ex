@@ -55,6 +55,10 @@ defmodule JuntosWeb do
       use Phoenix.LiveView,
         layout: {JuntosWeb.Layouts, :app}
 
+      if Application.compile_env(:juntos, :sql_sandbox) do
+        on_mount(JuntosWeb.LiveAsyncFeatureTests)
+      end
+
       unquote(html_helpers())
     end
   end

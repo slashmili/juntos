@@ -18,7 +18,7 @@ config :juntos, Juntos.Repo,
 config :juntos, JuntosWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "6isbZ7ygtA35j3muxiabUiRDS41Ou7tfvAmy43jgtk7BoKu9SEIpZH3gN3chkz6I",
-  server: false
+  server: true
 
 # In test we don't send emails
 config :juntos, Juntos.Mailer, adapter: Swoosh.Adapters.Test
@@ -46,22 +46,33 @@ config :juntos, Juntos.Accounts.ExternalAuthProvider,
     client_secret: "google_client_secret"
   ]
 
-config :phoenix_test, :endpoint, JuntosWeb.Endpoint
-
 config :waffle,
   storage: Waffle.Storage.Local,
   storage_dir_prefix: "priv/waffle/test",
   asset_host: "localhost:4000"
 
-config :phoenix_test, otp_app: :your_app
-config :juntos, JuntosWeb.Endpoint, server: true
+config :juntos, sql_sandbox: true
+config :phoenix_test, otp_app: :juntos
+config :phoenix_test, :endpoint, JuntosWeb.Endpoint
 
 config :phoenix_test,
   otp_app: :juntos,
   playwright: [
+    cli: "assets/node_modules/playwright/cli.js",
     browser: :chromium,
     headless: System.get_env("PW_HEADLESS", "true") in ~w(t true),
     js_logger: false,
     screenshot: System.get_env("PW_SCREENSHOT", "false") in ~w(t true),
-    trace: System.get_env("PW_TRACE", "false") in ~w(t true)
-  ]
+    trace: System.get_env("PW_TRACE", "false") in ~w(t true),
+    timeout: :timer.seconds(5)
+  ],
+  timeout_ms: 2000
+
+config :juntos, Juntos.Accounts.OtpSession,
+  otp_generator: fn user ->
+    if user.email =~ "otp" do
+      {"123456", "1234567890"}
+    else
+      Juntos.Accounts.OtpSession.do_generate_otp_token(user)
+    end
+  end
