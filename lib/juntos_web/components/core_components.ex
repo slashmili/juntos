@@ -70,7 +70,7 @@ defmodule JuntosWeb.CoreComponents do
         @variant_class,
         @size_class,
         @class,
-        "flex gap-1 justify-center font-medium  max-w-md"
+        "flex gap-1 justify-center font-medium  max-w-md animated cursor-pointer"
       ]}
       {@rest}
     >
@@ -195,20 +195,42 @@ defmodule JuntosWeb.CoreComponents do
   Render Hero section
   """
 
-  slot :title, doc: "the title block", required: true
+  attr :align, :string, default: "center", values: ~w(center left)
   slot :subtitle, doc: "the optional subtitle block"
   slot :body, doc: "the optional body block"
+  slot :inner_block, required: true
 
   def hero(assigns) do
     ~H"""
-    <section class="max-w-md text-center pt-8 flex gap-2 flex-col">
-      <div class="text-3xl font-semibold text-slate-900 dark:text-slate-200">
-        {render_slot(@title)}
+    <section class={["max-w-m w-full pt-8 flex gap-2 flex-col", @align == "center" && "text-center"]}>
+      <div class="text-primary text-xl md:text-3xl font-semibold ">
+        {render_slot(@inner_block)}
       </div>
-      <div :if={@subtitle} class="text-base font-normal text-slate-500 dark:text-slate-400">
+      <div :if={@subtitle} class="text-base font-normal text-secondary">
         {render_slot(@subtitle)}
       </div>
-      <div :if={@body} class="text-base font-normal text-slate-900 dark:text-slate-200">
+      <div :if={@body} class="text-sm font-normal text-primary">
+        {render_slot(@body)}
+      </div>
+    </section>
+    """
+  end
+
+  attr :align, :string, default: "center", values: ~w(center left)
+  slot :subtitle, doc: "the optional subtitle block"
+  slot :body, doc: "the optional body block"
+  slot :inner_block, required: true
+
+  def content_text(assigns) do
+    ~H"""
+    <section class="flex flex-col gap-2 max-w-md">
+      <div class="text-primary text-base font-bold">
+        {render_slot(@inner_block)}
+      </div>
+      <div :if={@subtitle} class="text-sm font-normal text-secondary">
+        {render_slot(@subtitle)}
+      </div>
+      <div :if={@body} class="text-sm font-normal text-primary">
         {render_slot(@body)}
       </div>
     </section>
@@ -279,23 +301,10 @@ defmodule JuntosWeb.CoreComponents do
     input_text(assigns)
   end
 
-  attr :field, Phoenix.HTML.FormField, doc: "label for this field"
-  attr :class, :any, default: []
-  slot :inner_block, required: true
-
-  def label_for(%{field: %Phoenix.HTML.FormField{}} = assigns) do
-    ~H"""
-    <label for={@field.id} class={@class}>
-      {render_slot(@inner_block)}
-    </label>
-    """
-  end
-
   attr :id, :any, default: nil
   attr :name, :any, default: nil
   attr :value, :any
   attr :label, :string, default: nil
-  attr :placeholder, :string, default: nil
 
   attr :icon_left, :string, default: nil
   attr :icon_right, :string, default: nil
@@ -312,27 +321,30 @@ defmodule JuntosWeb.CoreComponents do
 
   def input_text(assigns) do
     ~H"""
-    <section>
-      <label class="text-slate-600 dark:text-slate-400 pb-0.5 text-sm" for={@id}>{@label}</label>
-      <div class="px-3 py-2 border border-slate-400 rounded-lg flex gap-2 text-slate-400 dark:text-slate-500 focus-within:text-slate-900 dark:focus-within:text-slate-400 focus-within:border-2">
-        <div :if={@icon_left}>
-          <.icon name={@icon_left} class="w-6 h-6" />
-        </div>
-        <input
-          id={@id}
-          name={@name}
-          class="border-0 p-0 m-0 outline-none text-slate-900 dark:text-slate-400 placeholder-slate-400  dark:placeholder-slate-500 focus:ring-0 bg-transparent"
-          type={@type}
-          value={@value}
-          placeholder={@placeholder}
-          {@rest}
-        />
-        <div :if={@icon_right}>
-          <.icon name={@icon_right} class="w-6 h-6" />
-        </div>
-      </div>
+    <section class="mt-2 grid grid-cols-1 w-full max-w-md">
+      <input
+        id={@id}
+        type={@type}
+        name={@name}
+        class="col-start-1 row-start-1 block bg-secondary border border-neutral-secondary rounded-lg py-3 px-2 font-sans font-normal text-base text-primary outline-0 animated"
+        autocomplete="new-password"
+        value={@value}
+        data-1p-ignore
+        {@rest}
+      />
     </section>
-    <p :if={@errors != []} data-role="error-for-input">{@errors}</p>
+    """
+  end
+
+  attr :field, Phoenix.HTML.FormField, doc: "label for this field"
+  attr :class, :any, default: []
+  slot :inner_block, required: true
+
+  def label_for(%{field: %Phoenix.HTML.FormField{}} = assigns) do
+    ~H"""
+    <label for={@field.id} class={@class}>
+      {render_slot(@inner_block)}
+    </label>
     """
   end
 

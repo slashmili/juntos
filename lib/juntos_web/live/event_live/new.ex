@@ -138,7 +138,7 @@ defmodule JuntosWeb.EventLive.New do
       </:label>
       <:label_body>{gettext "Skip the upload? We'll pick a cool image for you!"}</:label_body>
       <:input>
-        <section phx-drop-target={@uploads.cover.ref}>
+        <section phx-drop-target={@uploads.cover.ref} class="text-primary">
           <article :for={entry <- @uploads.cover.entries} class="upload-entry">
             <figure>
               <.live_img_preview entry={entry} class="w-52" />
@@ -175,7 +175,9 @@ defmodule JuntosWeb.EventLive.New do
 
   defp form_header(assigns) do
     ~H"""
-    <div class="text-3xl font-bold text-slate-900">{gettext "Create a new event"}</div>
+    <.hero align="left">
+      {gettext "Create a new event"}
+    </.hero>
     """
   end
 
@@ -187,8 +189,8 @@ defmodule JuntosWeb.EventLive.New do
     ~H"""
     <div class="flex max-w-6xl border-b-2 last:border-b-0 py-6">
       <div class="w-[240px]">
-        <div class="font-bold text-slate-900">{render_slot(@label)}</div>
-        <div class="text-sm text-slate-600">{render_slot(@label_body)}</div>
+        <div class="font-bold text-primary">{render_slot(@label)}</div>
+        <div class="text-sm text-secondary">{render_slot(@label_body)}</div>
       </div>
       <div class="min-w-12 grow">{render_slot(@input)}</div>
     </div>

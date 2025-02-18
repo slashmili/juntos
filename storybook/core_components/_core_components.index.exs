@@ -13,4 +13,10 @@ defmodule Storybook.CoreComponents do
   def entry("input"), do: [icon: {:fa, "input-text", :thin}]
   def entry("list"), do: [icon: {:fa, "list", :thin}]
   def entry("table"), do: [icon: {:fa, "table", :thin}]
+
+  def entry("navbar"),
+    do: [icon: {:local, "hero-bars-2", "psb-w-5 psp-h-5"}]
+
+  def entry("content_text"),
+    do: [icon: {:local, "hero-document-text", "psb-w-5 psp-h-5"}]
 end

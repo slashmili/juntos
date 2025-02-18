@@ -1,0 +1,48 @@
+@layer base {
+  :root {
+    --color-bg-secondary: var(--color-white);
+    --color-border-neutral-primary: var(--color-neutral-200);
+    --color-border-neutral-secondary: var(--color-neutral-400);
+    --color-border-neutral-secondary-focused: var(--color-red-100);
+    --color-text-secondary: var(--color-slate-500);
+    --color-text-primary: var(--color-slate-900);
+  }
+
+  .dark {
+    --color-bg-secondary: var(--color-neutral-900);
+    --color-border-neutral-primary: var(--color-neutral-600);
+    --color-border-neutral-secondary: var(--color-neutral-500);
+    --color-border-neutral-secondary-focused: var(--color-neutral-100);
+    --color-text-secondary: var(--color-slate-400);
+    --color-text-primary: var(--color-slate-300);
+  }
+}
+
+@layer base {
+  .bg-secondary {
+    background-color: var(--color-bg-secondary);
+  }
+
+  .border-neutral-primary {
+    border-color: var(--color-border-neutral-primary);
+  }
+
+  .border-neutral-secondary {
+    border-color: var(--color-border-neutral-secondary);
+    @variant focus {
+      border-color: var(--color-border-neutral-secondary-focused);
+    }
+  }
+
+  .text-secondary {
+    color: var(--color-text-secondary);
+  }
+
+  .text-primary {
+    color: var(--color-text-primary);
+    @variant placeholder {
+      color: var(--color-text-secondary);
+    }
+  }
+}
+

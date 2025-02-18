@@ -1,6 +1,6 @@
-defmodule Storybook.Components.CoreComponents.Hero do
+defmodule Storybook.Components.CoreComponents.ContentText do
   use PhoenixStorybook.Story, :component
-  def function, do: &JuntosWeb.CoreComponents.hero/1
+  def function, do: &JuntosWeb.CoreComponents.content_text/1
   def render_source, do: :function
 
   def variations do
@@ -9,7 +9,7 @@ defmodule Storybook.Components.CoreComponents.Hero do
         id: :hero,
         attributes: %{},
         slots: [
-          "Let's get together",
+          "Cover image",
           "<:subtitle>Discover conferences and events that fit your passion, online or in person.</:subtitle>",
           "<:body>From virtual conferences to live gatherings, our platform helps you explore and connect with experiences that match your interests. Dive into a world of possibilities and find your next must-attend event today!</:body>"
         ]
