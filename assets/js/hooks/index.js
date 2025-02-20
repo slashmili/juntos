@@ -1,4 +1,8 @@
-let Hooks = {}
+import {TextEditor} from './text_editor';
+
+let Hooks = {};
+
+Hooks.TextEditor = TextEditor;
 
 Hooks.EventDatepickerLocalDateTime =  {
   mounted() {

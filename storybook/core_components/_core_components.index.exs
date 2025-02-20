@@ -19,4 +19,7 @@ defmodule Storybook.CoreComponents do
 
   def entry("content_text"),
     do: [icon: {:local, "hero-document-text", "psb-w-5 psp-h-5"}]
+
+  def entry("bottom_sheet"),
+    do: [icon: {:local, "hero-document-arrow-up", "psb-w-5 psp-h-5"}]
 end

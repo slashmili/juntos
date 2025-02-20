@@ -1,6 +1,8 @@
 @layer base {
   :root {
-    --color-bg-secondary: var(--color-white);
+    --color-bg-neutral-primary: var(--color-white);
+    --color-bg-secondary: var(--color-slate-100);
+    --color-bg-secondary: var(--color-slate-100);
     --color-border-neutral-primary: var(--color-neutral-200);
     --color-border-neutral-secondary: var(--color-neutral-400);
     --color-border-neutral-secondary-focused: var(--color-red-100);
@@ -9,6 +11,7 @@
   }
 
   .dark {
+    --color-bg-neutral-primary: var(--color-neutral-950);
     --color-bg-secondary: var(--color-neutral-900);
     --color-border-neutral-primary: var(--color-neutral-600);
     --color-border-neutral-secondary: var(--color-neutral-500);
@@ -19,6 +22,10 @@
 }
 
 @layer base {
+  .bg-neutral-primary {
+    background-color: var(--color-bg-neutral-primary);
+  }
+
   .bg-secondary {
     background-color: var(--color-bg-secondary);
   }

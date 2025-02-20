@@ -5,6 +5,7 @@
 @variant phx-change-loading (.phx-change-loading&, .phx-change-loading &);
 
 @plugin "../heroicons.tailwind.plugin.js";
+@plugin "@tailwindcss/typography";
 
 @source "../js/**/*.js";
 @source "../../lib/juntos_web.ex";
@@ -22,4 +23,16 @@ body {
   @variant dark {
     @apply bg-neutral-950;
   }
+}
+
+.tiptap {
+  color: var(--color-text-primary);
+}
+
+.tiptap * {
+  color: inherit;
+}
+
+.tiptap pre  {
+  background-color: var(--color-bg-secondary);
 }

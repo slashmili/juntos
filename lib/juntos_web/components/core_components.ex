@@ -70,7 +70,7 @@ defmodule JuntosWeb.CoreComponents do
         @variant_class,
         @size_class,
         @class,
-        "flex gap-1 justify-center font-medium  max-w-md animated cursor-pointer"
+        "flex gap-1 justify-center font-medium animated cursor-pointer"
       ]}
       {@rest}
     >
@@ -237,6 +237,42 @@ defmodule JuntosWeb.CoreComponents do
     """
   end
 
+  attr :id, :any, default: nil
+  attr :name, :any
+  attr :editable, :boolean, default: false
+  attr :autofocus, :boolean, default: false
+  attr :value, :any, default: nil
+
+  attr :field, Phoenix.HTML.FormField,
+    doc: "a form field struct retrieved from the form, for example: @form[:email]"
+
+  attr :class, :any, default: nil
+
+  def text_editor(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    assigns
+    |> assign(field: nil, id: assigns.id || field.id)
+    |> assign_new(:name, fn -> field.name end)
+    |> assign_new(:value, fn -> field.value end)
+    |> text_editor
+  end
+
+  def text_editor(assigns) do
+    ~H"""
+    <div
+      id={@id}
+      phx-hook="TextEditor"
+      data-value={@value}
+      data-editable={@editable}
+      data-autofocus={@autofocus}
+      class={["text-primary", @class]}
+      phx-update="ignore"
+    >
+      <div data-editor={@name}></div>
+      <input type="hidden" name={@name} value={@value} data-editor-hidden={@name} />
+    </div>
+    """
+  end
+
   @doc """
   Renders an input with label and error messages.
 
@@ -345,6 +381,91 @@ defmodule JuntosWeb.CoreComponents do
     <label for={@field.id} class={@class}>
       {render_slot(@inner_block)}
     </label>
+    """
+  end
+
+  @doc """
+  Renders a modal.
+
+  ## Examples
+
+      <.bottom_sheet id="confirm-modal">
+        This is a modal.
+      </.bottom_sheet>
+
+  JS commands may be passed to the `:on_cancel` to configure
+  the closing/cancel event, for example:
+
+      <.bottom_sheet id="confirm" on_cancel={JS.navigate(~p"/posts")}>
+        This is another modal.
+      </.bottom_sheet>
+
+  """
+  attr :id, :string, required: true
+  attr :show, :boolean, default: false
+  attr :on_cancel, JS, default: %JS{}
+  slot :inner_block, required: true
+  slot :header, required: false
+  slot :footer, required: false
+
+  slot :body, required: true do
+    attr :class, :string, required: false, doc: "body class"
+  end
+
+  def bottom_sheet(assigns) do
+    ~H"""
+    <div
+      id={@id}
+      phx-mounted={@show && show_bottom_sheet(@id)}
+      phx-remove={hide_bottom_sheet(@id)}
+      data-cancel={JS.exec(@on_cancel, "phx-remove")}
+      class="relative z-50 hidden"
+    >
+      <div
+        id={"#{@id}-overlay"}
+        class="fixed inset-0 bg-black/80  opacity-0 pointer-events-none transition-opacity duration-300"
+        aria-hidden="true"
+      >
+      </div>
+
+      <.focus_wrap
+        id={"#{@id}-container"}
+        phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
+        phx-key="escape"
+        phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
+        class="fixed
+    bottom-0 left-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 
+    w-full max-h-1/2 min-h-4/10   sm:w-xl sm:h-auto sm:max-h-15/20
+     sm:-translate-x-1/2 sm:-translate-y-1/2  shadow-xl rounded-t-2xl sm:rounded-lg 
+        transform transition-transform duration-300 opacity-0 pointer-events-none
+        translate-y-full translate-y-0 
+        p-4
+        flex flex-col  gap-2
+        bg-secondary
+    justify-between
+    "
+      >
+        <div class="flex justify-between items-center">
+          {render_slot(@header)}
+          <button
+            type="button"
+            phx-click={JS.exec("data-cancel", to: "##{@id}")}
+            aria-label={gettext("close")}
+            class="text-secondary cursor-pointer text-xl Xbasis-1/10"
+          >
+            <.icon name="hero-x-mark-solid" class="h-5 w-5" />
+          </button>
+        </div>
+
+        <div id={"#{@id}-content"} class={["max-h-auto overflow-y-auto grow", hd(@body).class]}>
+          {render_slot(@body)}
+        </div>
+
+        <div>
+          {render_slot(@footer)}
+        </div>
+      </.focus_wrap>
+    </div>
     """
   end
 
@@ -579,6 +700,25 @@ defmodule JuntosWeb.CoreComponents do
          "opacity-100 translate-y-0 sm:scale-100",
          "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"}
     )
+  end
+
+  def show_bottom_sheet(js \\ %JS{}, id) when is_binary(id) do
+    js
+    |> JS.show(to: "##{id}")
+    |> JS.toggle_class("opacity-0 pointer-events-none", to: "##{id}-overlay")
+    |> JS.toggle_class("opacity-0 pointer-events-none translate-y-full", to: "##{id}-container")
+    |> JS.add_class("overflow-hidden", to: "body")
+    |> JS.focus_first(to: "##{id}-content")
+  end
+
+  def hide_bottom_sheet(js \\ %JS{}, id) when is_binary(id) do
+    js
+    |> JS.hide(to: "##{id}")
+    |> JS.toggle_class("opacity-0 pointer-events-none", to: "##{id}-overlay")
+    |> JS.toggle_class("opacity-0 pointer-events-none translate-y-full", to: "##{id}-container")
+    |> JS.toggle_class("hidden", to: "##{id}")
+    |> JS.remove_class("overflow-hidden", to: "body")
+    |> JS.pop_focus()
   end
 
   def show_modal(js \\ %JS{}, id) when is_binary(id) do
