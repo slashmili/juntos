@@ -12,7 +12,8 @@ defmodule Juntos.Events.Event do
     field :start_datetime, :naive_datetime
     field :end_datetime, :naive_datetime
     field :time_zone, :string
-    field :description
+    field :description, :string, default: ""
+    field :description_editor, :string, virtual: true
     field :slug, :string
 
     embeds_one :location, Location, primary_key: false, on_replace: :delete do

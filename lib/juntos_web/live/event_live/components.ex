@@ -2,6 +2,7 @@ defmodule JuntosWeb.EventLive.Components do
   use Phoenix.Component
   use Gettext, backend: JuntosWeb.Gettext
   import JuntosWeb.CoreComponents
+  alias Phoenix.LiveView.JS
 
   attr :id, :string
   attr :start_datetime_field, Phoenix.HTML.FormField, doc: "@form[:start_datetime]"
@@ -86,5 +87,58 @@ defmodule JuntosWeb.EventLive.Components do
       <ul class="" role="listbox"></ul>
     </div>
     """
+  end
+
+  attr :show_desc, :boolean, required: true
+  attr :value, :string, required: true
+
+  attr :description_editor, Phoenix.HTML.FormField,
+    doc: "a shadow form container for orignial value"
+
+  def description_editor(assigns) do
+    ~H"""
+    <button
+      type="button"
+      phx-click="toggle-sheet"
+      class="w-full border border-neutral-primary rounded-lg text-secondary bg-secondary flex px-2 py-1 min-h-24 max-h-24 cursor-text"
+    >
+      <span :if={@value in [nil, ""]}>
+        {gettext "Share details about your event..."}
+      </span>
+      <span :if={@value not in [nil, ""]}>
+        {summerize_description(@value)}
+      </span>
+    </button>
+    <.bottom_sheet :if={@show_desc} id="description-editor" show on_cancel={JS.push("toggle-sheet")}>
+      <:header>
+        <h2 class="text-base text-primary font-bold">{gettext "Describe Your Event"}</h2>
+      </:header>
+      <:body class="overflow-y-auto rounded-lg bg-neutral-primary w-full">
+        <.text_editor field={@description_editor} value={@value} editable autofocus />
+      </:body>
+      <:footer>
+        <.button type="button" class="w-full" phx-click={JS.push("toggle-sheet")}>
+          Save
+        </.button>
+      </:footer>
+    </.bottom_sheet>
+    """
+  end
+
+  defp summerize_description(value) do
+    Jason.decode!(value)
+    |> do_summerize_description()
+  end
+
+  defp do_summerize_description(%{"content" => [head | _]}) do
+    do_summerize_description(head)
+  end
+
+  defp do_summerize_description(%{"text" => text}) do
+    "#{String.slice(text, 0, 20)}..."
+  end
+
+  defp do_summerize_description(_) do
+    "..."
   end
 end

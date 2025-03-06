@@ -16,8 +16,16 @@ defmodule JuntosWeb.EventLive.New do
   end
 
   @impl Phoenix.LiveView
-  def handle_event("validate", _params, socket) do
-    {:noreply, socket}
+  def handle_event("validate", %{"event" => event_params}, socket) do
+    event_params =
+      if event_params["description_editor"] do
+        Map.put(event_params, "description", event_params["description_editor"])
+      else
+        event_params
+      end
+
+    changeset = Events.change_event(%Events.Event{}, event_params) |> Map.put(:action, :validate)
+    {:noreply, socket |> assign_form(changeset)}
   end
 
   @impl Phoenix.LiveView
@@ -69,7 +77,11 @@ defmodule JuntosWeb.EventLive.New do
       <.event_form form={@form}>
         <.form_header />
         <.name_input name={@form[:name]} />
-        <.description_input show_desc={@show_desc} name={@form[:name]} />
+        <.description_input
+          show_desc={@show_desc}
+          description={@form[:description]}
+          description_editor={@form[:description_editor]}
+        />
         <.cover_input form={@form} uploads={@uploads} />
         <.date_input form={@form} />
         <.location_input form={@form} />
@@ -141,33 +153,21 @@ defmodule JuntosWeb.EventLive.New do
 
   defp description_input(assigns) do
     ~H"""
+    <div class="hidden">
+      <.input field={@description} type="text" />
+    </div>
     <.form_item>
       <:label>
         <.content_text>
-          <.label_for field={@name}>{gettext "Description"}*</.label_for>
+          {gettext "Description"}*
         </.content_text>
       </:label>
       <:input>
-        <.text_editor id="hello" name="ehllo" />
-        <.button type="button" phx-click="toggle-sheet" class="text-sky-100">Open me</.button>
-        <.bottom_sheet
-          :if={@show_desc}
-          id="description-editor"
-          show
-          on_cancel={JS.push("toggle-sheet")}
-        >
-          <:header>
-            <h2 class="text-base text-primary font-bold">Describe Your Event</h2>
-          </:header>
-          <:body class="overflow-y-auto rounded-lg bg-neutral-primary w-full">
-            <.text_editor id="hello" name="ehllo" />
-          </:body>
-          <:footer>
-            <.button class="w-full" phx-click={JS.push("toggle-sheet")}>
-              Save
-            </.button>
-          </:footer>
-        </.bottom_sheet>
+        <JuntosWeb.EventLive.Components.description_editor
+          description_editor={@description_editor}
+          value={@description.value}
+          show_desc={@show_desc}
+        />
       </:input>
     </.form_item>
     """
