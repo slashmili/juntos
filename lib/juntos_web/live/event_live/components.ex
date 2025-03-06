@@ -100,7 +100,7 @@ defmodule JuntosWeb.EventLive.Components do
     <button
       type="button"
       phx-click="toggle-sheet"
-      class="w-full border border-neutral-primary rounded-lg text-secondary bg-secondary flex px-2 py-1 min-h-24 max-h-24 cursor-text"
+      class="w-md border border-neutral-primary rounded-lg text-secondary bg-secondary flex px-2 py-1 min-h-24 max-h-24 cursor-text"
     >
       <span :if={@value in [nil, ""]}>
         {gettext "Share details about your event..."}
@@ -122,6 +122,20 @@ defmodule JuntosWeb.EventLive.Components do
         </.button>
       </:footer>
     </.bottom_sheet>
+    """
+  end
+
+  def upload_image_area(assigns) do
+    ~H"""
+    <section
+      id="uploadImageArea"
+      phx-hook="DragAndDropBgChange"
+      phx-drop-target={@upload_ref}
+      class="text-primary w-md bg-neutral-secondary py-10 px-4 flex justify-center gap rounded-lg border-accent-brand border-dashed border-2 text-accent-brand font-medium transition-colors duration-300 gap-1 cursor-pointer"
+      aria-label="upload"
+    >
+      <.icon name="hero-photo" /> {gettext "Upload an image"}
+    </section>
     """
   end
 

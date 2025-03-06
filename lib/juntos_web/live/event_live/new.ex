@@ -177,26 +177,37 @@ defmodule JuntosWeb.EventLive.New do
     ~H"""
     <.form_item>
       <:label>
-        <label for={@uploads.cover.ref}>{gettext "Cover image"}</label>
+        <.content_text>
+          <label for={@uploads.cover.ref}>{gettext "Cover image"}</label>
+          <:subtitle>{gettext "Skip the upload? We'll pick a cool image for you!"}</:subtitle>
+        </.content_text>
       </:label>
-      <:label_body>{gettext "Skip the upload? We'll pick a cool image for you!"}</:label_body>
       <:input>
-        <section phx-drop-target={@uploads.cover.ref} class="text-primary">
-          <article :for={entry <- @uploads.cover.entries} class="upload-entry">
+        <div :if={@uploads.cover.entries == []}>
+          <label for={@uploads.cover.ref}>
+            <JuntosWeb.EventLive.Components.upload_image_area upload_ref={@uploads.cover.ref} />
+          </label>
+        </div>
+        <section class="">
+          <article :for={entry <- @uploads.cover.entries} class="upload-entry flex flex-col gap-2">
             <figure>
-              <.live_img_preview entry={entry} class="w-52" />
+              <.live_img_preview entry={entry} class="rounded-lg w-md border border-line" />
             </figure>
-            <progress value={entry.progress} max="100">{entry.progress}%</progress>
-            <button
-              type="button"
-              phx-click="cancel-upload"
-              phx-value-ref={entry.ref}
-              aria-label="cancel"
-            >
-              &times;
-            </button>
+            <div class="flex gap-1">
+              <.icon name="hero-photo" class="text-accent-brand" />
+              <span class="grow truncate text-primary">{entry.client_name}</span>
+              <button
+                type="button"
+                phx-click="cancel-upload"
+                phx-value-ref={entry.ref}
+                aria-label="cancel"
+                class="w-4 cursor-pointer"
+              >
+                <.icon name="hero-trash" class="text-accent-brand w-4" />
+              </button>
+            </div>
           </article>
-          <.live_file_input upload={@uploads.cover} />
+          <.live_file_input class="hidden" upload={@uploads.cover} />
           <p :for={err <- upload_errors(@uploads.cover)} class="alert alert-danger">
             {err}
           </p>

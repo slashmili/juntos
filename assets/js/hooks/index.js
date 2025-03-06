@@ -1,8 +1,10 @@
 import {TextEditor} from './text_editor';
+import {DragAndDropBgChange} from './drag_and_drop_bg_change';
 
 let Hooks = {};
 
 Hooks.TextEditor = TextEditor;
+Hooks.DragAndDropBgChange = DragAndDropBgChange;
 
 Hooks.EventDatepickerLocalDateTime =  {
   mounted() {

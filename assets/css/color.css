@@ -1,6 +1,8 @@
 @layer base {
   :root {
     --color-bg-neutral-primary: var(--color-white);
+    --color-bg-neutral-secondary: var(--color-slate-200);
+    --color-bg-neutral-tertiary: var(--color-slate-100);
     --color-bg-secondary: var(--color-slate-100);
     --color-bg-secondary: var(--color-slate-100);
     --color-border-neutral-primary: var(--color-neutral-200);
@@ -8,16 +10,24 @@
     --color-border-neutral-secondary-focused: var(--color-red-100);
     --color-text-secondary: var(--color-slate-500);
     --color-text-primary: var(--color-slate-900);
+    --color-text-accent-brand: var(--color-violet-800);
+    --color-border-accent-brand: var(--color-violet-800);
+    --color-border-line: var(--color-slate-200);
   }
 
   .dark {
     --color-bg-neutral-primary: var(--color-neutral-950);
+    --color-bg-neutral-secondary: var(--color-neutral-900);
+    --color-bg-neutral-tertiary: var(--color-neutral-800);
     --color-bg-secondary: var(--color-neutral-900);
     --color-border-neutral-primary: var(--color-neutral-600);
     --color-border-neutral-secondary: var(--color-neutral-500);
     --color-border-neutral-secondary-focused: var(--color-neutral-100);
     --color-text-secondary: var(--color-slate-400);
     --color-text-primary: var(--color-slate-300);
+    --color-text-accent-brand: var(--color-violet-400);
+    --color-border-accent-brand: var(--color-violet-400);
+    --color-border-line: var(--color-slate-600);
   }
 }
 
@@ -26,12 +36,29 @@
     background-color: var(--color-bg-neutral-primary);
   }
 
+  .bg-neutral-secondary {
+    background-color: var(--color-bg-neutral-secondary);
+  }
+
+  .bg-neutral-tertiary {
+    background-color: var(--color-bg-neutral-tertiary);
+  }
+
   .bg-secondary {
     background-color: var(--color-bg-secondary);
   }
 
   .border-neutral-primary {
     border-color: var(--color-border-neutral-primary);
+  }
+
+  .border-line {
+    border-color: var(--color-border-line);
+  }
+
+
+  .border-accent-brand {
+    border-color: var(--color-border-accent-brand);
   }
 
   .border-neutral-secondary {
@@ -50,6 +77,10 @@
     @variant placeholder {
       color: var(--color-text-secondary);
     }
+  }
+
+  .text-accent-brand {
+    color: var(--color-text-accent-brand);
   }
 }
 
