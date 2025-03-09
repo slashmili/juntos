@@ -362,7 +362,7 @@ defmodule JuntosWeb.CoreComponents do
         id={@id}
         type={@type}
         name={@name}
-        class="col-start-1 row-start-1 block bg-secondary border border-neutral-secondary rounded-lg py-3 px-2 font-sans font-normal text-base text-primary outline-0 animated"
+        class="col-start-1 row-start-1 block bg-neutral-secondary border border-neutral-secondary rounded-lg py-3 px-2 font-sans font-normal text-base text-primary outline-0 animated"
         autocomplete="new-password"
         value={@value}
         data-1p-ignore
@@ -381,6 +381,48 @@ defmodule JuntosWeb.CoreComponents do
     <label for={@field.id} class={@class}>
       {render_slot(@inner_block)}
     </label>
+    """
+  end
+
+  @doc """
+  Render a dropdown under
+
+      <button type="button" phx-click="toggle-time-zone-selector" >Open</button>
+      <.dropdown
+        :if={@show_time_zone_options}
+        id="time-zone"
+        show
+        on_cancel={JS.push("toggle-time-zone-selector")}>
+        <ul>
+          <li><button type="button" phx-click="select-time-zone" phx-value="utc">UTC</li>
+        </ul>
+      </.dropdown>
+  """
+  attr :id, :string, required: true
+  attr :show, :boolean, default: false
+  slot :inner_block, required: true
+  attr :on_cancel, JS, default: %JS{}
+
+  def dropdown(assigns) do
+    ~H"""
+    <div class="relative animated ">
+      <div
+        id={@id}
+        phx-mounted={@show && show_dropdown(@id)}
+        phx-remove={hide_dropdown(@id)}
+        data-cancel={JS.exec(@on_cancel, "phx-remove")}
+        class="absolute w-full border border-neutral-primary overflow-y-auto max-h-48 rounded bg-neutral-primary hidden animated hidden opacity-0 scale-95 transition-all duration-200 ease-out"
+      >
+        <.focus_wrap
+          id={"#{@id}-container"}
+          phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
+          phx-key="escape"
+          phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
+        >
+          {render_slot(@inner_block)}
+        </.focus_wrap>
+      </div>
+    </div>
     """
   end
 
@@ -434,15 +476,15 @@ defmodule JuntosWeb.CoreComponents do
         phx-key="escape"
         phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
         class="fixed
-    bottom-0 left-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 
-    w-full max-h-1/2 min-h-4/10   sm:w-xl sm:h-auto sm:max-h-15/20
-     sm:-translate-x-1/2 sm:-translate-y-1/2  shadow-xl rounded-t-2xl sm:rounded-lg 
+        bottom-0 left-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 
+        w-full max-h-1/2 min-h-4/10   sm:w-xl sm:h-auto sm:max-h-15/20
+        sm:-translate-x-1/2 sm:-translate-y-1/2  shadow-xl rounded-t-2xl sm:rounded-lg 
         transform transition-transform duration-300 opacity-0 pointer-events-none
         translate-y-full translate-y-0 
         p-4
         flex flex-col  gap-2
-        bg-secondary
-    justify-between
+        bg-neutral-secondary 
+        justify-between
     "
       >
         <div class="flex justify-between items-center">
@@ -743,6 +785,29 @@ defmodule JuntosWeb.CoreComponents do
     |> hide("##{id}-container")
     |> JS.hide(to: "##{id}", transition: {"block", "block", "hidden"})
     |> JS.remove_class("overflow-hidden", to: "body")
+    |> JS.pop_focus()
+  end
+
+  def show_dropdown(js \\ %JS{}, id) when is_binary(id) do
+    js
+    |> JS.show(
+      to: "##{id}",
+      time: 300,
+      transition:
+        {"transition-all transform ease-out duration-300", "opacity-0 scale-95",
+         "opacity-100 scale-100"}
+    )
+    |> JS.focus_first(to: "##{id}")
+  end
+
+  def hide_dropdown(js \\ %JS{}, id) when is_binary(id) do
+    js
+    |> JS.hide(
+      to: "##{id}",
+      transition:
+        {"transition-all transform ease-in duration-200", "opacity-100 scale-100",
+         "opacity-0 scale-95"}
+    )
     |> JS.pop_focus()
   end
 

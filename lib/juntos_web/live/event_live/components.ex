@@ -8,6 +8,8 @@ defmodule JuntosWeb.EventLive.Components do
   attr :start_datetime_field, Phoenix.HTML.FormField, doc: "@form[:start_datetime]"
   attr :end_datetime_field, Phoenix.HTML.FormField, doc: "@form[:end_datetime]"
   attr :time_zone_field, Phoenix.HTML.FormField, doc: "@form[:time_zone]"
+  attr :show_time_zone_options, :boolean, default: false
+  attr :on_cancel, JS, default: %JS{}
 
   def datepicker(assigns) do
     ~H"""
@@ -17,14 +19,14 @@ defmodule JuntosWeb.EventLive.Components do
       data-start-datetime-id={@start_datetime_field.id}
       data-end-datetime-id={@end_datetime_field.id}
       data-time-zone-id={@time_zone_field.id}
-      class="bg-slate-100 p-2 rounded-lg flex flex-col gap-2 w-full max-w-[408px]"
+      class="bg-neutral-secondary  p-2 rounded-lg flex flex-col gap-2 w-full max-w-md"
     >
       <div class="flex flex-col w-full gap-2">
         <div class="flex">
-          <div class="flex self-center text-slate-500">{gettext "Start"}</div>
+          <div class="flex self-center text-secondary">{gettext "Start"}</div>
           <div class="grow flex justify-end">
             <input
-              class="rounderd-full text-base font-semibold text-slate-900 bg-slate-50 border-0 focus:ring-0"
+              class="rounded-lg text-base font-semibold text-primary bg-neutral-primary border border-neutral-secondary  focus:ring-0 px-3 py-2 outline-0 animated"
               type="datetime-local"
               name={@start_datetime_field.name}
               id={@start_datetime_field.id}
@@ -33,10 +35,10 @@ defmodule JuntosWeb.EventLive.Components do
           </div>
         </div>
         <div class="flex">
-          <div class="flex self-center text-slate-500">{gettext "End"}</div>
+          <div class="flex self-center text-secondary">{gettext "End"}</div>
           <div class="grow flex justify-end">
             <input
-              class="rounderd-full font-semibold text-slate-900 bg-slate-50 border-0 focus:ring-0"
+              class="rounded-lg text-base font-semibold text-primary bg-neutral-primary border border-neutral-secondary focus:ring-0 px-3 py-2 outline-0 animated"
               type="datetime-local"
               name={@end_datetime_field.name}
               id={@end_datetime_field.id}
@@ -46,18 +48,65 @@ defmodule JuntosWeb.EventLive.Components do
         </div>
       </div>
       <div>
-        <div class="bg-slate-200 py-1.5 px-2.5 flex justify-center place-content-center rounded-lg text-sm font-medium self-center">
-          <.icon name="hero-globe-alt" class="w-4 h-4" /> &nbsp +01:00 Europe/Berlin
-        </div>
+        <button
+          type="button"
+          class="bg-neutral-primary w-full text-primary py-1.5 px-2.5 flex justify-center place-content-center rounded-lg text-sm font-medium self-center flex flex-row place-items-center cursor-pointer border border-neutral-secondary outline-0"
+          phx-click="toggle-time-zone-selector"
+        >
+          <.icon name="hero-globe-alt" class="w-4 h-4" />
+          <div>
+            &nbsp {time_zone_to_str(@time_zone_field.value)}
+          </div>
+        </button>
         <input
           type="hidden"
           name={@time_zone_field.name}
           id={@time_zone_field.id}
-          value={@time_zone_field.value || "UTC"}
+          value={@time_zone_field.value}
         />
+
+        <.dropdown
+          :if={@show_time_zone_options}
+          id="time-zone-options"
+          show
+          on_cancel={JS.push("toggle-time-zone-selector")}
+        >
+          <ul class="flex flex-col [&>button]:cursor-pointer space-y-2 [&>li]:p-2 [&>li]:w-full [&>li:hover]:bg-[var(--color-bg-neutral-primary-hover)] text-primary/6">
+            <li :for={tz <- Juntos.Chrono.TimeZone.get_list_of_time_zones()}>
+              <button
+                type="button"
+                phx-click={
+                  hide_dropdown("time-zone-options")
+                  |> JS.push("toggle-time-zone-selector")
+                  |> JS.dispatch("juntos:force_set_value",
+                    to: "##{@time_zone_field.id}",
+                    detail: %{value: tz.zone_name}
+                  )
+                }
+                class="cursor-pointer w-full flex items-start text-primary "
+              >
+                ({tz.offset_str}) {tz.zone_name}
+              </button>
+            </li>
+          </ul>
+        </.dropdown>
       </div>
     </div>
     """
+  end
+
+  defp time_zone_to_str(nil) do
+    ""
+  end
+
+  defp time_zone_to_str(value) do
+    case Juntos.Chrono.TimeZone.get_time_zone(value) do
+      {:ok, tz} ->
+        "#{tz.offset_str} #{tz.zone_name}"
+
+      _ ->
+        "GMT+00:00 UTC"
+    end
   end
 
   attr :id, :string, required: true
@@ -100,7 +149,7 @@ defmodule JuntosWeb.EventLive.Components do
     <button
       type="button"
       phx-click="toggle-sheet"
-      class="w-md border border-neutral-primary rounded-lg text-secondary bg-secondary flex px-2 py-1 min-h-24 max-h-24 cursor-text"
+      class="w-md border border-neutral-secondary rounded-lg text-secondary bg-neutral-secondary  flex px-2 py-1 min-h-24 max-h-24 cursor-text outline-0 animated"
     >
       <span :if={@value in [nil, ""]}>
         {gettext "Share details about your event..."}
@@ -113,7 +162,7 @@ defmodule JuntosWeb.EventLive.Components do
       <:header>
         <h2 class="text-base text-primary font-bold">{gettext "Describe Your Event"}</h2>
       </:header>
-      <:body class="overflow-y-auto rounded-lg bg-neutral-primary w-full">
+      <:body class="overflow-y-auto rounded-lg bg-neutral-primary w-full border border-neutral-secondary">
         <.text_editor field={@description_editor} value={@value} editable autofocus />
       </:body>
       <:footer>

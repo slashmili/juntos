@@ -25,12 +25,6 @@ Hooks.EventDatepickerLocalDateTime =  {
     const endDate = new Date(startDate);
     endDate.setHours(startDate.getHours() + 1);
 
-    // Check if the end time is 00:00 and adjust the date to the next day
-    if (endDate.getHours() === 0) {
-      endDate.setDate(endDate.getDate() + 1);
-    }
-
-
     function formatDateTime(date) {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -48,7 +42,11 @@ Hooks.EventDatepickerLocalDateTime =  {
       endDateTimeInput.value = formatDateTime(endDate);
     }
     let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    timeZoneInput.value = timeZone;
+    if(! timeZoneInput.value ) {
+      timeZoneInput.value = timeZone;
+      let event = new Event("change", { bubbles: true });
+      timeZoneInput.dispatchEvent(event);
+    }
   }
 }
 

@@ -1,28 +1,68 @@
 @layer base {
   :root {
     --color-bg-neutral-primary: var(--color-white);
-    --color-bg-neutral-secondary: var(--color-slate-200);
-    --color-bg-neutral-tertiary: var(--color-slate-100);
-    --color-bg-secondary: var(--color-slate-100);
-    --color-bg-secondary: var(--color-slate-100);
+    --color-bg-neutral-primary-hover: var(--color-slate-100);
+    --color-bg-neutral-primary-inverse: var(--color-neutral-900);
+    --color-bg-neutral-primary-inverse-hover: var(--color-neutral-800);
+    --color-bg-neutral-secondary: var(--color-slate-100);
+    --color-bg-neutral-secondary-hover: var(--color-slate-50);
+    --color-bg-neutral-secondary-inverse: var(--color-neutral-800);
+    --color-bg-neutral-secondary-inverse-hover: var(--color-neutral-700);
+    --color-bg-neutral-tertiary: var(--color-slate-200);
+    --color-bg-neutral-tertiary-hover: var(--color-slate-100);
+    --color-bg-accent-brand: var(--color-violet-700);
+    --color-bg-accent-brand-hover: var(--color-violet-600);
+    --color-bg-accent-brand-muted: var(--color-violet-200);
+    --color-bg-accent-brand-muted-hover: var(--color-violet-50);
+    --color-bg-status-success: var(--color-lime-50);
+    --color-bg-status-success-hover: var(--color-lime-100);
+    --color-bg-status-error: var(--color-rose-50);
+    --color-bg-status-error-hover: var(--color-rose-100);
+    --color-bg-status-info: var(--color-sky-50);
+    --color-bg-status-info-hover: var(--color-sky-100);
+    --color-bg-status-warning: var(--color-amber-50);
+    --color-bg-status-warning-hover: var(--color-amber-100);
+    --color-bg-status-disabled: var(--color-neutral-100);
     --color-border-neutral-primary: var(--color-neutral-200);
-    --color-border-neutral-secondary: var(--color-neutral-400);
-    --color-border-neutral-secondary-focused: var(--color-red-100);
+    --color-border-neutral-secondary: var(--color-slate-400);
+    --color-border-neutral-secondary-focused: var(--color-slate-500);
     --color-text-secondary: var(--color-slate-500);
     --color-text-primary: var(--color-slate-900);
     --color-text-accent-brand: var(--color-violet-800);
     --color-border-accent-brand: var(--color-violet-800);
     --color-border-line: var(--color-slate-200);
+    --color-ever-white: var(--color-white);
+    --color-ever-black: var(--color-black);
   }
 
   .dark {
-    --color-bg-neutral-primary: var(--color-neutral-950);
-    --color-bg-neutral-secondary: var(--color-neutral-900);
-    --color-bg-neutral-tertiary: var(--color-neutral-800);
-    --color-bg-secondary: var(--color-neutral-900);
+    --color-bg-neutral-primary: var(--color-neutral-900);
+    --color-bg-neutral-primary-hover: var(--color-neutral-800);
+    --color-bg-neutral-primary-inverse: var(--color-neutral-200);
+    --color-bg-neutral-primary-inverse-hover: var(--color-neutral-100);
+    --color-bg-neutral-secondary: var(--color-neutral-800);
+    --color-bg-neutral-secondary-hover: var(--color-neutral-700);
+    --color-bg-neutral-secondary-inverse: var(--color-neutral-300);
+    --color-bg-neutral-secondary-inverse-hover: var(--color-neutral-200);
+    --color-bg-neutral-tertiary: var(--color-neutral-900);
+    --color-bg-neutral-tertiary-hover: var(--color-neutral-800);
+    --color-bg-accent-brand: var(--color-violet-500);
+    --color-bg-accent-brand-hover: var(--color-violet-700);
+    --color-bg-accent-brand-hover: var(--color-violet-400);
+    --color-bg-accent-brand-muted: var(--color-violet-950);
+    --color-bg-accent-brand-muted-hover: var(--color-violet-900);
+    --color-bg-status-success: var(--color-lime-900);
+    --color-bg-status-success-hover: var(--color-lime-800);
+    --color-bg-status-error: var(--color-rose-900);
+    --color-bg-status-error-hover: var(--color-rose-800);
+    --color-bg-status-info: var(--color-sky-900);
+    --color-bg-status-info-hover: var(--color-sky-800);
+    --color-bg-status-warning: var(--color-amber-900);
+    --color-bg-status-warning-hover: var(--color-amber-800);
+    --color-bg-status-disabled: var(--color-neutral-700);
     --color-border-neutral-primary: var(--color-neutral-600);
-    --color-border-neutral-secondary: var(--color-neutral-500);
-    --color-border-neutral-secondary-focused: var(--color-neutral-100);
+    --color-border-neutral-secondary: var(--color-slate-600);
+    --color-border-neutral-secondary-focused: var(--color-slate-500);
     --color-text-secondary: var(--color-slate-400);
     --color-text-primary: var(--color-slate-300);
     --color-text-accent-brand: var(--color-violet-400);
@@ -42,10 +82,6 @@
 
   .bg-neutral-tertiary {
     background-color: var(--color-bg-neutral-tertiary);
-  }
-
-  .bg-secondary {
-    background-color: var(--color-bg-secondary);
   }
 
   .border-neutral-primary {

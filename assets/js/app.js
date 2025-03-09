@@ -32,6 +32,12 @@ let liveSocket = new LiveSocket("/live", Socket, {
   params: {_csrf_token: csrfToken}
 })
 
+// set value and bubbles
+window.addEventListener("juntos:force_set_value", (event) => {
+  event.srcElement.value = event.detail.value;
+  event.srcElement.dispatchEvent(new Event("change", { bubbles: true }));
+});
+
 // Show progress bar on live navigation and form submits
 topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
 window.addEventListener("phx:page-loading-start", _info => topbar.show(300))

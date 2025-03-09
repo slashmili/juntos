@@ -10,6 +10,7 @@ defmodule JuntosWeb.EventLive.New do
      socket
      |> assign(:uploaded_cover, [])
      |> assign(:show_desc, false)
+     |> assign(:show_time_zone_options, false)
      |> assign(:page_title, "Create a new event")
      |> allow_upload(:cover, accept: ~w(.jpg .jpeg .gif .png .webp), max_entries: 1)
      |> assign_form(changeset)}
@@ -31,6 +32,11 @@ defmodule JuntosWeb.EventLive.New do
   @impl Phoenix.LiveView
   def handle_event("toggle-sheet", _params, socket) do
     {:noreply, socket |> assign(:show_desc, !socket.assigns.show_desc)}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("toggle-time-zone-selector", _params, socket) do
+    {:noreply, socket |> assign(:show_time_zone_options, !socket.assigns.show_time_zone_options)}
   end
 
   @impl Phoenix.LiveView
@@ -83,7 +89,7 @@ defmodule JuntosWeb.EventLive.New do
           description_editor={@form[:description_editor]}
         />
         <.cover_input form={@form} uploads={@uploads} />
-        <.date_input form={@form} />
+        <.date_input form={@form} show_time_zone_options={@show_time_zone_options} />
         <.location_input form={@form} />
         <.create_button />
       </.event_form>
@@ -123,14 +129,14 @@ defmodule JuntosWeb.EventLive.New do
         </.label_for>
       </:label>
       <:input>
-        <div class="flex justify-end">
-          <JuntosWeb.EventLive.Components.datepicker
-            id="new-event-datepicker"
-            start_datetime_field={@form[:start_datetime]}
-            end_datetime_field={@form[:end_datetime]}
-            time_zone_field={@form[:time_zone]}
-          />
-        </div>
+        <JuntosWeb.EventLive.Components.datepicker
+          show_time_zone_options={@show_time_zone_options}
+          id="new-event-datepicker"
+          start_datetime_field={@form[:start_datetime]}
+          end_datetime_field={@form[:end_datetime]}
+          time_zone_field={@form[:time_zone]}
+          on_cancel={JS.push("toggle-time-zone-selector")}
+        />
       </:input>
     </.form_item>
     """
