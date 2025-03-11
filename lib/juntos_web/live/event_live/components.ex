@@ -23,10 +23,10 @@ defmodule JuntosWeb.EventLive.Components do
     >
       <div class="flex w-full flex-col gap-2">
         <div class="flex">
-          <div class="text-secondary flex self-center">{gettext "Start"}</div>
+          <div class="text-neutral-secondary flex self-center">{gettext "Start"}</div>
           <div class="flex grow justify-end">
             <input
-              class="text-primary bg-neutral-primary border-neutral-secondary animated rounded-lg border px-3  py-2 text-base font-semibold outline-0 focus:ring-0"
+              class="text-neutral-primary bg-neutral-primary border-neutral-secondary animated rounded-lg border px-3  py-2 text-base font-semibold outline-0 focus:ring-0"
               type="datetime-local"
               name={@start_datetime_field.name}
               id={@start_datetime_field.id}
@@ -35,10 +35,10 @@ defmodule JuntosWeb.EventLive.Components do
           </div>
         </div>
         <div class="flex">
-          <div class="text-secondary flex self-center">{gettext "End"}</div>
+          <div class="text-neutral-secondary  flex self-center">{gettext "End"}</div>
           <div class="flex grow justify-end">
             <input
-              class="text-primary bg-neutral-primary border-neutral-secondary animated rounded-lg border px-3 py-2 text-base font-semibold outline-0 focus:ring-0"
+              class="text-neutral-primary bg-neutral-primary border-neutral-secondary animated rounded-lg border px-3 py-2 text-base font-semibold outline-0 focus:ring-0"
               type="datetime-local"
               name={@end_datetime_field.name}
               id={@end_datetime_field.id}
@@ -50,7 +50,7 @@ defmodule JuntosWeb.EventLive.Components do
       <div>
         <button
           type="button"
-          class="bg-neutral-primary text-primary border-neutral-secondary flex flex w-full cursor-pointer flex-row place-content-center place-items-center justify-center self-center rounded-lg border px-2.5 py-1.5 text-sm font-medium outline-0"
+          class="bg-neutral-primary text-neutral-primary border-neutral-secondary flex flex w-full cursor-pointer flex-row place-content-center place-items-center justify-center self-center rounded-lg border px-2.5 py-1.5 text-sm font-medium outline-0"
           phx-click="toggle-time-zone-selector"
         >
           <.icon name="hero-globe-alt" class="h-4 w-4" />
@@ -71,7 +71,7 @@ defmodule JuntosWeb.EventLive.Components do
           show
           on_cancel={JS.push("toggle-time-zone-selector")}
         >
-          <ul class="text-primary/6 flex flex-col space-y-2 [&>button]:cursor-pointer [&>li:hover]:bg-[var(--color-bg-neutral-primary-hover)] [&>li]:w-full [&>li]:p-2">
+          <ul class="text-neutral-primary flex flex-col space-y-2 [&>button]:cursor-pointer [&>li:hover]:bg-[var(--color-bg-neutral-primary-hover)] [&>li]:w-full [&>li]:p-2">
             <li :for={tz <- Juntos.Chrono.TimeZone.get_list_of_time_zones()}>
               <button
                 type="button"
@@ -83,7 +83,7 @@ defmodule JuntosWeb.EventLive.Components do
                     detail: %{value: tz.zone_name}
                   )
                 }
-                class="text-primary flex w-full cursor-pointer items-start "
+                class="text-neutral-primary flex w-full cursor-pointer items-start "
               >
                 ({tz.offset_str}) {tz.zone_name}
               </button>
@@ -114,14 +114,13 @@ defmodule JuntosWeb.EventLive.Components do
 
   def location_finder(assigns) do
     ~H"""
-    <div id={@id} phx-hook="LocationFinder" data-api-key={@api_key}>
+    <div id={@id} phx-hook="LocationFinder" data-api-key={@api_key} class="w-full">
       <div class="mt-2 grid grid-cols-1">
         <input
           type="text"
-          class="col-start-1 row-start-1 block w-full rounded-md bg-white
-      py-1.5 pl-10 pr-10 text-base
-      focus:outline focus:outline-2 focus:-outline-offset-2  sm:pr-9 "
+          class="bg-neutral-primary border-neutral-secondary text-neutral-primary animated col-start-1 row-start-1 block w-full rounded-md border py-1.5 pl-10 pr-10 text-base outline-0 sm:pr-9"
           autocomplete="new-password"
+          placeholder={gettext "Enter an address or link to online meeting"}
           data-1p-ignore
         />
         <.icon
@@ -133,7 +132,11 @@ defmodule JuntosWeb.EventLive.Components do
           class="input-trailing-icon size-5 col-start-1 row-start-1 mr-3 hidden cursor-pointer self-center justify-self-end text-gray-400"
         />
       </div>
-      <ul class="" role="listbox"></ul>
+      <ul
+        class="bg-neutral-primary border-neutral-secondary rounded-lg border [&>li:hover]:bg-[var(--color-bg-neutral-primary-hover)] [&>li]:w-full [&>li]:cursor-pointer [&>li]:p-2 text-neutral-primary text-base [&>li:first-child]:rounded-t-lg [&>li:last-child]:rounded-b-lg "
+        role="listbox"
+      >
+      </ul>
     </div>
     """
   end
@@ -149,7 +152,7 @@ defmodule JuntosWeb.EventLive.Components do
     <button
       type="button"
       phx-click="toggle-sheet"
-      class="w-md border-neutral-secondary text-secondary bg-neutral-secondary min-h-24 animated  flex max-h-24 cursor-text rounded-lg border px-2 py-1 outline-0"
+      class="w-md border-neutral-secondary text-neutral-secondary bg-neutral-primary min-h-24 animated  flex max-h-24 cursor-text rounded-lg border px-2 py-1 outline-0"
     >
       <span :if={@value in [nil, ""]}>
         {gettext "Share details about your event..."}
@@ -160,7 +163,7 @@ defmodule JuntosWeb.EventLive.Components do
     </button>
     <.bottom_sheet :if={@show_desc} id="description-editor" show on_cancel={JS.push("toggle-sheet")}>
       <:header>
-        <h2 class="text-primary text-base font-bold">{gettext "Describe Your Event"}</h2>
+        <h2 class="text-neutral-primary text-base font-bold">{gettext "Describe Your Event"}</h2>
       </:header>
       <:body class="bg-neutral-primary border-neutral-secondary w-full overflow-y-auto rounded-lg border">
         <.text_editor field={@description_editor} value={@value} editable autofocus />
@@ -180,7 +183,7 @@ defmodule JuntosWeb.EventLive.Components do
       id="uploadImageArea"
       phx-hook="DragAndDropBgChange"
       phx-drop-target={@upload_ref}
-      class="text-primary w-md bg-neutral-secondary py-10 px-4 flex justify-center gap rounded-lg border-accent-brand border-dashed border-2 text-accent-brand font-medium transition-colors duration-300 gap-1 cursor-pointer"
+      class="text-neutral-primary w-md bg-neutral-secondary gap border-accent-brand text-accent-brand flex cursor-pointer justify-center gap-1 rounded-lg border-2 border-dashed px-4 py-10 font-medium transition-colors duration-300"
       aria-label="upload"
     >
       <.icon name="hero-photo" /> {gettext "Upload an image"}

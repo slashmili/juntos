@@ -201,7 +201,7 @@ defmodule JuntosWeb.EventLive.New do
             </figure>
             <div class="flex gap-1">
               <.icon name="hero-photo" class="text-accent-brand" />
-              <span class="text-primary grow truncate">{entry.client_name}</span>
+              <span class="text-neutral-primary grow truncate">{entry.client_name}</span>
               <button
                 type="button"
                 phx-click="cancel-upload"
@@ -254,8 +254,8 @@ defmodule JuntosWeb.EventLive.New do
     ~H"""
     <div class="border-neutral-secondary flex w-full max-w-md flex-col gap-2 border-b-2 py-6 last:border-b-0 sm:max-w-lg md:max-w-3xl md:flex-row md:justify-between">
       <section class="md:basis-4/10 flex w-full flex-col">
-        <div class="text-primary font-bold">{render_slot(@label)}</div>
-        <div class="text-secondary text-sm">{render_slot(@label_body)}</div>
+        <div class="text-neutral-primary font-bold">{render_slot(@label)}</div>
+        <div class="text-neutral-secondary text-sm">{render_slot(@label_body)}</div>
       </section>
       <section class="md:basis-md  flex sm:justify-end">
         {render_slot(@input)}

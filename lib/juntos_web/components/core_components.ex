@@ -70,7 +70,7 @@ defmodule JuntosWeb.CoreComponents do
         @variant_class,
         @size_class,
         @class,
-        "flex gap-1 justify-center font-medium animated cursor-pointer"
+        "animated flex cursor-pointer justify-center gap-1 font-medium"
       ]}
       {@rest}
     >
@@ -202,14 +202,14 @@ defmodule JuntosWeb.CoreComponents do
 
   def hero(assigns) do
     ~H"""
-    <section class={["max-w-m w-full pt-8 flex gap-2 flex-col", @align == "center" && "text-center"]}>
-      <div class="text-primary text-xl md:text-3xl font-semibold ">
+    <section class={["max-w-m flex w-full flex-col gap-2 pt-8", @align == "center" && "text-center"]}>
+      <div class="text-neutral-primary text-xl font-semibold md:text-3xl ">
         {render_slot(@inner_block)}
       </div>
-      <div :if={@subtitle} class="text-base font-normal text-secondary">
+      <div :if={@subtitle} class="text-neutral-secondary text-base font-normal">
         {render_slot(@subtitle)}
       </div>
-      <div :if={@body} class="text-sm font-normal text-primary">
+      <div :if={@body} class="text-neutral-primary text-sm font-normal">
         {render_slot(@body)}
       </div>
     </section>
@@ -223,14 +223,14 @@ defmodule JuntosWeb.CoreComponents do
 
   def content_text(assigns) do
     ~H"""
-    <section class="flex flex-col gap-2 max-w-md">
-      <div class="text-primary text-base font-bold">
+    <section class="flex max-w-md flex-col gap-2">
+      <div class="text-neutral-primary text-base font-bold">
         {render_slot(@inner_block)}
       </div>
-      <div :if={@subtitle} class="text-sm font-normal text-secondary">
+      <div :if={@subtitle} class="text-neutral-secondary text-sm font-normal">
         {render_slot(@subtitle)}
       </div>
-      <div :if={@body} class="text-sm font-normal text-primary">
+      <div :if={@body} class="text-neutral-primary text-sm font-normal">
         {render_slot(@body)}
       </div>
     </section>
@@ -264,7 +264,7 @@ defmodule JuntosWeb.CoreComponents do
       data-value={@value}
       data-editable={@editable}
       data-autofocus={@autofocus}
-      class={["text-primary", @class]}
+      class={["text-neutral-primary", @class]}
       phx-update="ignore"
     >
       <div data-editor={@name}></div>
@@ -353,7 +353,7 @@ defmodule JuntosWeb.CoreComponents do
         id={@id}
         type={@type}
         name={@name}
-        class="bg-neutral-secondary border-neutral-secondary text-primary animated col-start-1 row-start-1 block rounded-lg border px-2 py-3 font-sans text-base font-normal outline-0"
+        class="bg-neutral-primary border-neutral-secondary text-neutral-primary animated col-start-1 row-start-1 block rounded-lg border px-2 py-3 font-sans text-base font-normal outline-0"
         autocomplete="new-password"
         value={@value}
         data-1p-ignore
@@ -484,7 +484,7 @@ defmodule JuntosWeb.CoreComponents do
             type="button"
             phx-click={JS.exec("data-cancel", to: "##{@id}")}
             aria-label={gettext("close")}
-            class="text-secondary cursor-pointer text-xl Xbasis-1/10"
+            class="text-neutral-secondary cursor-pointer text-xl Xbasis-1/10"
           >
             <.icon name="hero-x-mark-solid" class="h-5 w-5" />
           </button>

@@ -26,7 +26,7 @@ body {
 }
 
 .tiptap {
-  color: var(--color-text-primary);
+  color: var(--color-text-neutral-primary);
 }
 
 .tiptap * {
@@ -34,5 +34,5 @@ body {
 }
 
 .tiptap pre  {
-  background-color: var(--color-bg-secondary);
+  background-color: var(--color-bg-neutral-secondary);
 }

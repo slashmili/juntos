@@ -23,14 +23,19 @@
     --color-bg-status-warning: var(--color-amber-50);
     --color-bg-status-warning-hover: var(--color-amber-100);
     --color-bg-status-disabled: var(--color-neutral-100);
+
     --color-border-neutral-primary: var(--color-neutral-200);
     --color-border-neutral-secondary: var(--color-slate-400);
     --color-border-neutral-secondary-focused: var(--color-slate-500);
-    --color-text-secondary: var(--color-slate-500);
-    --color-text-primary: var(--color-slate-900);
-    --color-text-accent-brand: var(--color-violet-800);
     --color-border-accent-brand: var(--color-violet-800);
     --color-border-line: var(--color-slate-200);
+
+    --color-text-neutral-primary: var(--color-slate-900);
+    --color-text-neutral-primary-placeholder: var(--color-slate-500);
+    --color-text-neutral-primary-inverse: var(--color-slate-200);
+    --color-text-neutral-secondary: var(--color-slate-500);
+    --color-text-accent-brand: var(--color-violet-800);
+
     --color-ever-white: var(--color-white);
     --color-ever-black: var(--color-black);
   }
@@ -60,14 +65,18 @@
     --color-bg-status-warning: var(--color-amber-900);
     --color-bg-status-warning-hover: var(--color-amber-800);
     --color-bg-status-disabled: var(--color-neutral-700);
+
     --color-border-neutral-primary: var(--color-neutral-600);
     --color-border-neutral-secondary: var(--color-slate-600);
     --color-border-neutral-secondary-focused: var(--color-slate-500);
-    --color-text-secondary: var(--color-slate-400);
-    --color-text-primary: var(--color-slate-300);
-    --color-text-accent-brand: var(--color-violet-400);
     --color-border-accent-brand: var(--color-violet-400);
     --color-border-line: var(--color-slate-600);
+
+    --color-text-neutral-primary: var(--color-slate-200);
+    --color-text-neutral-primary-placeholder: var(--color-slate-400);
+    --color-text-neutral-primary-inverse: var(--color-slate-900);
+    --color-text-neutral-secondary: var(--color-slate-400);
+    --color-text-accent-brand: var(--color-violet-400);
   }
 }
 
@@ -104,15 +113,15 @@
     }
   }
 
-  .text-secondary {
-    color: var(--color-text-secondary);
+  .text-neutral-primary {
+    color: var(--color-text-neutral-primary);
+    @variant placeholder {
+      color: var(--color-text-neutral-primary-placeholder);
+    }
   }
 
-  .text-primary {
-    color: var(--color-text-primary);
-    @variant placeholder {
-      color: var(--color-text-secondary);
-    }
+  .text-neutral-secondary {
+    color: var(--color-text-neutral-secondary);
   }
 
   .text-accent-brand {
