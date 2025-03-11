@@ -47,7 +47,7 @@ defmodule JuntosWeb.CoreComponents do
         @variant_class,
         @size_class,
         @class,
-        "flex gap-1 justify-center font-medium  max-w-md"
+        "flex max-w-md justify-center gap-1  font-medium"
       ]}
       {@rest}
     >
@@ -117,15 +117,15 @@ defmodule JuntosWeb.CoreComponents do
 
   defp button_icon_class(assigns) do
     case assigns[:size] do
-      "md" -> "w-4 h-4"
-      _ -> "w-6 h-6"
+      "md" -> "h-4 w-4"
+      _ -> "h-6 w-6"
     end
   end
 
   defp button_size_class(assigns) do
     case assigns[:size] do
       "md" -> "rounded-full p-3"
-      _ -> "rounded-lg px-3 py-3 px-2"
+      _ -> "rounded-lg px-2 px-3 py-3"
     end
   end
 
@@ -143,9 +143,9 @@ defmodule JuntosWeb.CoreComponents do
   defp button_variant_class(%{variant: "outline"} = assigns) do
     colors =
       if assigns[:rest][:disabled] do
-        "bg-gray-200 text-gray-400 border-gray-300 dark:bg-gray-900 dark:text-gray-700 dark:border-gray-700"
+        "border-gray-300 bg-gray-200 text-gray-400 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-700"
       else
-        "bg-slate-50 text-slate-900 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600"
+        "border-slate-200 bg-slate-50 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300"
       end
 
     ["border-2", colors]
@@ -275,29 +275,20 @@ defmodule JuntosWeb.CoreComponents do
 
   @doc """
   Renders an input with label and error messages.
-
   A `Phoenix.HTML.FormField` may be passed as argument,
   which is used to retrieve the input name, id, and values.
   Otherwise all attributes may be passed explicitly.
-
   ## Types
-
   This function accepts all HTML input types, considering that:
-
     * You may also set `type="select"` to render a `<select>` tag
-
     * `type="checkbox"` is used exclusively to render boolean values
-
     * For live file uploads, see `Phoenix.Component.live_file_input/1`
-
   See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
-  for more information. Unsupported types, such as hidden and radio,
-  are best written directly in your templates.
-
-  ## Examples
-
-      <.input field={@form[:email]} type="email" />
-      <.input name="my-input" errors={["oh no!"]} />
+  for more information. Unsupported types, such as and radio, are
+  best written directly in your templates. ##
+  Examples <.input
+      field={@form[:email]} type="email" /> <.input
+      name="my-input" errors={["oh no!"]} /> hidden
   """
   attr :id, :any, default: nil
   attr :name, :any
@@ -357,12 +348,12 @@ defmodule JuntosWeb.CoreComponents do
 
   def input_text(assigns) do
     ~H"""
-    <section class="mt-2 grid grid-cols-1 w-full max-w-md">
+    <section class="mt-2 grid w-full max-w-md grid-cols-1">
       <input
         id={@id}
         type={@type}
         name={@name}
-        class="col-start-1 row-start-1 block bg-neutral-secondary border border-neutral-secondary rounded-lg py-3 px-2 font-sans font-normal text-base text-primary outline-0 animated"
+        class="bg-neutral-secondary border-neutral-secondary text-primary animated col-start-1 row-start-1 block rounded-lg border px-2 py-3 font-sans text-base font-normal outline-0"
         autocomplete="new-password"
         value={@value}
         data-1p-ignore
@@ -525,7 +516,7 @@ defmodule JuntosWeb.CoreComponents do
   attr :kind, :atom, values: [:info, :error], doc: "used for styling and flash lookup"
   attr :rest, :global, doc: "the arbitrary HTML attributes to add to the flash container"
 
-  slot :inner_block, doc: "the optional inner block that renders the flash message"
+  slot :inner_block, doc: "the optional inner that renders the flash message block"
 
   def flash(assigns) do
     assigns = assign_new(assigns, :id, fn -> "flash-#{assigns.kind}" end)
@@ -557,11 +548,9 @@ defmodule JuntosWeb.CoreComponents do
   end
 
   @doc """
-  Shows the flash group with standard titles and content.
-
-  ## Examples
-
-      <.flash_group flash={@flash} />
+  Shows the flash with standard titles and content. ##
+  Examples <.flash_group
+      flash={@flash} /> group
   """
   attr :flash, :map, required: true, doc: "the map of flash messages"
   attr :id, :string, default: "flash-group", doc: "the optional id of flash container"
@@ -608,21 +597,16 @@ defmodule JuntosWeb.CoreComponents do
 
   @doc """
   Renders a [Heroicon](https://heroicons.com).
-
   Heroicons come in three styles – outline, solid, and mini.
-  By default, the outline style is used, but solid and mini may
-  be applied by using the `-solid` and `-mini` suffix.
-
-  You can customize the size and colors of the icons by setting
-  width, height, and background color classes.
-
-  Icons are extracted from the `deps/heroicons` directory and bundled within
-  your compiled app.css by the plugin in your `assets/tailwind.config.js`.
-
-  ## Examples
-
-      <.icon name="hero-x-mark-solid" />
-      <.icon name="hero-arrow-path" class="ml-1 w-3 h-3 animate-spin" />
+  By default, the style is used, but solid and mini may be
+  applied by using the `-solid` and `-mini` suffix. You
+  can customize the size and colors of the icons by setting width,
+  height, and background color classes. Icons
+  are extracted from the `deps/heroicons` directory and bundled within your
+  compiled app.css by the plugin in your `assets/tailwind.config.js`. ##
+  Examples <.icon
+      name="hero-x-mark-solid" /> <.icon
+      name="hero-arrow-path" class="ml-1 animate-spin" /> h-3 w-3 outline
   """
   attr :name, :string, required: true
   attr :class, :string, default: nil
@@ -727,9 +711,9 @@ defmodule JuntosWeb.CoreComponents do
       to: selector,
       time: 300,
       transition:
-        {"transition-all transform ease-out duration-300",
-         "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95",
-         "opacity-100 translate-y-0 sm:scale-100"}
+        {"transform transition-all duration-300 ease-out",
+         "translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95",
+         "translate-y-0 opacity-100 sm:scale-100"}
     )
   end
 
@@ -738,17 +722,17 @@ defmodule JuntosWeb.CoreComponents do
       to: selector,
       time: 200,
       transition:
-        {"transition-all transform ease-in duration-200",
-         "opacity-100 translate-y-0 sm:scale-100",
-         "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"}
+        {"transform transition-all duration-200 ease-in",
+         "translate-y-0 opacity-100 sm:scale-100",
+         "translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"}
     )
   end
 
   def show_bottom_sheet(js \\ %JS{}, id) when is_binary(id) do
     js
     |> JS.show(to: "##{id}")
-    |> JS.toggle_class("opacity-0 pointer-events-none", to: "##{id}-overlay")
-    |> JS.toggle_class("opacity-0 pointer-events-none translate-y-full", to: "##{id}-container")
+    |> JS.toggle_class("pointer-events-none opacity-0", to: "##{id}-overlay")
+    |> JS.toggle_class("pointer-events-none translate-y-full opacity-0", to: "##{id}-container")
     |> JS.add_class("overflow-hidden", to: "body")
     |> JS.focus_first(to: "##{id}-content")
   end
@@ -756,8 +740,8 @@ defmodule JuntosWeb.CoreComponents do
   def hide_bottom_sheet(js \\ %JS{}, id) when is_binary(id) do
     js
     |> JS.hide(to: "##{id}")
-    |> JS.toggle_class("opacity-0 pointer-events-none", to: "##{id}-overlay")
-    |> JS.toggle_class("opacity-0 pointer-events-none translate-y-full", to: "##{id}-container")
+    |> JS.toggle_class("pointer-events-none opacity-0", to: "##{id}-overlay")
+    |> JS.toggle_class("pointer-events-none translate-y-full opacity-0", to: "##{id}-container")
     |> JS.toggle_class("hidden", to: "##{id}")
     |> JS.remove_class("overflow-hidden", to: "body")
     |> JS.pop_focus()
@@ -769,7 +753,7 @@ defmodule JuntosWeb.CoreComponents do
     |> JS.show(
       to: "##{id}-bg",
       time: 300,
-      transition: {"transition-all transform ease-out duration-300", "opacity-0", "opacity-100"}
+      transition: {"transform transition-all duration-300 ease-out", "opacity-0", "opacity-100"}
     )
     |> show("##{id}-container")
     |> JS.add_class("overflow-hidden", to: "body")
@@ -780,7 +764,7 @@ defmodule JuntosWeb.CoreComponents do
     js
     |> JS.hide(
       to: "##{id}-bg",
-      transition: {"transition-all transform ease-in duration-200", "opacity-100", "opacity-0"}
+      transition: {"transform transition-all duration-200 ease-in", "opacity-100", "opacity-0"}
     )
     |> hide("##{id}-container")
     |> JS.hide(to: "##{id}", transition: {"block", "block", "hidden"})
@@ -794,8 +778,8 @@ defmodule JuntosWeb.CoreComponents do
       to: "##{id}",
       time: 300,
       transition:
-        {"transition-all transform ease-out duration-300", "opacity-0 scale-95",
-         "opacity-100 scale-100"}
+        {"transform transition-all duration-300 ease-out", "scale-95 opacity-0",
+         "scale-100 opacity-100"}
     )
     |> JS.focus_first(to: "##{id}")
   end
@@ -805,8 +789,8 @@ defmodule JuntosWeb.CoreComponents do
     |> JS.hide(
       to: "##{id}",
       transition:
-        {"transition-all transform ease-in duration-200", "opacity-100 scale-100",
-         "opacity-0 scale-95"}
+        {"transform transition-all duration-200 ease-in", "scale-100 opacity-100",
+         "scale-95 opacity-0"}
     )
     |> JS.pop_focus()
   end

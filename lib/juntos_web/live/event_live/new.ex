@@ -197,11 +197,11 @@ defmodule JuntosWeb.EventLive.New do
         <section class="">
           <article :for={entry <- @uploads.cover.entries} class="upload-entry flex flex-col gap-2">
             <figure>
-              <.live_img_preview entry={entry} class="rounded-lg w-md border border-line" />
+              <.live_img_preview entry={entry} class="w-md border-line rounded-lg border" />
             </figure>
             <div class="flex gap-1">
               <.icon name="hero-photo" class="text-accent-brand" />
-              <span class="grow truncate text-primary">{entry.client_name}</span>
+              <span class="text-primary grow truncate">{entry.client_name}</span>
               <button
                 type="button"
                 phx-click="cancel-upload"
@@ -225,10 +225,10 @@ defmodule JuntosWeb.EventLive.New do
 
   defp event_form(assigns) do
     ~H"""
-    <div class="flex flex-col w-full min-w-[320px]" data-role="new-event">
+    <div class="flex w-full min-w-[320px] flex-col" data-role="new-event">
       <!--<div class="max-w-6xl  pt-6 px-4 pb-4  w-[764px] flex flex-col gap-4" data-role="new-event">-->
       <.simple_form for={@form} phx-change="validate" phx-submit="save" id="createEvent">
-        <div class="flex flex-col gap-4 px-4 items-center">
+        <div class="flex flex-col items-center gap-4 px-4">
           {render_slot(@inner_block)}
         </div>
       </.simple_form>
@@ -238,7 +238,7 @@ defmodule JuntosWeb.EventLive.New do
 
   defp form_header(assigns) do
     ~H"""
-    <section class="flex flex-col items-center w-full  max-w-md sm:max-w-lg md:max-w-3xl">
+    <section class="flex w-full max-w-md flex-col  items-center sm:max-w-lg md:max-w-3xl">
       <.hero align="left">
         {gettext "Create a new event"}
       </.hero>
@@ -252,12 +252,12 @@ defmodule JuntosWeb.EventLive.New do
 
   defp form_item(assigns) do
     ~H"""
-    <div class="flex flex-col md:flex-row md:justify-between w-full max-w-md sm:max-w-lg md:max-w-3xl border-b-2 last:border-b-0 border-neutral-secondary py-6 gap-2">
-      <section class="w-full flex flex-col md:basis-4/10">
-        <div class="font-bold text-primary">{render_slot(@label)}</div>
-        <div class="text-sm text-secondary">{render_slot(@label_body)}</div>
+    <div class="border-neutral-secondary flex w-full max-w-md flex-col gap-2 border-b-2 py-6 last:border-b-0 sm:max-w-lg md:max-w-3xl md:flex-row md:justify-between">
+      <section class="md:basis-4/10 flex w-full flex-col">
+        <div class="text-primary font-bold">{render_slot(@label)}</div>
+        <div class="text-secondary text-sm">{render_slot(@label_body)}</div>
       </section>
-      <section class="flex  sm:justify-end md:basis-md">
+      <section class="md:basis-md  flex sm:justify-end">
         {render_slot(@input)}
       </section>
     </div>

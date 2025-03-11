@@ -97,7 +97,7 @@ defmodule JuntosWeb.UserLoginLive do
 
   defp login_form(assigns) do
     ~H"""
-    <div class="max-w-6xl  w-[343px] md:w-[448px]  flex justify-center " data-role="login-dialog">
+    <div class="flex  w-[343px] max-w-6xl  justify-center md:w-[448px] " data-role="login-dialog">
       <.simple_form
         for={@form}
         class="flex flex-col gap-6"

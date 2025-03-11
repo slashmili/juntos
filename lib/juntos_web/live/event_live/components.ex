@@ -19,14 +19,14 @@ defmodule JuntosWeb.EventLive.Components do
       data-start-datetime-id={@start_datetime_field.id}
       data-end-datetime-id={@end_datetime_field.id}
       data-time-zone-id={@time_zone_field.id}
-      class="bg-neutral-secondary  p-2 rounded-lg flex flex-col gap-2 w-full max-w-md"
+      class="bg-neutral-secondary  flex w-full max-w-md flex-col gap-2 rounded-lg p-2"
     >
-      <div class="flex flex-col w-full gap-2">
+      <div class="flex w-full flex-col gap-2">
         <div class="flex">
-          <div class="flex self-center text-secondary">{gettext "Start"}</div>
-          <div class="grow flex justify-end">
+          <div class="text-secondary flex self-center">{gettext "Start"}</div>
+          <div class="flex grow justify-end">
             <input
-              class="rounded-lg text-base font-semibold text-primary bg-neutral-primary border border-neutral-secondary  focus:ring-0 px-3 py-2 outline-0 animated"
+              class="text-primary bg-neutral-primary border-neutral-secondary animated rounded-lg border px-3  py-2 text-base font-semibold outline-0 focus:ring-0"
               type="datetime-local"
               name={@start_datetime_field.name}
               id={@start_datetime_field.id}
@@ -35,10 +35,10 @@ defmodule JuntosWeb.EventLive.Components do
           </div>
         </div>
         <div class="flex">
-          <div class="flex self-center text-secondary">{gettext "End"}</div>
-          <div class="grow flex justify-end">
+          <div class="text-secondary flex self-center">{gettext "End"}</div>
+          <div class="flex grow justify-end">
             <input
-              class="rounded-lg text-base font-semibold text-primary bg-neutral-primary border border-neutral-secondary focus:ring-0 px-3 py-2 outline-0 animated"
+              class="text-primary bg-neutral-primary border-neutral-secondary animated rounded-lg border px-3 py-2 text-base font-semibold outline-0 focus:ring-0"
               type="datetime-local"
               name={@end_datetime_field.name}
               id={@end_datetime_field.id}
@@ -50,10 +50,10 @@ defmodule JuntosWeb.EventLive.Components do
       <div>
         <button
           type="button"
-          class="bg-neutral-primary w-full text-primary py-1.5 px-2.5 flex justify-center place-content-center rounded-lg text-sm font-medium self-center flex flex-row place-items-center cursor-pointer border border-neutral-secondary outline-0"
+          class="bg-neutral-primary text-primary border-neutral-secondary flex flex w-full cursor-pointer flex-row place-content-center place-items-center justify-center self-center rounded-lg border px-2.5 py-1.5 text-sm font-medium outline-0"
           phx-click="toggle-time-zone-selector"
         >
-          <.icon name="hero-globe-alt" class="w-4 h-4" />
+          <.icon name="hero-globe-alt" class="h-4 w-4" />
           <div>
             &nbsp {time_zone_to_str(@time_zone_field.value)}
           </div>
@@ -71,7 +71,7 @@ defmodule JuntosWeb.EventLive.Components do
           show
           on_cancel={JS.push("toggle-time-zone-selector")}
         >
-          <ul class="flex flex-col [&>button]:cursor-pointer space-y-2 [&>li]:p-2 [&>li]:w-full [&>li:hover]:bg-[var(--color-bg-neutral-primary-hover)] text-primary/6">
+          <ul class="text-primary/6 flex flex-col space-y-2 [&>button]:cursor-pointer [&>li:hover]:bg-[var(--color-bg-neutral-primary-hover)] [&>li]:w-full [&>li]:p-2">
             <li :for={tz <- Juntos.Chrono.TimeZone.get_list_of_time_zones()}>
               <button
                 type="button"
@@ -83,7 +83,7 @@ defmodule JuntosWeb.EventLive.Components do
                     detail: %{value: tz.zone_name}
                   )
                 }
-                class="cursor-pointer w-full flex items-start text-primary "
+                class="text-primary flex w-full cursor-pointer items-start "
               >
                 ({tz.offset_str}) {tz.zone_name}
               </button>
@@ -126,11 +126,11 @@ defmodule JuntosWeb.EventLive.Components do
         />
         <.icon
           name="hero-map-pin"
-          class="input-leading-icon pointer-events-none col-start-1 row-start-1 ml-3 size-5 self-center text-gray-400 sm:size-4"
+          class="input-leading-icon size-5 sm:size-4 pointer-events-none col-start-1 row-start-1 ml-3 self-center text-gray-400"
         />
         <.icon
           name="hero-x-mark"
-          class="input-trailing-icon hidden cursor-pointer col-start-1 row-start-1 mr-3 size-5 self-center justify-self-end text-gray-400"
+          class="input-trailing-icon size-5 col-start-1 row-start-1 mr-3 hidden cursor-pointer self-center justify-self-end text-gray-400"
         />
       </div>
       <ul class="" role="listbox"></ul>
@@ -142,14 +142,14 @@ defmodule JuntosWeb.EventLive.Components do
   attr :value, :string, required: true
 
   attr :description_editor, Phoenix.HTML.FormField,
-    doc: "a shadow form container for orignial value"
+    doc: "a form for orignial value container shadow"
 
   def description_editor(assigns) do
     ~H"""
     <button
       type="button"
       phx-click="toggle-sheet"
-      class="w-md border border-neutral-secondary rounded-lg text-secondary bg-neutral-secondary  flex px-2 py-1 min-h-24 max-h-24 cursor-text outline-0 animated"
+      class="w-md border-neutral-secondary text-secondary bg-neutral-secondary min-h-24 animated  flex max-h-24 cursor-text rounded-lg border px-2 py-1 outline-0"
     >
       <span :if={@value in [nil, ""]}>
         {gettext "Share details about your event..."}
@@ -160,9 +160,9 @@ defmodule JuntosWeb.EventLive.Components do
     </button>
     <.bottom_sheet :if={@show_desc} id="description-editor" show on_cancel={JS.push("toggle-sheet")}>
       <:header>
-        <h2 class="text-base text-primary font-bold">{gettext "Describe Your Event"}</h2>
+        <h2 class="text-primary text-base font-bold">{gettext "Describe Your Event"}</h2>
       </:header>
-      <:body class="overflow-y-auto rounded-lg bg-neutral-primary w-full border border-neutral-secondary">
+      <:body class="bg-neutral-primary border-neutral-secondary w-full overflow-y-auto rounded-lg border">
         <.text_editor field={@description_editor} value={@value} editable autofocus />
       </:body>
       <:footer>

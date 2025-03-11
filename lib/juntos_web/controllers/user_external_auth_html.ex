@@ -3,12 +3,12 @@ defmodule JuntosWeb.UserExternalAuthHTML do
 
   def new(assigns) do
     ~H"""
-    <div class="flex justify-center pt-10 pb-20 gap-6">
+    <div class="flex justify-center gap-6 pb-20 pt-10">
       <div
         data-role="login-dialog"
-        class="max-w-6xl flex justify-center flex-col w-[343px] md:w-[448px] gap-8"
+        class="flex w-[343px] max-w-6xl flex-col justify-center gap-8 md:w-[448px]"
       >
-        <.link navigate={~p"/users/log_in"}><.icon name="hero-arrow-left" class="w-6 h-6" /></.link>
+        <.link navigate={~p"/users/log_in"}><.icon name="hero-arrow-left" class="h-6 w-6" /></.link>
         <.hero>
           <:title>{gettext "Hello %{name}!", name: @external_auth_user.name}</:title>
           <:body>
