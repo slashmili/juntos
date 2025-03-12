@@ -120,12 +120,12 @@ defmodule JuntosWeb.EventLive.Components do
           type="text"
           class="bg-neutral-primary border-neutral-secondary text-neutral-primary animated col-start-1 row-start-1 block w-full rounded-md border py-1.5 pl-10 pr-10 text-base outline-0 sm:pr-9"
           autocomplete="new-password"
-          placeholder={gettext "Enter an address or link to online meeting"}
+          placeholder={gettext "Search for a location"}
           data-1p-ignore
         />
         <.icon
           name="hero-map-pin"
-          class="input-leading-icon size-5 sm:size-4 pointer-events-none col-start-1 row-start-1 ml-3 self-center text-gray-400"
+          class="input-leading-icon size-5 sm:size-4 pointer-events-none col-start-1 row-start-1 ml-3 self-center text-neutral-secondary"
         />
         <.icon
           name="hero-x-mark"

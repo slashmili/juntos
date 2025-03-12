@@ -9,6 +9,7 @@ defmodule JuntosWeb.EventLive.New do
     {:ok,
      socket
      |> assign(:uploaded_cover, [])
+     |> assign(:event_location, nil)
      |> assign(:show_desc, false)
      |> assign(:show_time_zone_options, false)
      |> assign(:page_title, "Create a new event")
@@ -25,6 +26,9 @@ defmodule JuntosWeb.EventLive.New do
         event_params
       end
 
+    event_params =
+      Map.put(event_params, "location", to_location(socket.assigns.event_location))
+
     changeset = Events.change_event(%Events.Event{}, event_params) |> Map.put(:action, :validate)
     {:noreply, socket |> assign_form(changeset)}
   end
@@ -37,6 +41,26 @@ defmodule JuntosWeb.EventLive.New do
   @impl Phoenix.LiveView
   def handle_event("toggle-time-zone-selector", _params, socket) do
     {:noreply, socket |> assign(:show_time_zone_options, !socket.assigns.show_time_zone_options)}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("location-finder", %{"type" => "place"} = location, socket) do
+    {:noreply, assign(socket, :event_location, location)}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("location-finder", %{"type" => "url", "value" => value} = url, socket) do
+    {:noreply, assign(socket, :event_location, %{url | "value" => %{"link" => value}})}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("location-finder", %{"type" => "address", "value" => value} = address, socket) do
+    {:noreply, assign(socket, :event_location, %{address | "value" => %{"address" => value}})}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("location-finder", %{"type" => "reset"}, socket) do
+    {:noreply, assign(socket, :event_location, nil)}
   end
 
   @impl Phoenix.LiveView
@@ -66,6 +90,8 @@ defmodule JuntosWeb.EventLive.New do
         _ ->
           params["event"]
       end
+
+    event_params = Map.put(event_params, "location", to_location(socket.assigns.event_location))
 
     case Events.create_event(event_params, socket.assigns.current_user) do
       {:ok, event} ->
@@ -112,7 +138,12 @@ defmodule JuntosWeb.EventLive.New do
     <.form_item>
       <:label>{gettext "Location"}*</:label>
       <:label_body>{gettext "Go in-person or oline. Add a spot if it's in-person"}</:label_body>
-      <:input></:input>
+      <:input>
+        <JuntosWeb.EventLive.Components.location_finder
+          id="newEventlocationFinder"
+          api_key={System.get_env("GMAP_API_KEY")}
+        />
+      </:input>
     </.form_item>
     """
   end
@@ -267,5 +298,13 @@ defmodule JuntosWeb.EventLive.New do
   defp assign_form(socket, changeset) do
     form = to_form(changeset)
     assign(socket, form: form)
+  end
+
+  defp to_location(%{"type" => type, "value" => value}) do
+    Map.put(value, "__type__", type)
+  end
+
+  defp to_location(_) do
+    nil
   end
 end

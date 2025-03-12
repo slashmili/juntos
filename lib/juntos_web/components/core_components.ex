@@ -402,7 +402,7 @@ defmodule JuntosWeb.CoreComponents do
         phx-mounted={@show && show_dropdown(@id)}
         phx-remove={hide_dropdown(@id)}
         data-cancel={JS.exec(@on_cancel, "phx-remove")}
-        class="absolute w-full border border-neutral-primary overflow-y-auto max-h-48 rounded bg-neutral-primary hidden animated hidden opacity-0 scale-95 transition-all duration-200 ease-out"
+        class="absolute z-10 w-full border border-neutral-primary overflow-y-auto max-h-48 rounded bg-neutral-primary hidden animated hidden opacity-0 scale-95 transition-all duration-200 ease-out"
       >
         <.focus_wrap
           id={"#{@id}-container"}
