@@ -109,4 +109,13 @@ defmodule Juntos.Events do
       {:ok, _result} -> :ok
     end
   end
+
+  def is_attending?(_event, nil) do
+    false
+  end
+
+  def is_attending?(event, user) do
+    q = from(ea in EventAttendee, where: ea.event_id == ^event.id, where: ea.user_id == ^user.id)
+    Repo.aggregate(q, :count, :id) == 1
+  end
 end

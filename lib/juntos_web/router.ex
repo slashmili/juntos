@@ -74,6 +74,10 @@ defmodule JuntosWeb.Router do
 
   scope "/", JuntosWeb do
     pipe_through :browser
-    live "/*path", EventLive.Show
+
+    live_session :current_user,
+      on_mount: [{JuntosWeb.UserAuth, :mount_current_user}] do
+      live "/*path", EventLive.Show
+    end
   end
 end

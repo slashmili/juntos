@@ -3,6 +3,7 @@ defmodule Juntos.EventsTest do
   alias Juntos.Events, as: SUT
 
   import Juntos.AccountsFixtures
+  import Juntos.EventsFixtures
 
   setup do
     %{user: user_fixture()}
@@ -79,7 +80,7 @@ defmodule Juntos.EventsTest do
 
   describe "add_event_attendee/2" do
     test "with a user attending an event" do
-      event = Juntos.EventsFixtures.event_fixture()
+      event = event_fixture()
       user = user_fixture()
       assert :ok = SUT.add_event_attendee(event, user)
 
@@ -88,7 +89,7 @@ defmodule Juntos.EventsTest do
     end
 
     test "with a user attends an event twice" do
-      event = Juntos.EventsFixtures.event_fixture()
+      event = event_fixture()
       user = user_fixture()
       assert :ok = SUT.add_event_attendee(event, user)
       assert {:error, ch} = SUT.add_event_attendee(event, user)
@@ -98,13 +99,33 @@ defmodule Juntos.EventsTest do
 
   describe "remove_event_attendee/2" do
     test "with a user attending an event" do
-      event = Juntos.EventsFixtures.event_fixture()
+      event = event_fixture()
       user = user_fixture()
       assert :ok = SUT.add_event_attendee(event, user)
       assert :ok = SUT.remove_event_attendee(event, user)
 
       event = Juntos.Repo.reload!(event)
       assert event.attendee_count == 0
+    end
+  end
+
+  describe "is_attending?/2" do
+    test "when given user is nil" do
+      event = event_fixture()
+      refute SUT.is_attending?(event, nil)
+    end
+
+    test "when given user is not attending" do
+      event = event_fixture()
+      user = user_fixture()
+      refute SUT.is_attending?(event, user)
+    end
+
+    test "when given user is attending" do
+      event = event_fixture()
+      user = user_fixture()
+      assert :ok = SUT.add_event_attendee(event, user)
+      assert SUT.is_attending?(event, user)
     end
   end
 end
