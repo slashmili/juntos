@@ -16,6 +16,7 @@ defmodule Juntos.Events.Event do
     field :description, :string, default: ""
     field :description_editor, :string, virtual: true
     field :slug, :string
+    field :attendee_count, :integer, default: 0
 
     polymorphic_embeds_one :location,
       types: [

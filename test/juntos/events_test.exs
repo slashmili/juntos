@@ -76,4 +76,35 @@ defmodule Juntos.EventsTest do
       assert errors_on(changeset) == %{time_zone: ["is invalid"]}
     end
   end
+
+  describe "add_event_attendee/2" do
+    test "with a user attending an event" do
+      event = Juntos.EventsFixtures.event_fixture()
+      user = user_fixture()
+      assert :ok = SUT.add_event_attendee(event, user)
+
+      event = Juntos.Repo.reload!(event)
+      assert event.attendee_count == 1
+    end
+
+    test "with a user attends an event twice" do
+      event = Juntos.EventsFixtures.event_fixture()
+      user = user_fixture()
+      assert :ok = SUT.add_event_attendee(event, user)
+      assert {:error, ch} = SUT.add_event_attendee(event, user)
+      assert errors_on(ch) == %{event_id: ["has already been taken"]}
+    end
+  end
+
+  describe "remove_event_attendee/2" do
+    test "with a user attending an event" do
+      event = Juntos.EventsFixtures.event_fixture()
+      user = user_fixture()
+      assert :ok = SUT.add_event_attendee(event, user)
+      assert :ok = SUT.remove_event_attendee(event, user)
+
+      event = Juntos.Repo.reload!(event)
+      assert event.attendee_count == 0
+    end
+  end
 end

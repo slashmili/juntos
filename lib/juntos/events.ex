@@ -1,5 +1,7 @@
 defmodule Juntos.Events do
-  alias Juntos.Events.Event
+  import Ecto.Query
+  alias Juntos.Events.{Event, EventAttendee}
+  alias Juntos.Accounts
   alias Juntos.{Repo, UrlShortner}
   alias Juntos.Events.Uploaders.CoverImage
 
@@ -7,7 +9,7 @@ defmodule Juntos.Events do
     Event.create_changeset(event, attr)
   end
 
-  def create_event(attrs \\ %{}, %Juntos.Accounts.User{} = creator) do
+  def create_event(attrs \\ %{}, %Accounts.User{} = creator) do
     event_record_id = create_uuid()
 
     result =
@@ -54,5 +56,57 @@ defmodule Juntos.Events do
 
   defp to_file_ext(file_name) do
     file_name |> Path.extname() |> String.trim(".") |> String.to_atom()
+  end
+
+  @doc """
+  Store the user as attendee and increase attendees count on event
+  """
+  def add_event_attendee(%Event{} = event, %Accounts.User{} = user) do
+    result =
+      Ecto.Multi.new()
+      |> Ecto.Multi.insert(
+        :attendee,
+        fn _context ->
+          EventAttendee.create_changeset(%EventAttendee{}, %{})
+          |> EventAttendee.put_user(user)
+          |> EventAttendee.put_event(event)
+        end
+      )
+      |> Ecto.Multi.update_all(
+        :attendees_count,
+        fn _context ->
+          from(e in Event, where: e.id == ^event.id, update: [inc: [attendee_count: 1]])
+        end,
+        []
+      )
+      |> Repo.transaction()
+
+    case result do
+      {:ok, _result} -> :ok
+      {:error, :attendee, ch, _} -> {:error, ch}
+    end
+  end
+
+  def remove_event_attendee(%Event{} = event, %Accounts.User{} = user) do
+    result =
+      Ecto.Multi.new()
+      |> Ecto.Multi.one(:attendee, fn _ ->
+        from(ea in EventAttendee, where: ea.event_id == ^event.id, where: ea.user_id == ^user.id)
+      end)
+      |> Ecto.Multi.delete(:delete_attendee, fn %{attendee: attendee} ->
+        attendee
+      end)
+      |> Ecto.Multi.update_all(
+        :attendees_count,
+        fn _context ->
+          from(e in Event, where: e.id == ^event.id, update: [inc: [attendee_count: -1]])
+        end,
+        []
+      )
+      |> Repo.transaction()
+
+    case result do
+      {:ok, _result} -> :ok
+    end
   end
 end
