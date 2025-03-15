@@ -38,6 +38,7 @@ defmodule JuntosWeb.UserLoginLive do
 
   defp auth_section(assigns) do
     ~H"""
+    <.label_for field={@form[:email]} class="sr-only">{gettext "Email"}</.label_for>
     <.input
       field={@form[:email]}
       type="email"
@@ -46,6 +47,7 @@ defmodule JuntosWeb.UserLoginLive do
       autocomplete="email webauthn"
       required
     />
+    <.label_for field={@form[:otp_code]} class="sr-only">{gettext "OTP Code"}</.label_for>
     <.input
       :if={@otp_session != nil}
       field={@form[:otp_code]}
@@ -89,7 +91,7 @@ defmodule JuntosWeb.UserLoginLive do
   defp hero_section(assigns) do
     ~H"""
     <.hero>
-      <:title>{gettext "Let's get together."}</:title>
+      {gettext "Let's get together."}
       <:subtitle>{gettext "Please sign in or sign up to your Juntos account"}</:subtitle>
     </.hero>
     """

@@ -348,17 +348,24 @@ defmodule JuntosWeb.CoreComponents do
 
   def input_text(assigns) do
     ~H"""
-    <section class="mt-2 grid w-full max-w-md grid-cols-1">
+    <section class="mt-2 grid w-full max-w-md grid-cols-1 group">
       <input
         id={@id}
         type={@type}
         name={@name}
-        class="bg-neutral-primary border-neutral-secondary text-neutral-primary animated col-start-1 row-start-1 block rounded-lg border px-2 py-3 font-sans text-base font-normal outline-0"
+        class="bg-neutral-primary border-neutral-secondary text-neutral-primary animated col-start-1 row-start-1 block rounded-lg border px-2 py-3 font-sans text-base font-normal outline-0 group-has-[.errors]:border-(--color-border-status-error)"
         autocomplete="new-password"
         value={@value}
         data-1p-ignore
         {@rest}
       />
+      <div
+        :if={@errors != []}
+        class="pt-0.5 errors text-(--color-text-status-error)"
+        data-role="error-for-input"
+      >
+        <div :for={msg <- @errors}>{msg}</div>
+      </div>
     </section>
     """
   end

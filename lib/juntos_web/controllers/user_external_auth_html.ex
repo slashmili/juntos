@@ -10,7 +10,7 @@ defmodule JuntosWeb.UserExternalAuthHTML do
       >
         <.link navigate={~p"/users/log_in"}><.icon name="hero-arrow-left" class="h-6 w-6" /></.link>
         <.hero>
-          <:title>{gettext "Hello %{name}!", name: @external_auth_user.name}</:title>
+          {gettext "Hello %{name}!", name: @external_auth_user.name}
           <:body>
             {gettext "You are about to sign up with email %{email}, do you want to continue?",
               email: @external_auth_user.email}

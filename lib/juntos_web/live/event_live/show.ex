@@ -144,6 +144,11 @@ defmodule JuntosWeb.EventLive.Show do
 
   defp location_to_html(assigns) do
     case assigns[:location] do
+      nil ->
+        ~H"""
+        {gettext "NA"}
+        """
+
       %{id: _} ->
         ~H"""
         <a

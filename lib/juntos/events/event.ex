@@ -12,7 +12,7 @@ defmodule Juntos.Events.Event do
     field :cover_image, Events.Uploaders.CoverImage.Type
     field :start_datetime, :naive_datetime
     field :end_datetime, :naive_datetime
-    field :time_zone, :string
+    field :time_zone, :string, default: "UTC"
     field :description, :string, default: ""
     field :description_editor, :string, virtual: true
     field :slug, :string
