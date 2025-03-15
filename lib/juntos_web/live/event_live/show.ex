@@ -133,10 +133,15 @@ defmodule JuntosWeb.EventLive.Show do
             </.button>
           </div>
           <div>
-            {gettext "Cannot join?"}
             <!-- TODO: make me a button! -->
-            <a href="#" phx-click="cancel-attendance" class="underline">
-              {gettext "Cancel registertion"}
+            <a
+              href="#"
+              phx-click="cancel-attendance"
+              class=" phx-click-loading:opacity-75 cursor-text"
+              phx-disable-with={gettext "Canceling..."}
+            >
+              {gettext "Cannot join?"}
+              <span class="cursor-pointer underline">{gettext "Cancel registertion"}</span>
             </a>
           </div>
         </div>
@@ -172,8 +177,14 @@ defmodule JuntosWeb.EventLive.Show do
               <.location_to_html location={@event.location} />
             </div>
           </div>
-          <div class="w-full px-2 pt-6">
-            <.button size="lg" class="w-full" phx-click="attend">
+
+          <div class="w-full px-2 pt-6" phx-change="update">
+            <.button
+              size="lg"
+              class="w-full phx-click-loading:opacity-75"
+              phx-click="attend"
+              phx-disable-with={gettext "Registering..."}
+            >
               {gettext "Register"}
             </.button>
           </div>
