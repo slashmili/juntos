@@ -20,7 +20,7 @@ defmodule JuntosWeb.CoreComponents do
   alias Phoenix.LiveView.JS
 
   attr :variant, :string,
-    values: ~w(primary secondary link outline),
+    values: ~w(primary secondary tertiary link outline ghost destructive),
     default: "primary",
     doc: "the button variant style"
 
@@ -29,7 +29,8 @@ defmodule JuntosWeb.CoreComponents do
   attr :class, :any, default: nil
   attr :icon_right, :string, default: nil
   attr :icon_left, :string, default: nil
-  attr :rest, :global, include: ~w(disabled form name value href)
+  attr :disabled, :boolean, default: false
+  attr :rest, :global, include: ~w( form name value href)
 
   slot :inner_block, required: true
 
@@ -73,6 +74,7 @@ defmodule JuntosWeb.CoreComponents do
         "animated flex cursor-pointer justify-center gap-1 font-medium"
       ]}
       {@rest}
+      disabled={@disabled}
     >
       <.icon :if={@icon_left} name={@icon_left} class={@icon_class} />
       {render_slot(@inner_block)}
@@ -131,10 +133,10 @@ defmodule JuntosWeb.CoreComponents do
 
   defp button_variant_class(%{variant: "secondary"} = assigns) do
     colors =
-      if assigns[:rest][:disabled] do
-        "bg-gray-200 text-gray-400"
+      if assigns[:disabled] do
+        "bg-(--color-bg-status-disabled) text-(--color-text-status-disabled)"
       else
-        "bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-200"
+        "bg-(--color-bg-accent-brand-muted) text-(--color-text-neutral-primary) hover:bg-(--color-bg-accent-brand-muted-hover)"
       end
 
     colors
@@ -142,13 +144,46 @@ defmodule JuntosWeb.CoreComponents do
 
   defp button_variant_class(%{variant: "outline"} = assigns) do
     colors =
-      if assigns[:rest][:disabled] do
-        "border-gray-300 bg-gray-200 text-gray-400 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-700"
+      if assigns[:disabled] do
+        "bg-(--color-bg-status-disabled) text-(--color-text-status-disabled) border-(--color-border-statue-disabled)"
       else
-        "border-slate-200 bg-slate-50 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300"
+        "text-(--color-text-neutral-primary) border-(--color-border-neutral-primary) hover:bg-(--color-bg-translucent-dark)/10"
       end
 
     ["border-2", colors]
+  end
+
+  defp button_variant_class(%{variant: "tertiary"} = assigns) do
+    colors =
+      if assigns[:disabled] do
+        "text-(--color-text-status-disabled)"
+      else
+        "text-(--color-text-accent-brand) hover:bg-(--color-bg-translucent-dark)/10"
+      end
+
+    ["border-0", colors]
+  end
+
+  defp button_variant_class(%{variant: "destructive"} = assigns) do
+    colors =
+      if assigns[:disabled] do
+        "bg-(--color-bg-status-disabled) text-(--color-text-status-disabled) border-(--color-border-statue-disabled)"
+      else
+        "text-(--color-text-status-error) hover:bg-(--color-bg-translucent-dark)/10 border-(--color-border-status-error)"
+      end
+
+    ["border-2", colors]
+  end
+
+  defp button_variant_class(%{variant: "ghost"} = assigns) do
+    colors =
+      if assigns[:disabled] do
+        "text-(--color-text-status-disabled)"
+      else
+        "text-(--color-text-neutral-primary) hover:bg-(--color-bg-translucent-dark)/10"
+      end
+
+    ["border-0", colors]
   end
 
   defp button_variant_class(%{variant: "link"} = assigns) do
@@ -164,10 +199,10 @@ defmodule JuntosWeb.CoreComponents do
 
   defp button_variant_class(assigns) do
     colors =
-      if assigns[:rest][:disabled] do
-        "bg-gray-200 text-gray-400"
+      if assigns[:disabled] do
+        "bg-(--color-bg-status-disabled) text-(--color-text-status-disabled)"
       else
-        "bg-violet-700 text-slate-50"
+        "bg-(--color-bg-accent-brand) text-(--color-ever-white) hover:bg-(--color-bg-accent-brand-hover) "
       end
 
     colors
