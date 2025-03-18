@@ -9,9 +9,8 @@ defmodule JuntosWeb.EventLive.Show do
     {:ok,
      socket
      |> assign(:page_title, event.name)
-     |> assign(:show_withdraw_dropdown?, false)
-     |> assign(:attending?, Events.is_attending?(event, socket.assigns.current_user))
-     |> assign(:event, event)}
+     |> assign(:event, event)
+     |> set_toggles()}
   end
 
   @impl true
@@ -25,14 +24,14 @@ defmodule JuntosWeb.EventLive.Show do
 
   @impl true
   def handle_event("toggle-withdraw-dropdown", _, socket) do
-    socket = assign(socket, :show_withdraw_dropdown?, !socket.assigns.show_withdraw_dropdown?)
+    socket = assign(socket, :show_withdraw_prompt?, !socket.assigns.show_withdraw_prompt?)
     {:noreply, socket}
   end
 
   @impl true
   def handle_event("cancel-attendance", _, socket) do
     :ok = Events.remove_event_attendee(socket.assigns.event, socket.assigns.current_user)
-    socket = assign(socket, attending?: false, show_withdraw_dropdown?: false)
+    socket = assign(socket, attending?: false, show_withdraw_prompt?: false)
     event = Juntos.Repo.get!(Events.Event, socket.assigns.event.id)
     socket = assign(socket, :event, event)
     {:noreply, socket}
@@ -41,14 +40,24 @@ defmodule JuntosWeb.EventLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
+    <.page_wrapper>
+      <.event_page>
+        <.event_card event={@event} />
+        <.footer_register event={@event} show={not @attending?} />
+        <.footer_attend event={@event} show={@attending?} />
+        <.confirm_cancellation_dialog show={@show_withdraw_prompt?} />
+      </.event_page>
+    </.page_wrapper>
+    """
+  end
+
+  def event_page(assigns) do
+    ~H"""
     <div
       data-role="event-public-page"
       class="min-w-xs max-w-3xl flex flex-col items-start p-3 gap-1.5"
     >
-      <.event_card event={@event} />
-      <.footer_register {assigns} />
-      <.footer_attend {assigns} />
-      <.confirm_widthdraw {assigns} />
+      {render_slot(@inner_block)}
     </div>
     """
   end
@@ -114,7 +123,7 @@ defmodule JuntosWeb.EventLive.Show do
   defp footer_attend(assigns) do
     ~H"""
     <footer
-      :if={@attending?}
+      :if={@show}
       class="fixed bottom-0 left-0 w-full py-6 bg-(--color-bg-neutral-primary)"
       data-role="attending-cta"
     >
@@ -162,7 +171,7 @@ defmodule JuntosWeb.EventLive.Show do
   defp footer_register(assigns) do
     ~H"""
     <footer
-      :if={not @attending?}
+      :if={@show}
       class="fixed bottom-0 left-0 w-full py-6 bg-(--color-bg-neutral-primary)"
       data-role="register-cta"
     >
@@ -203,9 +212,9 @@ defmodule JuntosWeb.EventLive.Show do
     """
   end
 
-  defp confirm_widthdraw(assigns) do
+  defp confirm_cancellation_dialog(assigns) do
     ~H"""
-    <div :if={@show_withdraw_dropdown?} data-role="withdraw-cta">
+    <div :if={@show} data-role="cancellation-cta">
       <.bottom_sheet id="withdrawButtonSheet" show on_cancel={JS.push("toggle-withdraw-dropdown")}>
         <:header>
           <h2 class="text-neutral-primary text-lg font-bold">{gettext "Cancel registertion?"}</h2>
@@ -319,5 +328,14 @@ defmodule JuntosWeb.EventLive.Show do
       time: time,
       transition: {"ease-out duration-100", "opacity-100", "opacity-0"}
     )
+  end
+
+  defp set_toggles(socket) do
+    options = [
+      show_withdraw_prompt?: false,
+      attending?: Events.is_attending?(socket.assigns.event, socket.assigns.current_user)
+    ]
+
+    assign(socket, options)
   end
 end
