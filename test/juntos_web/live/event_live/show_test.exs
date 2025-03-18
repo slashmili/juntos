@@ -27,12 +27,21 @@ defmodule JuntosWeb.EventLive.ShowTest do
 
   setup [:create_event, :attend_to_event]
 
-  test "withdraw from an event", %{conn: conn, event: event} do
+  test "cancels a sport from an event", %{conn: conn, event: event} do
     conn
     |> visit("/#{event.slug}")
     |> click_link("Cancel registertion")
+    |> click_button("Confirm cancellation")
     |> assert_has("[data-role=attendee-count]", text: "No attendee")
     |> assert_has("[data-role=register-cta]", text: "Register")
+  end
+
+  test "doesn't confirm event cancellation", %{conn: conn, event: event} do
+    conn
+    |> visit("/#{event.slug}")
+    |> click_link("Cancel registertion")
+    |> click_button("Keep my spot")
+    |> assert_has("[data-role=attending-cta]")
   end
 
   def create_event(_) do

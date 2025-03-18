@@ -9,22 +9,30 @@ defmodule JuntosWeb.EventLive.Show do
     {:ok,
      socket
      |> assign(:page_title, event.name)
-     |> assign(:is_attending, Events.is_attending?(event, socket.assigns.current_user))
+     |> assign(:show_withdraw_dropdown?, false)
+     |> assign(:attending?, Events.is_attending?(event, socket.assigns.current_user))
      |> assign(:event, event)}
   end
 
   @impl true
   def handle_event("attend", _, socket) do
     :ok = Events.add_event_attendee(socket.assigns.event, socket.assigns.current_user)
-    socket = assign(socket, :is_attending, !socket.assigns.is_attending)
+    socket = assign(socket, :attending?, !socket.assigns.attending?)
     event = Juntos.Repo.get!(Events.Event, socket.assigns.event.id)
     socket = assign(socket, :event, event)
     {:noreply, socket}
   end
 
+  @impl true
+  def handle_event("toggle-withdraw-dropdown", _, socket) do
+    socket = assign(socket, :show_withdraw_dropdown?, !socket.assigns.show_withdraw_dropdown?)
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("cancel-attendance", _, socket) do
     :ok = Events.remove_event_attendee(socket.assigns.event, socket.assigns.current_user)
-    socket = assign(socket, :is_attending, !socket.assigns.is_attending)
+    socket = assign(socket, attending?: false, show_withdraw_dropdown?: false)
     event = Juntos.Repo.get!(Events.Event, socket.assigns.event.id)
     socket = assign(socket, :event, event)
     {:noreply, socket}
@@ -38,8 +46,9 @@ defmodule JuntosWeb.EventLive.Show do
       class="min-w-xs max-w-3xl flex flex-col items-start p-3 gap-1.5"
     >
       <.event_card event={@event} />
-      <.footer_register event={@event} is_attending={@is_attending} />
-      <.footer_attend event={@event} is_attending={@is_attending} />
+      <.footer_register {assigns} />
+      <.footer_attend {assigns} />
+      <.confirm_widthdraw {assigns} />
     </div>
     """
   end
@@ -53,14 +62,14 @@ defmodule JuntosWeb.EventLive.Show do
         <.event_info event={@event} />
         <.event_description event={@event} />
       </section>
-      <div class="py-20"></div>
+      <div class="py-25"></div>
     </div>
     """
   end
 
   defp header(assigns) do
     ~H"""
-    <section class="text-lg font-bold pb-4 border-b-1 border-(--color-border-neutral-primary)">
+    <section class="text-lg font-bold pb-4">
       {@event.name}
     </section>
     """
@@ -105,7 +114,7 @@ defmodule JuntosWeb.EventLive.Show do
   defp footer_attend(assigns) do
     ~H"""
     <footer
-      :if={@is_attending}
+      :if={@attending?}
       class="fixed bottom-0 left-0 w-full py-6 bg-(--color-bg-neutral-primary)"
       data-role="attending-cta"
     >
@@ -136,9 +145,9 @@ defmodule JuntosWeb.EventLive.Show do
             <!-- TODO: make me a button! -->
             <a
               href="#"
-              phx-click="cancel-attendance"
+              phx-click="toggle-withdraw-dropdown"
               class=" phx-click-loading:opacity-75 cursor-text"
-              phx-disable-with={gettext "Canceling..."}
+              phx-disable-with
             >
               {gettext "Cannot join?"}
               <span class="cursor-pointer underline">{gettext "Cancel registertion"}</span>
@@ -153,7 +162,7 @@ defmodule JuntosWeb.EventLive.Show do
   defp footer_register(assigns) do
     ~H"""
     <footer
-      :if={not @is_attending}
+      :if={not @attending?}
       class="fixed bottom-0 left-0 w-full py-6 bg-(--color-bg-neutral-primary)"
       data-role="register-cta"
     >
@@ -191,6 +200,34 @@ defmodule JuntosWeb.EventLive.Show do
         </div>
       </section>
     </footer>
+    """
+  end
+
+  defp confirm_widthdraw(assigns) do
+    ~H"""
+    <div :if={@show_withdraw_dropdown?} data-role="withdraw-cta">
+      <.bottom_sheet id="withdrawButtonSheet" show on_cancel={JS.push("toggle-withdraw-dropdown")}>
+        <:header>
+          <h2 class="text-neutral-primary text-lg font-bold">{gettext "Cancel registertion?"}</h2>
+        </:header>
+
+        <:body class="bg-(--color-bg-neutral-primary) flex flex-col gap-6">
+          Canceling means you may lose your spot, and re-registering could be unavailable if the event reaches capacity.
+          <div class="flex flex-col gap-2">
+            <.button phx-click="toggle-withdraw-dropdown" variant="outline" phx-disable-with>
+              {gettext "Keep my spot"}
+            </.button>
+            <.button
+              variant="destructive"
+              phx-click="cancel-attendance"
+              phx-disable-with="Canceling ..."
+            >
+              {gettext "Confirm cancellation"}
+            </.button>
+          </div>
+        </:body>
+      </.bottom_sheet>
+    </div>
     """
   end
 
