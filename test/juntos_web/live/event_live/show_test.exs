@@ -12,6 +12,7 @@ defmodule JuntosWeb.EventLive.ShowTest do
     |> assert_has("[data-role=attendee-count]", text: "No attendee")
     |> assert_has("[data-role=register-cta]", text: "Register")
     |> click_button("Register")
+    |> assert_has("#flash-info", text: "You’re in!")
     |> assert_has("[data-role=attending-cta]")
     |> assert_has("[data-role=attendee-count]", text: "1 attendee")
   end
@@ -65,6 +66,7 @@ defmodule JuntosWeb.EventLive.ShowTest do
     |> click_button("Confirm cancellation")
     |> assert_has("[data-role=attendee-count]", text: "No attendee")
     |> assert_has("[data-role=register-cta]", text: "Register")
+    |> assert_has("#flash-info", text: "Your registration has been canceled.")
   end
 
   test "doesn't confirm event cancellation", %{conn: conn, event: event} do
