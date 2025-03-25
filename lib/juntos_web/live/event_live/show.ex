@@ -29,6 +29,12 @@ defmodule JuntosWeb.EventLive.Show do
   end
 
   @impl true
+  def handle_event("toggle-ticket-dropdown", _, socket) do
+    socket = assign(socket, :show_ticket_dialog?, !socket.assigns.show_ticket_dialog?)
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("cancel-attendance", _, socket) do
     :ok = Events.remove_event_attendee(socket.assigns.event, socket.assigns.current_user)
     socket = assign(socket, attending?: false, show_withdraw_prompt?: false)
@@ -46,6 +52,7 @@ defmodule JuntosWeb.EventLive.Show do
         <.footer_register event={@event} show={not @attending?} />
         <.footer_attend event={@event} show={@attending?} />
         <.confirm_cancellation_dialog show={@show_withdraw_prompt?} />
+        <.ticket_dialog event={@event} show={@show_ticket_dialog?} />
       </.event_page>
     </.page_wrapper>
     """
@@ -88,7 +95,9 @@ defmodule JuntosWeb.EventLive.Show do
     ~H"""
     <section class="self-center relative">
       <.event_cover_image cover_image={Events.event_cover_url(@event)} />
-      <.datetime_header />
+      <div class="absolute top-2 left-2">
+        <.datetime_header />
+      </div>
       <.share_button />
     </section>
     """
@@ -138,6 +147,7 @@ defmodule JuntosWeb.EventLive.Show do
               size="lg"
               class="w-full flex items-center"
               icon_left="hero-qr-code"
+              phx-click="toggle-ticket-dropdown"
             >
               {gettext "View ticket"}
             </.button>
@@ -240,6 +250,34 @@ defmodule JuntosWeb.EventLive.Show do
     """
   end
 
+  defp ticket_dialog(assigns) do
+    ~H"""
+    <div :if={@show} data-role="ticket-dialog">
+      <.bottom_sheet id="ticketBottomSheet" show on_cancel={JS.push("toggle-ticket-dropdown")}>
+        <:header>
+          <div class="flex flex-col pb-6">
+            <section class="flex flex-col gap-4 ">
+              <div class="flex"><.datetime_header /></div>
+              <div class="text-lg font-bold">{@event.name}</div>
+              <div class="text-sm font-semibold truncate">
+                <.location_to_html location={@event.location} />
+              </div>
+            </section>
+          </div>
+        </:header>
+        <:body class="bg-(--color-bg-neutral-primary) pt-6 border-t-2 border-dashed border-(--color-border-neutral-secondary)/30 items-center">
+          <div class="flex flex-col items-center gap-6">
+            {raw(ticket_svg())}
+            <.button variant="outline" icon_left="hero-calendar-days" class="w-full">
+              {gettext "Add to calendar"}
+            </.button>
+          </div>
+        </:body>
+      </.bottom_sheet>
+    </div>
+    """
+  end
+
   defp share_button(assigns) do
     ~H"""
     <section class="absolute right-2 bottom-2">
@@ -250,7 +288,7 @@ defmodule JuntosWeb.EventLive.Show do
 
   defp datetime_header(assigns) do
     ~H"""
-    <header class="bg-(--color-bg-accent-brand-muted) absolute top-2 left-2 rounded-full px-4 py-1.5 text-sm/5 font-medium gap-4 flex">
+    <header class="bg-(--color-bg-accent-brand-muted) rounded-full px-4 py-1.5 text-sm/5 font-medium gap-4 flex">
       <div class="flex items-center gap-1">
         <.icon name="hero-calendar-days" class="size-4" /> Sat 8. Feb
       </div>
@@ -333,9 +371,19 @@ defmodule JuntosWeb.EventLive.Show do
   defp set_toggles(socket) do
     options = [
       show_withdraw_prompt?: false,
-      attending?: Events.is_attending?(socket.assigns.event, socket.assigns.current_user)
+      attending?: Events.is_attending?(socket.assigns.event, socket.assigns.current_user),
+      show_ticket_dialog?: false
     ]
 
     assign(socket, options)
+  end
+
+  defp ticket_svg() do
+    settings = %QRCode.Render.SvgSettings{background_opacity: 1.0}
+
+    "https://juntos.now"
+    |> QRCode.create(:high)
+    |> QRCode.render(:svg, settings)
+    |> elem(1)
   end
 end

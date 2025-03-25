@@ -478,6 +478,7 @@ defmodule JuntosWeb.CoreComponents do
   """
   attr :id, :string, required: true
   attr :show, :boolean, default: false
+  attr :close_button, :boolean, default: false
   attr :on_cancel, JS, default: %JS{}
   slot :inner_block, required: true
   slot :header, required: false
@@ -510,19 +511,20 @@ defmodule JuntosWeb.CoreComponents do
         phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
         class="fixed
         bottom-0 left-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 
-        w-full max-h-1/2 min-h-4/10   sm:w-xl sm:h-auto sm:max-h-15/20
+        w-full max-h-9/10 min-h-4/10   sm:w-xl sm:h-auto sm:max-h-15/20
         sm:-translate-x-1/2 sm:-translate-y-1/2  shadow-xl rounded-t-2xl sm:rounded-lg 
         transform transition-transform duration-300 opacity-0 pointer-events-none
         translate-y-full translate-y-0 
         p-4
         flex flex-col  gap-2
-        bg-neutral-secondary 
+        bg-neutral-primary
         justify-between
     "
       >
         <div class="flex justify-between items-center">
           {render_slot(@header)}
           <button
+            :if={@close_button}
             type="button"
             phx-click={JS.exec("data-cancel", to: "##{@id}")}
             aria-label={gettext("close")}
@@ -531,7 +533,6 @@ defmodule JuntosWeb.CoreComponents do
             <.icon name="hero-x-mark-solid" class="h-5 w-5" />
           </button>
         </div>
-
         <div id={"#{@id}-content"} class={["max-h-auto overflow-y-auto grow", hd(@body).class]}>
           {render_slot(@body)}
         </div>

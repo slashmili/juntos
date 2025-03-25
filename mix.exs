@@ -68,6 +68,7 @@ defmodule Juntos.MixProject do
       {:phoenix_test_playwright, "~> 0.4", only: :test, runtime: false},
       {:tzdata, "~> 1.1"},
       {:polymorphic_embed, "~> 5.0"},
+      {:qr_code, "~> 3.2"},
       # Start Upload Deps
       {:waffle, "~> 1.1"},
       {:waffle_ecto, "~> 0.0.12"},
