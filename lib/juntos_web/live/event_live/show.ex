@@ -96,7 +96,7 @@ defmodule JuntosWeb.EventLive.Show do
     <section class="self-center relative">
       <.event_cover_image cover_image={Events.event_cover_url(@event)} />
       <div class="absolute top-2 left-2">
-        <.datetime_header />
+        <.datetime_header event={@event} data-role="datetime-in-header" />
       </div>
       <.share_button />
     </section>
@@ -257,7 +257,9 @@ defmodule JuntosWeb.EventLive.Show do
         <:header>
           <div class="flex flex-col pb-6">
             <section class="flex flex-col gap-4 ">
-              <div class="flex"><.datetime_header /></div>
+              <div class="flex">
+                <.datetime_header event={@event} data-role="event-ticket-datetime" />
+              </div>
               <div class="text-lg font-bold">{@event.name}</div>
               <div class="text-sm font-semibold truncate">
                 <.location_to_html location={@event.location} />
@@ -288,12 +290,24 @@ defmodule JuntosWeb.EventLive.Show do
 
   defp datetime_header(assigns) do
     ~H"""
-    <header class="bg-(--color-bg-accent-brand-muted) rounded-full px-4 py-1.5 text-sm/5 font-medium gap-4 flex">
+    <header
+      data-role={assigns[:"data-role"]}
+      class="bg-(--color-bg-accent-brand-muted) rounded-full px-4 py-1.5 text-sm/5 font-medium gap-4 flex"
+    >
       <div class="flex items-center gap-1">
-        <.icon name="hero-calendar-days" class="size-4" /> Sat 8. Feb
+        <.icon name="hero-calendar-days" class="size-4" /> {Calendar.strftime(
+          @event.start_datetime,
+          "%a %d. %b"
+        )}
       </div>
       <div class="flex items-center gap-1">
-        <.icon name="hero-clock" class="size-4" /> 20:00 - 22:00
+        <.icon name="hero-clock" class="size-4" /> {Calendar.strftime(
+          @event.start_datetime,
+          "%H:%M"
+        )} - {Calendar.strftime(
+          @event.end_datetime,
+          "%H:%M"
+        )}
       </div>
     </header>
     """

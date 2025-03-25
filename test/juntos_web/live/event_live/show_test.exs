@@ -4,7 +4,7 @@ defmodule JuntosWeb.EventLive.ShowTest do
 
   setup :register_and_log_in_user
 
-  test "attend to an event and increase attendee count", %{conn: conn} do
+  test "attends to an event and increase attendee count", %{conn: conn} do
     event = event_fixture()
 
     conn
@@ -14,6 +14,37 @@ defmodule JuntosWeb.EventLive.ShowTest do
     |> click_button("Register")
     |> assert_has("[data-role=attending-cta]")
     |> assert_has("[data-role=attendee-count]", text: "1 attendee")
+  end
+
+  test "parses datetime in header", %{conn: conn} do
+    event =
+      event_fixture(
+        start_datetime: ~N[2025-03-25 17:01:54.410367],
+        end_datetime: ~N[2025-03-25 20:08:54.410367]
+      )
+
+    conn
+    |> visit("/#{event.slug}")
+    |> assert_has("[data-role=datetime-in-header]", text: "Tue 25. Mar")
+    |> assert_has("[data-role=datetime-in-header]", text: "17:01")
+    |> assert_has("[data-role=datetime-in-header]", text: "20:08")
+  end
+
+  test "parses datetime in ticket", %{conn: conn, user: user} do
+    event =
+      event_fixture(
+        start_datetime: ~N[2025-03-01 17:01:54.410367],
+        end_datetime: ~N[2025-03-01 20:08:54.410367]
+      )
+
+    Juntos.Events.add_event_attendee(event, user)
+
+    conn
+    |> visit("/#{event.slug}")
+    |> click_button("View ticket")
+    |> assert_has("[data-role=event-ticket-datetime]", text: "Sat 01. Mar")
+    |> assert_has("[data-role=event-ticket-datetime]", text: "17:01")
+    |> assert_has("[data-role=event-ticket-datetime]", text: "20:08")
   end
 
   setup [:create_event, :attend_to_event]
