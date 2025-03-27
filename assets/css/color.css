@@ -44,6 +44,7 @@
     --color-text-accent-brand: var(--color-violet-800);
     --color-text-status-error: var(--color-rose-700);
     --color-text-status-disabled: var(--color-neutral-400);
+    --color-text-status-success: var(--color-lime-600);
 
     --color-ever-white: var(--color-white);
     --color-ever-black: var(--color-black);
@@ -89,6 +90,7 @@
     --color-text-accent-brand: var(--color-violet-400);
     --color-text-status-error: var(--color-rose-500);
     --color-text-status-disabled: var(--color-neutral-800);
+    --color-text-status-success: var(--color-lime-400);
   }
 }
 

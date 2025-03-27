@@ -19,7 +19,7 @@ defmodule JuntosWeb.EventLive.Show do
     socket = assign(socket, :attending?, !socket.assigns.attending?)
     event = Juntos.Repo.get!(Events.Event, socket.assigns.event.id)
     socket = assign(socket, :event, event)
-    socket = put_flash(socket, :info, gettext("You’re in! 🎉 See you at the event."))
+    socket = put_flash(socket, :success, gettext("You’re in! 🎉 See you at the event."))
     {:noreply, socket}
   end
 
@@ -41,7 +41,7 @@ defmodule JuntosWeb.EventLive.Show do
     socket = assign(socket, attending?: false, show_withdraw_prompt?: false)
     event = Juntos.Repo.get!(Events.Event, socket.assigns.event.id)
     socket = assign(socket, :event, event)
-    socket = put_flash(socket, :info, gettext("Your registration has been canceled."))
+    socket = put_flash(socket, :success, gettext("Your registration has been canceled."))
     {:noreply, socket}
   end
 

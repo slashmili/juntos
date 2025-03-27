@@ -556,10 +556,40 @@ defmodule JuntosWeb.CoreComponents do
   attr :id, :string, doc: "the optional id of flash container"
   attr :flash, :map, default: %{}, doc: "the map of flash messages to display"
   attr :title, :string, default: nil
-  attr :kind, :atom, values: [:info, :error], doc: "used for styling and flash lookup"
+  attr :kind, :atom, values: [:info, :error, :success], doc: "used for styling and flash lookup"
   attr :rest, :global, doc: "the arbitrary HTML attributes to add to the flash container"
 
   slot :inner_block, doc: "the optional inner that renders the flash message block"
+
+  def flash(%{kind: :success} = assigns) do
+    assigns = assign_new(assigns, :id, fn -> "flash-#{assigns.kind}" end)
+
+    ~H"""
+    <div
+      :if={msg = render_slot(@inner_block) || Phoenix.Flash.get(@flash, @kind)}
+      id={@id}
+      phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
+      phx-hook="HideFlash"
+      role="alert"
+      class={[
+        "fixed top-[80px] left-1/2 -translate-x-1/2  w-80 sm:w-96 z-50 rounded-2xl shadow-lg p-4 flex gap-2",
+        @kind == :success && "bg-(--color-bg-status-success)"
+      ]}
+      {@rest}
+    >
+      <div class="flex items-start">
+        <.icon
+          :if={@kind == :success}
+          name="hero-check-circle"
+          class="size-6 text-(--color-text-status-success) "
+        />
+      </div>
+      <p class="text-base px-2">
+        {msg}
+      </p>
+    </div>
+    """
+  end
 
   def flash(assigns) do
     assigns = assign_new(assigns, :id, fn -> "flash-#{assigns.kind}" end)
@@ -601,6 +631,7 @@ defmodule JuntosWeb.CoreComponents do
   def flash_group(assigns) do
     ~H"""
     <div id={@id}>
+      <.flash kind={:success} title={gettext("Success!")} flash={@flash} />
       <.flash kind={:info} title={gettext("Success!")} flash={@flash} />
       <.flash kind={:error} title={gettext("Error!")} flash={@flash} />
       <.flash
