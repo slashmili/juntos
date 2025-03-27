@@ -1,5 +1,5 @@
 defmodule JuntosWeb.HomePageTest do
-  use PhoenixTest.Case, async: true
+  use PhoenixTest.Playwright.Case, async: true
   use JuntosWeb, :verified_routes
 
   @moduletag :playwright
