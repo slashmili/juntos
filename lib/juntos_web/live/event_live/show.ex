@@ -184,7 +184,7 @@ defmodule JuntosWeb.EventLive.Show do
     ~H"""
     <footer
       :if={@show}
-      class="fixed bottom-0 left-0 w-full py-6 bg-(--color-bg-neutral-primary)"
+      class="bg-(--color-bg-neutral-primary) fixed bottom-0 left-0 w-full py-6"
       data-role="register-cta"
     >
       <section
@@ -193,7 +193,7 @@ defmodule JuntosWeb.EventLive.Show do
         phx-mounted={footer_show("foobar")}
         phx-remove={footer_hide("foobar")}
       >
-        <div class="flex items-center justify-center flex-col ">
+        <div class="flex flex-col items-center justify-center ">
           <div class="flex gap-4  font-bold">
             <div class="flex items-center gap-1">
               <.icon name="hero-calendar-days" class="size-4" /> Sat 8. Feb
@@ -211,7 +211,7 @@ defmodule JuntosWeb.EventLive.Show do
           <div class="w-full px-2 pt-6" phx-change="update">
             <.button
               size="lg"
-              class="w-full phx-click-loading:opacity-75"
+              class="phx-click-loading:opacity-75 w-full"
               phx-click="attend"
               phx-disable-with={gettext "Registering..."}
             >
@@ -263,13 +263,13 @@ defmodule JuntosWeb.EventLive.Show do
                 <.datetime_header event={@event} data-role="event-ticket-datetime" />
               </div>
               <div class="text-lg font-bold">{@event.name}</div>
-              <div class="text-sm font-semibold truncate">
+              <div class="truncate text-sm font-semibold">
                 <.location_to_html location={@event.location} />
               </div>
             </section>
           </div>
         </:header>
-        <:body class="bg-(--color-bg-neutral-primary) pt-6 border-t-2 border-dashed border-(--color-border-neutral-secondary)/30 items-center">
+        <:body class="bg-(--color-bg-neutral-primary) border-(--color-border-neutral-secondary)/30 items-center border-t-2 border-dashed pt-6">
           <div class="flex flex-col items-center gap-6">
             {raw(ticket_svg())}
             <.button variant="outline" icon_left="hero-calendar-days" class="w-full">
@@ -372,7 +372,7 @@ defmodule JuntosWeb.EventLive.Show do
     JS.show(
       to: "##{id}",
       time: time,
-      transition: {"ease-in  duration-300", "opacity-0", "opacity-100"}
+      transition: {"duration-300  ease-in", "opacity-0", "opacity-100"}
     )
   end
 
@@ -380,7 +380,7 @@ defmodule JuntosWeb.EventLive.Show do
     JS.hide(
       to: "##{id}",
       time: time,
-      transition: {"ease-out duration-100", "opacity-100", "opacity-0"}
+      transition: {"duration-100 ease-out", "opacity-100", "opacity-0"}
     )
   end
 

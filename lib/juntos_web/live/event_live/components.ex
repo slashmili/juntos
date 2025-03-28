@@ -125,7 +125,7 @@ defmodule JuntosWeb.EventLive.Components do
         />
         <.icon
           name="hero-map-pin"
-          class="input-leading-icon size-5 sm:size-4 pointer-events-none col-start-1 row-start-1 ml-3 self-center text-neutral-secondary"
+          class="input-leading-icon size-5 sm:size-4 text-neutral-secondary pointer-events-none col-start-1 row-start-1 ml-3 self-center"
         />
         <.icon
           name="hero-x-mark"
@@ -133,7 +133,7 @@ defmodule JuntosWeb.EventLive.Components do
         />
       </div>
       <ul
-        class="bg-neutral-primary border-neutral-secondary rounded-lg border [&>li:hover]:bg-[var(--color-bg-neutral-primary-hover)] [&>li]:w-full [&>li]:cursor-pointer [&>li]:p-2 text-neutral-primary text-base [&>li:first-child]:rounded-t-lg [&>li:last-child]:rounded-b-lg "
+        class="bg-neutral-primary border-neutral-secondary text-neutral-primary rounded-lg border text-base [&>li:first-child]:rounded-t-lg [&>li:hover]:bg-[var(--color-bg-neutral-primary-hover)] [&>li:last-child]:rounded-b-lg [&>li]:w-full [&>li]:cursor-pointer [&>li]:p-2 "
         role="listbox"
       >
       </ul>
@@ -161,7 +161,13 @@ defmodule JuntosWeb.EventLive.Components do
         {summerize_description(@value)}
       </span>
     </button>
-    <.bottom_sheet :if={@show_desc} id="description-editor" show on_cancel={JS.push("toggle-sheet")}>
+    <.bottom_sheet
+      :if={@show_desc}
+      id="description-editor"
+      show
+      on_cancel={JS.push("toggle-sheet")}
+      class="max-h-9/10 min-h-4/10"
+    >
       <:header>
         <h2 class="text-neutral-primary text-base font-bold">{gettext "Describe Your Event"}</h2>
       </:header>

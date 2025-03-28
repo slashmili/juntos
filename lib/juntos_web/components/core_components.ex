@@ -480,6 +480,7 @@ defmodule JuntosWeb.CoreComponents do
   attr :show, :boolean, default: false
   attr :close_button, :boolean, default: false
   attr :on_cancel, JS, default: %JS{}
+  attr :class, :string, default: nil
   slot :inner_block, required: true
   slot :header, required: false
   slot :footer, required: false
@@ -499,7 +500,7 @@ defmodule JuntosWeb.CoreComponents do
     >
       <div
         id={"#{@id}-overlay"}
-        class="fixed inset-0 bg-black/80  opacity-0 pointer-events-none transition-opacity duration-300"
+        class="pointer-events-none fixed inset-0  bg-black/80 opacity-0 transition-opacity duration-300"
         aria-hidden="true"
       >
       </div>
@@ -509,26 +510,26 @@ defmodule JuntosWeb.CoreComponents do
         phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
         phx-key="escape"
         phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
-        class="fixed
-        bottom-0 left-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 
-        w-full max-h-9/10 min-h-4/10   sm:w-xl sm:h-auto sm:max-h-15/20
-        sm:-translate-x-1/2 sm:-translate-y-1/2  shadow-xl rounded-t-2xl sm:rounded-lg 
-        transform transition-transform duration-300 opacity-0 pointer-events-none
-        translate-y-full translate-y-0 
-        p-4
-        flex flex-col  gap-2
-        bg-neutral-primary
-        justify-between
-    "
+        class={["sm:w-xl
+        sm:max-h-15/20 bg-neutral-primary pointer-events-none fixed bottom-0 
+        left-0 flex w-full translate-y-0
+        translate-y-full transform  flex-col justify-between gap-2 
+        rounded-t-2xl p-4 opacity-0 shadow-xl transition-transform
+        duration-300 sm:bottom-auto 
+        sm:left-1/2
+        sm:top-1/2 sm:h-auto  sm:-translate-x-1/2
+        sm:-translate-y-1/2
+        sm:rounded-lg
+    ", @class]}
       >
-        <div class="flex justify-between items-center">
+        <div class="flex items-center justify-between">
           {render_slot(@header)}
           <button
             :if={@close_button}
             type="button"
             phx-click={JS.exec("data-cancel", to: "##{@id}")}
             aria-label={gettext("close")}
-            class="text-neutral-secondary cursor-pointer text-xl Xbasis-1/10"
+            class="text-neutral-secondary Xbasis-1/10 cursor-pointer text-xl"
           >
             <.icon name="hero-x-mark-solid" class="h-5 w-5" />
           </button>
