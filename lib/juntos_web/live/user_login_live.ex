@@ -82,7 +82,7 @@ defmodule JuntosWeb.UserLoginLive do
         <.icon name="google" class="w-6 h-6" /> Continue with Google
       </.button>
       <.button type="link" variant="outline" href={~p"/users/auth/github"}>
-        <.icon name="github" class="w-6 h-6" /> Continue with Github
+        <.icon name="github" class="w-6 h-6" /> Continue with GitHub
       </.button>
     </section>
     """
