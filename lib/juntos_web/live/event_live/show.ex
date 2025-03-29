@@ -315,14 +315,6 @@ defmodule JuntosWeb.EventLive.Show do
     """
   end
 
-  defp event_cover_image(%{cover_image: %{original: nil}} = assigns) do
-    ~H"""
-    <picture class="max-w-lg" data-role="default-image-cover">
-      <img src="/images/defaults/covers/01.jpg" class="aspect-square rounded-lg" />
-    </picture>
-    """
-  end
-
   defp event_cover_image(%{cover_image: %{media_type: :gif}} = assigns) do
     ~H"""
     <picture class="max-w-lg">

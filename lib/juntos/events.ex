@@ -36,12 +36,25 @@ defmodule Juntos.Events do
     Ecto.UUID.generate()
   end
 
-  def event_cover_url(%{cover_image: nil}) do
+  @default_image_covers [
+    "/images/defaults/covers/01.jpg",
+    "/images/defaults/covers/02.jpg",
+    "/images/defaults/covers/03.jpg",
+    "/images/defaults/covers/04.jpg",
+    "/images/defaults/covers/05.jpg",
+    "/images/defaults/covers/06.jpg"
+  ]
+
+  def event_cover_url(%{id: id, cover_image: nil}) do
+    hashed_value = :crypto.hash(:md5, id) |> :binary.decode_unsigned()
+    index = rem(hashed_value, length(@default_image_covers))
+    image = Enum.at(@default_image_covers, index)
+
     %{
-      media_type: nil,
+      media_type: to_file_ext(image),
       webp: nil,
-      original: nil,
-      jpg: nil
+      original: image,
+      jpg: image
     }
   end
 

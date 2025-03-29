@@ -17,14 +17,6 @@ defmodule JuntosWeb.EventLive.ShowTest do
     |> assert_has("[data-role=attendee-count]", text: "1 attendee")
   end
 
-  test "renders default imag cover", %{conn: conn} do
-    event = event_fixture()
-
-    conn
-    |> visit("/#{event.slug}")
-    |> assert_has("[data-role=default-image-cover]")
-  end
-
   test "parses datetime in header", %{conn: conn} do
     event =
       event_fixture(

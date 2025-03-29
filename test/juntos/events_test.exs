@@ -128,4 +128,23 @@ defmodule Juntos.EventsTest do
       assert SUT.is_attending?(event, user)
     end
   end
+
+  describe "event_cover_url/1" do
+    test "returns the same default image for the same event" do
+      event = event_fixture()
+      assert SUT.event_cover_url(event) == SUT.event_cover_url(event)
+    end
+
+    test "returns different version of image cover" do
+      event =
+        event_fixture(cover_image: "test/assets/event-cover-01.jpg")
+
+      assert %{original: original, media_type: :jpg, webp: webp, jpg: jpg} =
+               SUT.event_cover_url(event)
+
+      assert original =~ "original.jpg"
+      assert webp =~ "webp400x400.webp"
+      assert jpg =~ "jpg400x400.jpg"
+    end
+  end
 end
