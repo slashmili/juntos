@@ -1,10 +1,12 @@
 defmodule JuntosWeb.EventLive.New do
   use JuntosWeb, :live_view
   alias Juntos.Events
+  alias Juntos.Chrono.TimeZone
 
   @impl true
   def mount(_params, _session, socket) do
-    changeset = Events.change_event()
+    viewer_time_zone = get_time_zone(socket)
+    changeset = Events.change_event(%Events.Event{}, %{time_zone: viewer_time_zone.zone_name})
 
     {:ok,
      socket
@@ -311,5 +313,15 @@ defmodule JuntosWeb.EventLive.New do
 
   defp to_location(_) do
     nil
+  end
+
+  defp get_time_zone(socket) do
+    case TimeZone.get_time_zone(
+           get_connect_params(socket)["timeZone"],
+           DateTime.utc_now()
+         ) do
+      {:ok, time_zone} -> time_zone
+      _ -> TimeZone.get_time_zone("UTC", DateTime.utc_now()) |> elem(1)
+    end
   end
 end

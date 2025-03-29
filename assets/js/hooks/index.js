@@ -45,12 +45,6 @@ Hooks.EventDatepickerLocalDateTime =  {
     if(! endDateTimeInput.value) {
       endDateTimeInput.value = formatDateTime(endDate);
     }
-    let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    if(! timeZoneInput.value ) {
-      timeZoneInput.value = timeZone;
-      let event = new Event("change", { bubbles: true });
-      timeZoneInput.dispatchEvent(event);
-    }
   }
 }
 

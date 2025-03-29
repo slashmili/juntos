@@ -26,10 +26,11 @@ import Hooks from "./hooks"
 
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
+let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 let liveSocket = new LiveSocket("/live", Socket, {
   hooks: Hooks,
   longPollFallbackMs: 2500,
-  params: {_csrf_token: csrfToken}
+  params: {_csrf_token: csrfToken, timeZone: timeZone}
 })
 
 // set value and bubbles
