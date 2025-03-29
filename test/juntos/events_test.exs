@@ -61,6 +61,21 @@ defmodule Juntos.EventsTest do
       assert event.location == %Juntos.Events.Event.Address{address: "Musterstrasse 10. Berlin"}
     end
 
+    test "with invalid datetimes", %{user: user} do
+      valid_attrs = %{
+        @valid_attrs
+        | start_datetime: ~N[2025-03-25 11:00:00.0],
+          end_datetime: ~N[2025-03-25 10:00:00.0]
+      }
+
+      assert {:error, changeset} = SUT.create_event(valid_attrs, user)
+
+      assert errors_on(changeset) == %{
+               end_datetime: ["must be after 2025-03-25 11:00:00"],
+               start_datetime: ["must be in future"]
+             }
+    end
+
     test "with invalid data returns error", %{user: user} do
       assert {:error, _} = SUT.create_event(%{}, user)
     end

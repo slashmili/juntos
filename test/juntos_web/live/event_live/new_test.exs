@@ -7,8 +7,8 @@ defmodule JuntosWeb.EventLive.NewTest do
     conn
     |> visit("/new")
     |> fill_in("Event name", with: "My Event", exact: false)
-    |> fill_in("#event_start_datetime", "Event Date", with: "2020-09-01T01:01", exact: false)
-    |> fill_in("#event_end_datetime", "Event End Date", with: "2020-09-01T01:10", exact: false)
+    |> fill_in("#event_start_datetime", "Event Date", with: "4020-09-01T01:01", exact: false)
+    |> fill_in("#event_end_datetime", "Event End Date", with: "4020-09-01T01:10", exact: false)
     |> click_button("Create Event")
     |> assert_has("[data-role=event-public-page]", text: "My Event")
   end
@@ -20,12 +20,26 @@ defmodule JuntosWeb.EventLive.NewTest do
     |> assert_has("[data-role=error-for-input]", text: "be blank")
   end
 
+  test "renders error when end date is before start date", %{conn: conn} do
+    conn
+    |> visit("/new")
+    |> fill_in("#event_start_datetime", "Event Date", with: "2020-09-01T01:01", exact: false)
+    |> fill_in("#event_end_datetime", "Event End Date", with: "2020-01-01T01:01", exact: false)
+    |> click_button("Create Event")
+    |> assert_has("[data-role=error-for-datetime]",
+      text: "End date must be after 2020-09-01 01:01:00"
+    )
+    |> assert_has("[data-role=error-for-datetime]",
+      text: "Start date must be in future"
+    )
+  end
+
   test "saves new event with image cover", %{conn: conn} do
     conn
     |> visit("/new")
     |> fill_in("Event name", with: "My Event with image", exact: false)
-    |> fill_in("#event_start_datetime", "", with: "2020-09-01T01:01", exact: false)
-    |> fill_in("#event_end_datetime", "", with: "2020-09-01T01:10", exact: false)
+    |> fill_in("#event_start_datetime", "", with: "5020-09-01T01:01", exact: false)
+    |> fill_in("#event_end_datetime", "", with: "5020-09-01T01:10", exact: false)
     |> upload(
       "Cover image",
       "test/assets/event-cover-01.jpg"

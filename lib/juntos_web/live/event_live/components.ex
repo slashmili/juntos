@@ -12,6 +12,14 @@ defmodule JuntosWeb.EventLive.Components do
   attr :on_cancel, JS, default: %JS{}
 
   def datepicker(assigns) do
+    end_datetime_errors = field_to_errors(assigns.end_datetime_field)
+    start_datetime_errors = field_to_errors(assigns.start_datetime_field)
+
+    assigns =
+      assigns
+      |> assign(:end_datetime_errors, end_datetime_errors)
+      |> assign(:start_datetime_errors, start_datetime_errors)
+
     ~H"""
     <div
       id={@id}
@@ -26,12 +34,15 @@ defmodule JuntosWeb.EventLive.Components do
           <div class="text-neutral-secondary flex self-center">{gettext "Start"}</div>
           <div class="flex grow justify-end">
             <input
-              class="text-neutral-primary bg-neutral-primary border-neutral-secondary animated rounded-lg border px-3  py-2 text-base font-semibold outline-0 focus:ring-0"
+              class={[
+                "text-neutral-primary bg-neutral-primary border-neutral-secondary animated rounded-lg border px-3 py-2 text-base font-semibold outline-0 focus:ring-0",
+                if(@start_datetime_errors != [], do: "border-(--color-border-status-error)")
+              ]}
               type="datetime-local"
               name={@start_datetime_field.name}
               id={@start_datetime_field.id}
               value={@start_datetime_field.value}
-              phx-debounce="2000"
+              phx-throttle="2000"
             />
           </div>
         </div>
@@ -39,12 +50,15 @@ defmodule JuntosWeb.EventLive.Components do
           <div class="text-neutral-secondary  flex self-center">{gettext "End"}</div>
           <div class="flex grow justify-end">
             <input
-              class="text-neutral-primary bg-neutral-primary border-neutral-secondary animated rounded-lg border px-3 py-2 text-base font-semibold outline-0 focus:ring-0"
+              class={[
+                "text-neutral-primary bg-neutral-primary border-neutral-secondary animated rounded-lg border px-3 py-2 text-base font-semibold outline-0 focus:ring-0",
+                if(@end_datetime_errors != [], do: "border-(--color-border-status-error)")
+              ]}
               type="datetime-local"
               name={@end_datetime_field.name}
               id={@end_datetime_field.id}
               value={@end_datetime_field.value}
-              phx-debounce="2000"
+              phx-throttle="1000"
             />
           </div>
         </div>
@@ -66,6 +80,14 @@ defmodule JuntosWeb.EventLive.Components do
           id={@time_zone_field.id}
           value={@time_zone_field.value}
         />
+        <div
+          :if={@end_datetime_errors != [] or @start_datetime_errors != []}
+          class="pt-0.5 errors text-sm text-(--color-text-status-error)"
+          data-role="error-for-datetime"
+        >
+          <div :for={msg <- @start_datetime_errors}>{gettext "Start date"} {msg}</div>
+          <div :for={msg <- @end_datetime_errors}>{gettext "End date"} {msg}</div>
+        </div>
 
         <.dropdown
           :if={@show_time_zone_options}
@@ -215,5 +237,14 @@ defmodule JuntosWeb.EventLive.Components do
 
   defp do_summerize_description(_) do
     "..."
+  end
+
+  defp field_to_errors(field) do
+    errors =
+      if Phoenix.Component.used_input?(field),
+        do: field.errors,
+        else: []
+
+    Enum.map(errors, &JuntosWeb.CoreComponents.translate_error(&1))
   end
 end

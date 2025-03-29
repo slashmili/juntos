@@ -20,8 +20,8 @@ defmodule JuntosWeb.EventLive.ShowTest do
   test "parses datetime in header", %{conn: conn} do
     event =
       event_fixture(
-        start_datetime: ~N[2025-03-25 17:01:54.410367],
-        end_datetime: ~N[2025-03-25 20:08:54.410367]
+        start_datetime: ~N[3045-03-25 17:01:54.410367],
+        end_datetime: ~N[3045-03-25 20:08:54.410367]
       )
 
     conn
@@ -34,8 +34,8 @@ defmodule JuntosWeb.EventLive.ShowTest do
   test "parses datetime in ticket", %{conn: conn, user: user} do
     event =
       event_fixture(
-        start_datetime: ~N[2025-03-01 17:01:54.410367],
-        end_datetime: ~N[2025-03-01 20:08:54.410367]
+        start_datetime: ~N[4025-03-01 17:01:54.410367],
+        end_datetime: ~N[4025-03-01 20:08:54.410367]
       )
 
     Juntos.Events.add_event_attendee(event, user)

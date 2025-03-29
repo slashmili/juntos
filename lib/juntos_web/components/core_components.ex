@@ -396,7 +396,7 @@ defmodule JuntosWeb.CoreComponents do
       />
       <div
         :if={@errors != []}
-        class="pt-0.5 errors text-(--color-text-status-error)"
+        class="pt-0.5 text-sm errors text-(--color-text-status-error)"
         data-role="error-for-input"
       >
         <div :for={msg <- @errors}>{msg}</div>

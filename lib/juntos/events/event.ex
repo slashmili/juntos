@@ -48,6 +48,48 @@ defmodule Juntos.Events.Event do
       request: true
     )
     |> validate_required([:name, :start_datetime, :end_datetime, :time_zone, :slug])
+    |> validate_start_datetime()
+    |> validate_end_datetime()
+  end
+
+  def validate_start_datetime(changeset) do
+    start_datetime = Ecto.Changeset.get_change(changeset, :start_datetime)
+    {:ok, today_midnight} = Date.utc_today() |> NaiveDateTime.new(~T[00:00:00])
+
+    case start_datetime do
+      %NaiveDateTime{} ->
+        if NaiveDateTime.compare(today_midnight, start_datetime) == :gt do
+          changeset
+          |> Ecto.Changeset.add_error(:start_datetime, "must be in future",
+            start_datetime: start_datetime
+          )
+        else
+          changeset
+        end
+
+      _ ->
+        changeset
+    end
+  end
+
+  def validate_end_datetime(changeset) do
+    start_datetime = Ecto.Changeset.get_change(changeset, :start_datetime)
+    end_datetime = Ecto.Changeset.get_change(changeset, :end_datetime)
+
+    case {start_datetime, end_datetime} do
+      {%NaiveDateTime{}, %NaiveDateTime{}} ->
+        if NaiveDateTime.compare(start_datetime, end_datetime) == :gt do
+          changeset
+          |> Ecto.Changeset.add_error(:end_datetime, "must be after %{start_datetime}",
+            start_datetime: start_datetime
+          )
+        else
+          changeset
+        end
+
+      _ ->
+        changeset
+    end
   end
 
   def put_creator(%Ecto.Changeset{} = changeset, %Accounts.User{} = creator) do
