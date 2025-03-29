@@ -262,7 +262,7 @@ defmodule JuntosWeb.CoreComponents do
       <div class="text-neutral-primary text-base font-bold">
         {render_slot(@inner_block)}
       </div>
-      <div :if={@subtitle} class="text-neutral-secondary text-sm font-normal">
+      <div :if={@subtitle} class="text-(--color-text-neutral-tertiary) text-sm font-normal">
         {render_slot(@subtitle)}
       </div>
       <div :if={@body} class="text-neutral-primary text-sm font-normal">
@@ -383,7 +383,7 @@ defmodule JuntosWeb.CoreComponents do
 
   def input_text(assigns) do
     ~H"""
-    <section class="mt-2 grid w-full max-w-md grid-cols-1 group">
+    <section class="grid w-full max-w-md grid-cols-1 group h-12">
       <input
         id={@id}
         type={@type}

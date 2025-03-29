@@ -178,11 +178,16 @@ defmodule JuntosWeb.EventLive.New do
     <.form_item>
       <:label>
         <.content_text>
-          <.label_for field={@name}>{gettext "Event name"}*</.label_for>
+          <.label_for field={@name}>
+            {gettext "Event name"}*
+          </.label_for>
+          <:subtitle>
+            {gettext "Give your event a clear and engaging name (e.g., 'Berlin UX Meetup')"}
+          </:subtitle>
         </.content_text>
       </:label>
       <:input>
-        <.input field={@name} placeholder={gettext "Event name"} />
+        <.input field={@name} placeholder={gettext "Event name"} phx-debounce="1000" />
       </:input>
     </.form_item>
     """
@@ -220,7 +225,7 @@ defmodule JuntosWeb.EventLive.New do
         </.content_text>
       </:label>
       <:input>
-        <div :if={@uploads.cover.entries == []}>
+        <div :if={@uploads.cover.entries == []} class="w-full">
           <label for={@uploads.cover.ref}>
             <JuntosWeb.EventLive.Components.upload_image_area upload_ref={@uploads.cover.ref} />
           </label>
@@ -283,7 +288,7 @@ defmodule JuntosWeb.EventLive.New do
 
   defp form_item(assigns) do
     ~H"""
-    <div class="border-neutral-secondary flex w-full max-w-md flex-col gap-2 border-b-2 py-6 last:border-b-0 sm:max-w-lg md:max-w-3xl md:flex-row md:justify-between">
+    <div class="border-(--color-border-neutral-primary) flex w-full max-w-md flex-col gap-2 border-b-1 py-6 last:border-b-0 sm:max-w-lg md:max-w-3xl md:flex-row md:justify-between">
       <section class="md:basis-4/10 flex w-full flex-col">
         <div class="text-neutral-primary font-bold">{render_slot(@label)}</div>
         <div class="text-neutral-secondary text-sm">{render_slot(@label_body)}</div>

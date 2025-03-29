@@ -31,6 +31,7 @@ defmodule JuntosWeb.EventLive.Components do
               name={@start_datetime_field.name}
               id={@start_datetime_field.id}
               value={@start_datetime_field.value}
+              phx-debounce="2000"
             />
           </div>
         </div>
@@ -43,6 +44,7 @@ defmodule JuntosWeb.EventLive.Components do
               name={@end_datetime_field.name}
               id={@end_datetime_field.id}
               value={@end_datetime_field.value}
+              phx-debounce="2000"
             />
           </div>
         </div>
@@ -122,6 +124,7 @@ defmodule JuntosWeb.EventLive.Components do
           autocomplete="new-password"
           placeholder={gettext "Search for a location"}
           data-1p-ignore
+          phx-debounce="2000"
         />
         <.icon
           name="hero-map-pin"
@@ -189,7 +192,7 @@ defmodule JuntosWeb.EventLive.Components do
       id="uploadImageArea"
       phx-hook="DragAndDropBgChange"
       phx-drop-target={@upload_ref}
-      class="text-neutral-primary w-md bg-neutral-secondary gap border-accent-brand text-accent-brand flex cursor-pointer justify-center gap-1 rounded-lg border-2 border-dashed px-4 py-10 font-medium transition-colors duration-300"
+      class="text-neutral-primary w-full max-w-md bg-neutral-secondary gap border-accent-brand text-accent-brand flex cursor-pointer justify-center gap-1 rounded-lg border-2 border-dashed px-4 py-10 font-medium transition-colors duration-300"
       aria-label="upload"
     >
       <.icon name="hero-photo" /> {gettext "Upload an image"}

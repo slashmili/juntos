@@ -41,6 +41,7 @@
     --color-text-neutral-primary-placeholder: var(--color-slate-500);
     --color-text-neutral-primary-inverse: var(--color-slate-200);
     --color-text-neutral-secondary: var(--color-slate-500);
+    --color-text-neutral-tertiary: var(--color-slate-400);
     --color-text-accent-brand: var(--color-violet-800);
     --color-text-status-error: var(--color-rose-700);
     --color-text-status-disabled: var(--color-neutral-400);
@@ -87,6 +88,7 @@
     --color-text-neutral-primary-placeholder: var(--color-slate-400);
     --color-text-neutral-primary-inverse: var(--color-slate-900);
     --color-text-neutral-secondary: var(--color-slate-400);
+    --color-text-neutral-tertiary: var(--color-slate-500);
     --color-text-accent-brand: var(--color-violet-400);
     --color-text-status-error: var(--color-rose-500);
     --color-text-status-disabled: var(--color-neutral-800);

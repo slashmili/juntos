@@ -20,9 +20,7 @@
 
 
 body {
-  @variant dark {
-    @apply bg-neutral-950;
-  }
+  background: var(--color-bg-neutral-secondary);
 }
 
 .tiptap {
