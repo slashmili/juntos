@@ -48,6 +48,11 @@ defmodule JuntosWeb.EventLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
+    <style>
+      body {
+        background: var(--color-bg-neutral-primary);
+      }
+    </style>
     <.page_wrapper>
       <.event_page>
         <.event_card event={@event} />
@@ -64,7 +69,7 @@ defmodule JuntosWeb.EventLive.Show do
     ~H"""
     <div
       data-role="event-public-page"
-      class="min-w-xs max-w-3xl flex flex-col items-start p-3 gap-1.5"
+      class="min-w-xs max-w-3xl md:max-w-5xl flex flex-col items-start p-3 gap-1.5"
     >
       {render_slot(@inner_block)}
     </div>
@@ -74,47 +79,90 @@ defmodule JuntosWeb.EventLive.Show do
   def event_card(assigns) do
     ~H"""
     <div>
-      <section class="flex-1 flex p-4 flex-col gap-4 bg-(--color-bg-neutral-secondary) rounded-2xl w-full">
-        <.header event={@event} />
-        <.cover event={@event} />
-        <.event_info event={@event} />
-        <.event_description event={@event} />
-      </section>
+      <.event_card_grid>
+        <.event_card_grid_header>
+          <.header event={@event} />
+        </.event_card_grid_header>
+        <.event_card_grid_details>
+          <.cover event={@event} />
+          <.event_info event={@event} />
+        </.event_card_grid_details>
+        <.event_card_grid_description>
+          <.event_description event={@event} />
+        </.event_card_grid_description>
+      </.event_card_grid>
       <div class="py-25"></div>
+    </div>
+    """
+  end
+
+  defp event_card_grid(assigns) do
+    ~H"""
+    <section class="grid grid-cols-1 md:grid-cols-3  gap-4 bg-(--color-bg-neutral-secondary) md:bg-(--color-bg-neutral-primary) rounded-2xl w-full">
+      {render_slot(@inner_block)}
+    </section>
+    """
+  end
+
+  defp event_card_grid_header(assigns) do
+    ~H"""
+    <div class="md:col-span-2 md:row-start-1 md:bg-(--color-bg-neutral-secondary) md:rounded-t-2xl pt-4 px-4">
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
+
+  defp event_card_grid_details(assigns) do
+    ~H"""
+    <div class="md:col-span-1 md:row-span-2 md:col-start-3 flex flex-col gap-4 px-4 md:px-0">
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
+
+  defp event_card_grid_description(assigns) do
+    ~H"""
+    <div class="md:col-span-2 md:row-start-2  md:bg-(--color-bg-neutral-secondary) md:-mt-4 md:rounded-b-2xl px-4">
+      {render_slot(@inner_block)}
     </div>
     """
   end
 
   defp header(assigns) do
     ~H"""
-    <section class="text-lg font-bold pb-4">
-      {@event.name}
-    </section>
+    <div class="gap-4 flex flex-col">
+      <div class="w-fit">
+        <.datetime_header event={@event} data-role="datetime-in-header" />
+      </div>
+
+      <section class="text-lg font-bold pb-4">
+        {@event.name}
+      </section>
+    </div>
     """
   end
 
   defp cover(assigns) do
     ~H"""
-    <section class="self-center relative">
-      <.event_cover_image cover_image={Events.event_cover_url(@event)} />
-      <div class="absolute top-2 left-2">
-        <.datetime_header event={@event} data-role="datetime-in-header" />
-      </div>
-      <.share_button />
-    </section>
+    <div class="flex flex-col">
+      <section class="self-center md:self-start relative">
+        <.event_cover_image cover_image={Events.event_cover_url(@event)} />
+        <.share_button />
+      </section>
+    </div>
     """
   end
 
   defp event_info(assigns) do
     ~H"""
-    <section class="flex flex-col py-2 gap-0.5 border-b-1 border-(--color-border-neutral-primary) text-sm font-semibold">
+    <section class="flex flex-col py-2 gap-2 text-sm font-semibold">
       <div data-role="attendee-count">
         <.icon name="hero-user-group" class="size-4" />
         <span :if={@event.attendee_count == 0}>{gettext "No attendee"}</span>
         <span :if={@event.attendee_count > 0}>{@event.attendee_count} {gettext "attendees"}</span>
       </div>
       <div>
-        <.location_to_html location={@event.location} />
+        <.location_to_html show_map={true} location={@event.location} />
       </div>
     </section>
     """
@@ -122,10 +170,19 @@ defmodule JuntosWeb.EventLive.Show do
 
   defp event_description(assigns) do
     ~H"""
-    <section class="py-4">
-      <div>About</div>
+    <section>
+      <div class="flex gap-2">
+        <div class="font-bold">About</div>
+
+        <div style="flex: 1 0 0 " class="grow bg-(--color-border-neutral-primary) h-[2px] mt-3"></div>
+      </div>
       <div>
-        <.text_editor class="-ml-5" id="view-event" name="view-event" value={@event.description} />
+        <.text_editor
+          class="-ml-5 -mt-8"
+          id="view-event"
+          name="view-event"
+          value={@event.description}
+        />
       </div>
     </section>
     """
@@ -135,7 +192,7 @@ defmodule JuntosWeb.EventLive.Show do
     ~H"""
     <footer
       :if={@show}
-      class="fixed bottom-0 left-0 w-full py-6 bg-(--color-bg-neutral-primary)"
+      class="fixed bottom-0 left-0 w-full py-6 bg-(--color-bg-neutral-primary) event-show-shadow"
       data-role="attending-cta"
     >
       <section id="foo2" phx-mounted={footer_show("foo2")} class="hidden px-4">
@@ -184,7 +241,7 @@ defmodule JuntosWeb.EventLive.Show do
     ~H"""
     <footer
       :if={@show}
-      class="bg-(--color-bg-neutral-primary) fixed bottom-0 left-0 w-full py-6"
+      class="bg-(--color-bg-neutral-primary) fixed bottom-0 left-0 w-full py-6 event-show-shadow"
       data-role="register-cta"
     >
       <section
@@ -204,7 +261,7 @@ defmodule JuntosWeb.EventLive.Show do
           </div>
           <div class="font-medium">
             <div>
-              <.location_to_html location={@event.location} />
+              <.location_to_html show_map={false} location={@event.location} />
             </div>
           </div>
 
@@ -264,7 +321,7 @@ defmodule JuntosWeb.EventLive.Show do
               </div>
               <div class="text-lg font-bold">{@event.name}</div>
               <div class="truncate text-sm font-semibold">
-                <.location_to_html location={@event.location} />
+                <.location_to_html show_map={false} location={@event.location} />
               </div>
             </section>
           </div>
@@ -284,7 +341,7 @@ defmodule JuntosWeb.EventLive.Show do
 
   defp share_button(assigns) do
     ~H"""
-    <section class="absolute right-2 bottom-2">
+    <section class="absolute left-4 bottom-4">
       <.button type="button" icon_right="hero-share" size="md" variant="secondary"></.button>
     </section>
     """
@@ -332,24 +389,42 @@ defmodule JuntosWeb.EventLive.Show do
     """
   end
 
+  defp location_to_html(%{location: nil} = assigns) do
+    ~H"""
+    {gettext "NA"}
+    """
+  end
+
+  defp location_to_html(%{location: %Juntos.Events.Event.Place{}} = assigns) do
+    ~H"""
+    <div class="flex flex-col gap-2">
+      <a
+        href={"https://www.google.com/maps/search/?#{URI.encode_query(%{api: 1, query: @location.name, query_place_id: @location.id})}"}
+        class="underline"
+        target="_blank"
+      >
+        <.icon name="hero-map-pin" class="size-4" /> {@location.address}
+      </a>
+
+      <div
+        :if={@show_map}
+        data-place={Jason.encode!(@location)}
+        data-map-id={System.get_env("GMAP_MAP_ID")}
+        api_key={System.get_env("GMAP_API_KEY")}
+        id="showEventLocation"
+        data-api-key={System.get_env("GMAP_API_KEY")}
+        id="google-map"
+        class="hidden md:block h-44 rounded-lg border border-(--color-border-neutral-primary)"
+        phx-hook="GoogleMaps"
+        phx-update="ignore"
+      >
+      </div>
+    </div>
+    """
+  end
+
   defp location_to_html(assigns) do
     case assigns[:location] do
-      nil ->
-        ~H"""
-        {gettext "NA"}
-        """
-
-      %{id: _} ->
-        ~H"""
-        <a
-          href={"https://www.google.com/maps/search/?#{URI.encode_query(%{api: 1, query: @location.name, query_place_id: @location.id})}"}
-          class="underline"
-          target="_blank"
-        >
-          <.icon name="hero-map-pin" class="size-4" /> {@location.address}
-        </a>
-        """
-
       %{address: _} ->
         ~H"""
         <a

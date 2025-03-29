@@ -1,6 +1,7 @@
 import {TextEditor} from './text_editor';
 import {DragAndDropBgChange} from './drag_and_drop_bg_change';
 import {LocationFinder} from './location_finder';
+import { GoogleMaps } from './google_maps';
 import {HideFlash} from './hide_flash';
 
 let Hooks = {};
@@ -9,6 +10,7 @@ Hooks.TextEditor = TextEditor;
 Hooks.DragAndDropBgChange = DragAndDropBgChange;
 Hooks.LocationFinder = LocationFinder;
 Hooks.HideFlash = HideFlash;
+Hooks.GoogleMaps = GoogleMaps;
 
 Hooks.EventDatepickerLocalDateTime =  {
   mounted() {

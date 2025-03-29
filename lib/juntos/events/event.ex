@@ -101,6 +101,8 @@ defmodule Juntos.Events.Event.Place do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive Jason.Encoder
+
   @primary_key false
   embedded_schema do
     field :id, :string

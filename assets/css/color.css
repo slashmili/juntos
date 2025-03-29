@@ -29,7 +29,7 @@
     --color-bg-translucent-light: var(--color-slate-50);
     --color-bg-translucent-brand: var(--color-violet-700);
 
-    --color-border-neutral-primary: var(--color-neutral-200);
+    --color-border-neutral-primary: var(--color-slate-200);
     --color-border-neutral-secondary: var(--color-slate-400);
     --color-border-neutral-secondary-focused: var(--color-slate-500);
     --color-border-accent-brand: var(--color-violet-800);
@@ -76,7 +76,7 @@
     --color-bg-status-warning-hover: var(--color-amber-800);
     --color-bg-status-disabled: var(--color-neutral-700);
 
-    --color-border-neutral-primary: var(--color-neutral-600);
+    --color-border-neutral-primary: var(--color-slate-700);
     --color-border-neutral-secondary: var(--color-slate-600);
     --color-border-neutral-secondary-focused: var(--color-slate-500);
     --color-border-accent-brand: var(--color-violet-400);
