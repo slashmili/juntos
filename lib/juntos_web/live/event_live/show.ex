@@ -178,7 +178,7 @@ defmodule JuntosWeb.EventLive.Show do
       </div>
       <div>
         <.text_editor
-          class="-ml-5 sm:-mt-8"
+          class="-ml-5 -mt-3 sm:-mt-5"
           id="view-event"
           name="view-event"
           value={@event.description}
