@@ -27,7 +27,7 @@ defmodule JuntosWeb.EventLive.Components do
       data-start-datetime-id={@start_datetime_field.id}
       data-end-datetime-id={@end_datetime_field.id}
       data-time-zone-id={@time_zone_field.id}
-      class="bg-neutral-secondary  flex w-full max-w-md flex-col gap-2 rounded-lg p-2"
+      class="bg-(--color-bg-neutral-tertiary)  flex w-full max-w-md flex-col gap-2 rounded-lg p-2"
     >
       <div class="flex w-full flex-col gap-2">
         <div class="flex">
