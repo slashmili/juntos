@@ -286,14 +286,19 @@ defmodule JuntosWeb.EventLive.Show do
   defp confirm_cancellation_dialog(assigns) do
     ~H"""
     <div :if={@show} data-role="cancellation-cta">
-      <.bottom_sheet id="withdrawButtonSheet" show on_cancel={JS.push("toggle-withdraw-dropdown")}>
+      <.bottom_sheet
+        id="withdrawButtonSheet"
+        show
+        on_cancel={JS.push("toggle-withdraw-dropdown")}
+        close_button
+      >
         <:header>
           <h2 class="text-neutral-primary text-lg font-bold">{gettext "Cancel registertion?"}</h2>
         </:header>
 
         <:body class="bg-(--color-bg-neutral-primary) flex flex-col gap-6">
           Canceling means you may lose your spot, and re-registering could be unavailable if the event reaches capacity.
-          <div class="flex flex-col gap-2">
+          <div class="flex flex-col sm:flex-row gap-2 sm:place-self-end">
             <.button phx-click="toggle-withdraw-dropdown" variant="outline" phx-disable-with>
               {gettext "Keep my spot"}
             </.button>
@@ -314,7 +319,12 @@ defmodule JuntosWeb.EventLive.Show do
   defp ticket_dialog(assigns) do
     ~H"""
     <div :if={@show} data-role="ticket-dialog">
-      <.bottom_sheet id="ticketBottomSheet" show on_cancel={JS.push("toggle-ticket-dropdown")}>
+      <.bottom_sheet
+        id="ticketBottomSheet"
+        show
+        on_cancel={JS.push("toggle-ticket-dropdown")}
+        close_button
+      >
         <:header>
           <div class="flex flex-col pb-6">
             <section class="flex flex-col gap-4 ">

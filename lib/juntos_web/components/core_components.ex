@@ -525,15 +525,17 @@ defmodule JuntosWeb.CoreComponents do
       >
         <div class="flex items-center justify-between">
           {render_slot(@header)}
-          <button
-            :if={@close_button}
-            type="button"
-            phx-click={JS.exec("data-cancel", to: "##{@id}")}
-            aria-label={gettext("close")}
-            class="text-neutral-secondary Xbasis-1/10 cursor-pointer text-xl"
-          >
-            <.icon name="hero-x-mark-solid" class="h-5 w-5" />
-          </button>
+          <div class="place-self-start">
+            <button
+              :if={@close_button}
+              type="button"
+              phx-click={JS.exec("data-cancel", to: "##{@id}")}
+              aria-label={gettext("close")}
+              class="text-neutral-secondary Xbasis-1/10 cursor-pointer text-xl"
+            >
+              <.icon name="hero-x-mark-solid" class="h-5 w-5" />
+            </button>
+          </div>
         </div>
         <div id={"#{@id}-content"} class={["max-h-auto overflow-y-auto grow", hd(@body).class]}>
           {render_slot(@body)}

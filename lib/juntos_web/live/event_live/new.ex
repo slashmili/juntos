@@ -129,7 +129,9 @@ defmodule JuntosWeb.EventLive.New do
     ~H"""
     <.form_item>
       <:input>
-        <.button class="w-full" type="submit">{gettext "Create Event"}</.button>
+        <.button class="w-full" type="submit" phx-disable-with={gettext "Creating ..."}>
+          {gettext "Create Event"}
+        </.button>
       </:input>
     </.form_item>
     """
