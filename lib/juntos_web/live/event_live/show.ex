@@ -196,11 +196,11 @@ defmodule JuntosWeb.EventLive.Show do
       data-role="attending-cta"
     >
       <section id="foo2" phx-mounted={footer_show("foo2")} class="hidden px-4">
-        <div class="flex items-center justify-center flex-col gap-6  ">
-          <div class="font-bold">
+        <div class="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-6 md:gap-0 mx-auto min-w-xs max-w-3xl md:max-w-5xl md:px-3">
+          <div class="font-bold place-self-center md:col-start-1 md:row-start-1 md:place-self-start">
             {gettext "You are attending this event. 🎉"}
           </div>
-          <div class="w-full flex flex-col gap-2">
+          <div class="w-full flex flex-col gap-2 md:w-64 place-self-end md:col-start-2 md:row-span-2 ">
             <.button
               variant="secondary"
               size="lg"
@@ -219,7 +219,7 @@ defmodule JuntosWeb.EventLive.Show do
               {gettext "Share event"}
             </.button>
           </div>
-          <div>
+          <div class="place-self-center md:col-start-1 md:row-start-2 md:place-self-start">
             <!-- TODO: make me a button! -->
             <a
               href="#"
@@ -250,22 +250,24 @@ defmodule JuntosWeb.EventLive.Show do
         phx-mounted={footer_show("foobar")}
         phx-remove={footer_hide("foobar")}
       >
-        <div class="flex flex-col items-center justify-center ">
-          <div class="flex gap-4  font-bold">
-            <div class="flex items-center gap-1">
-              <.icon name="hero-calendar-days" class="size-4" /> Sat 8. Feb
+        <div class="flex flex-col md:flex-row items-center justify-center mx-auto min-w-xs max-w-3xl md:max-w-5xl md:justify-between  md:px-3 ">
+          <div class="flex flex-col items-center md:items-start">
+            <div class="flex gap-4  font-bold">
+              <div class="flex items-center gap-1">
+                <.icon name="hero-calendar-days" class="size-4" /> Sat 8. Feb
+              </div>
+              <div class="flex items-center gap-1">
+                <.icon name="hero-clock" class="size-4" /> 20:00 - 22:00
+              </div>
             </div>
-            <div class="flex items-center gap-1">
-              <.icon name="hero-clock" class="size-4" /> 20:00 - 22:00
-            </div>
-          </div>
-          <div class="font-medium">
-            <div>
-              <.location_to_html show_map={false} location={@event.location} />
+            <div class="font-medium">
+              <div>
+                <.location_to_html show_map={false} location={@event.location} />
+              </div>
             </div>
           </div>
 
-          <div class="w-full px-2 pt-6" phx-change="update">
+          <div class="w-full px-2 pt-6 md:w-64 md:px-0" phx-change="update">
             <.button
               size="lg"
               class="phx-click-loading:opacity-75 w-full"
