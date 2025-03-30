@@ -98,7 +98,7 @@ defmodule JuntosWeb.EventLive.Show do
 
   defp event_card_grid(assigns) do
     ~H"""
-    <section class="grid grid-cols-1 md:grid-cols-3  gap-4 bg-(--color-bg-neutral-secondary) md:bg-(--color-bg-neutral-primary) rounded-2xl w-full">
+    <section class="grid grid-cols-1 md:grid-col-4 lg:grid-cols-3  gap-4 bg-(--color-bg-neutral-secondary) md:bg-(--color-bg-neutral-primary) rounded-2xl w-full">
       {render_slot(@inner_block)}
     </section>
     """
@@ -178,7 +178,7 @@ defmodule JuntosWeb.EventLive.Show do
       </div>
       <div>
         <.text_editor
-          class="-ml-5 -mt-8"
+          class="-ml-5 sm:-mt-8"
           id="view-event"
           name="view-event"
           value={@event.description}
