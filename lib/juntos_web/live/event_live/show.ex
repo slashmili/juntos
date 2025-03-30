@@ -98,7 +98,7 @@ defmodule JuntosWeb.EventLive.Show do
 
   defp event_card_grid(assigns) do
     ~H"""
-    <section class="grid grid-cols-1 md:grid-col-4 lg:grid-cols-3  gap-4 bg-(--color-bg-neutral-secondary) md:bg-(--color-bg-neutral-primary) rounded-2xl w-full">
+    <section class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-[auto_1fr_auto] lg:grid-cols-3  gap-4 bg-(--color-bg-neutral-secondary) md:bg-(--color-bg-neutral-primary) rounded-2xl w-full">
       {render_slot(@inner_block)}
     </section>
     """
@@ -114,7 +114,7 @@ defmodule JuntosWeb.EventLive.Show do
 
   defp event_card_grid_details(assigns) do
     ~H"""
-    <div class="md:col-span-1 md:row-span-2 md:col-start-3 flex flex-col gap-4 px-4 md:px-0">
+    <div class="md:col-span-2 lg:col-span-1 md:row-span-3 md:col-start-3 flex flex-col gap-4 px-4 md:px-0">
       {render_slot(@inner_block)}
     </div>
     """
@@ -122,7 +122,7 @@ defmodule JuntosWeb.EventLive.Show do
 
   defp event_card_grid_description(assigns) do
     ~H"""
-    <div class="md:col-span-2 md:row-start-2  md:bg-(--color-bg-neutral-secondary) md:-mt-4 md:rounded-b-2xl px-4">
+    <div class="md:col-span-2 md:row-start-2 md:row-span-3  md:bg-(--color-bg-neutral-secondary) md:-mt-4 md:rounded-b-2xl px-4 h-full">
       {render_slot(@inner_block)}
     </div>
     """
@@ -170,7 +170,7 @@ defmodule JuntosWeb.EventLive.Show do
 
   defp event_description(assigns) do
     ~H"""
-    <section>
+    <section class="">
       <div class="flex gap-2">
         <div class="font-bold">About</div>
 
