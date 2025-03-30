@@ -511,6 +511,7 @@ defmodule JuntosWeb.CoreComponents do
         phx-key="escape"
         phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
         class={["sm:w-xl
+        sm:max-w-lg md:max-w-xl
         sm:max-h-15/20 bg-neutral-primary pointer-events-none fixed bottom-0 
         left-0 flex w-full translate-y-0
         translate-y-full transform  flex-col justify-between gap-2 
