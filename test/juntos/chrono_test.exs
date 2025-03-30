@@ -22,7 +22,17 @@ defmodule Juntos.ChronoTest do
                 offset: 3600,
                 offset_str: "GMT+01:00",
                 zone_short_name: "Berlin"
-              }} = SUT.TimeZone.get_time_zone("Europe/Berlin")
+              }} = SUT.TimeZone.get_time_zone("Europe/Berlin", ~U[2025-03-28 00:42:00.0Z])
+    end
+
+    test "get a known time zone with daylight saving" do
+      assert {:ok,
+              %Juntos.Chrono.TimeZone{
+                zone_name: "Europe/Berlin",
+                offset: 7200,
+                offset_str: "GMT+02:00",
+                zone_short_name: "Berlin"
+              }} = SUT.TimeZone.get_time_zone("Europe/Berlin", ~U[2025-04-01 00:42:00.0Z])
     end
 
     test "get a unknown time zone" do
