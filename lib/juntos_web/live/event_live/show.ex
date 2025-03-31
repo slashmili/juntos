@@ -196,7 +196,7 @@ defmodule JuntosWeb.EventLive.Show do
       data-role="attending-cta"
     >
       <section id="foo2" phx-mounted={footer_show("foo2")} class="hidden px-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-6 md:gap-0 mx-auto min-w-xs max-w-3xl md:max-w-5xl md:px-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 md:grid-rows-[auto_1fr] gap-6 md:gap-2 mx-auto min-w-xs max-w-3xl md:max-w-5xl md:px-3">
           <div class="font-bold place-self-center md:col-start-1 md:row-start-1 md:place-self-start">
             {gettext "You are attending this event. 🎉"}
           </div>
@@ -254,10 +254,19 @@ defmodule JuntosWeb.EventLive.Show do
           <div class="flex flex-col items-center md:items-start">
             <div class="flex gap-4  font-bold">
               <div class="flex items-center gap-1">
-                <.icon name="hero-calendar-days" class="size-4" /> Sat 8. Feb
+                <.icon name="hero-calendar-days" class="size-4" /> {Calendar.strftime(
+                  @event.start_datetime,
+                  "%a %d. %b"
+                )}
               </div>
               <div class="flex items-center gap-1">
-                <.icon name="hero-clock" class="size-4" /> 20:00 - 22:00
+                <.icon name="hero-clock" class="size-4" /> {Calendar.strftime(
+                  @event.start_datetime,
+                  "%H:%M"
+                )} - {Calendar.strftime(
+                  @event.end_datetime,
+                  "%H:%M"
+                )}
               </div>
             </div>
             <div class="font-medium">
