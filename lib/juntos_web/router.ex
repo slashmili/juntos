@@ -33,6 +33,10 @@ defmodule JuntosWeb.Router do
     live "/users/log_in", UserLoginLive, :new
     post "/users/log_in", UserSessionController, :create
 
+    get "/users/log_in_redirect_back_to/:event_slug",
+        UserSessionController,
+        :log_in_redirect_back_to
+
     scope "/users/auth" do
       get "/register", UserExternalAuthController, :new
       post "/register", UserExternalAuthController, :create

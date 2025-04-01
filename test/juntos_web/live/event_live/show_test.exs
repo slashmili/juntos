@@ -4,6 +4,16 @@ defmodule JuntosWeb.EventLive.ShowTest do
 
   setup :register_and_log_in_user
 
+  test "redirects user to log in page if user is not loggedd in " do
+    conn = Phoenix.ConnTest.build_conn()
+    event = event_fixture()
+
+    conn
+    |> visit("/#{event.slug}")
+    |> click_button("Register")
+    |> assert_has("[data-role=login-dialog]")
+  end
+
   test "attends to an event and increase attendee count", %{conn: conn} do
     event = event_fixture()
 

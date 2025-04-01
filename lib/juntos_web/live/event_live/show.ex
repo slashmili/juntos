@@ -14,6 +14,14 @@ defmodule JuntosWeb.EventLive.Show do
   end
 
   @impl true
+  def handle_event("attend", _, %{assigns: %{current_user: nil}} = socket) do
+    socket =
+      push_navigate(socket, to: ~p"/users/log_in_redirect_back_to/#{socket.assigns.event.slug}")
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("attend", _, socket) do
     :ok = Events.add_event_attendee(socket.assigns.event, socket.assigns.current_user)
     socket = assign(socket, :attending?, !socket.assigns.attending?)

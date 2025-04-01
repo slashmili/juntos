@@ -14,4 +14,12 @@ defmodule JuntosWeb.UserSessionController do
     |> put_flash(:info, "Welcome!")
     |> UserAuth.log_in_user(user)
   end
+
+  def log_in_redirect_back_to(conn, params) do
+    conn
+    |> put_flash(:error, "You must log in to access this page.")
+    |> put_session(:user_return_to, ~p"/#{params["event_slug"]}")
+    |> redirect(to: ~p"/users/log_in")
+    |> halt()
+  end
 end
