@@ -24,6 +24,36 @@ defmodule JuntosWeb.EventLive.Show do
   end
 
   @impl true
+  def handle_event("download-ics-file", _, socket) do
+    event = socket.assigns.event
+
+    {:ok, dts} = DateTime.from_naive(event.end_datetime, event.time_zone, Tzdata.TimeZoneDatabase)
+    {:ok, dte} = DateTime.from_naive(event.end_datetime, event.time_zone, Tzdata.TimeZoneDatabase)
+
+    events = [
+      %ICalendar.Event{
+        summary: event.name,
+        dtstart: dts,
+        dtend: dte,
+        description: event.name,
+        location: event.location.address,
+        url: url(~p"/#{event.slug}")
+      }
+    ]
+
+    ics =
+      %ICalendar{events: events}
+      |> ICalendar.to_ics()
+
+    {:noreply,
+     push_event(socket, "download", %{
+       content_type: "text/calendar",
+       content_base64: Base.encode64(ics),
+       filename: "event.ics"
+     })}
+  end
+
+  @impl true
   def handle_event("toggle-withdraw-dropdown", _, socket) do
     socket = assign(socket, :show_withdraw_prompt?, !socket.assigns.show_withdraw_prompt?)
     {:noreply, socket}
@@ -350,7 +380,12 @@ defmodule JuntosWeb.EventLive.Show do
         <:body class="bg-(--color-bg-neutral-primary) border-(--color-border-neutral-secondary)/30 items-center border-t-2 border-dashed pt-6">
           <div class="flex flex-col items-center gap-6">
             {raw(ticket_svg())}
-            <.button variant="outline" icon_left="hero-calendar-days" class="w-full">
+            <.button
+              variant="outline"
+              icon_left="hero-calendar-days"
+              class="w-full"
+              phx-click="download-ics-file"
+            >
               {gettext "Add to calendar"}
             </.button>
           </div>

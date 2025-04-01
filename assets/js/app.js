@@ -44,6 +44,25 @@ topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
 window.addEventListener("phx:page-loading-start", _info => topbar.show(300))
 window.addEventListener("phx:page-loading-stop", _info => topbar.hide())
 
+function base64ToBlob(base64, mimeType) {
+    const byteCharacters = atob(base64); // Decode base64
+    const byteNumbers = new Uint8Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    return new Blob([byteNumbers], { type: mimeType });
+}
+
+window.addEventListener(`phx:download`, (event) => {
+  const blob = base64ToBlob(event.detail.content_base64, event.detail.content_type);
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = event.detail.filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+});
+
 window.addEventListener("phx:live_reload:attached", ({detail: reloader}) => {
   // enable server log streaming to client.
   // disable with reloader.disableServerLogs()
