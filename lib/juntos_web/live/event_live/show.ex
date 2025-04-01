@@ -32,12 +32,28 @@ defmodule JuntosWeb.EventLive.Show do
 
     events = [
       %ICalendar.Event{
+        uid: event.id,
         summary: event.name,
         dtstart: dts,
         dtend: dte,
-        description: event.name,
+        modified: event.updated_at,
+        description:
+          "You are attending #{event.name}!\nVisit event page at  #{url(~p"/#{event.slug}")}",
         location: event.location.address,
-        url: url(~p"/#{event.slug}")
+        sequence: 0,
+        url: url(~p"/#{event.slug}"),
+        organizer: "mailto:calendar-invite@juntos.now",
+        attendees: [
+          %{
+            :original_value => "mailto:#{socket.assigns.current_user.email}",
+            "CN" => "mailto:#{socket.assigns.current_user.email}",
+            "CUTYPE" => "INDIVIDUAL",
+            "PARTSTAT" => "ACCEPTED",
+            "ROLE" => "REQ-PARTICIPANT",
+            "X-NUM-GUESTS" => "0"
+          }
+        ],
+        status: "CONFIRMED"
       }
     ]
 
@@ -49,7 +65,7 @@ defmodule JuntosWeb.EventLive.Show do
      push_event(socket, "download", %{
        content_type: "text/calendar",
        content_base64: Base.encode64(ics),
-       filename: "event.ics"
+       filename: "invite.ics"
      })}
   end
 
