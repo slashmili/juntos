@@ -32,17 +32,54 @@ defmodule JuntosWeb.EventLive.Show do
   end
 
   @impl true
-  def handle_event("download-ics-file", _, socket) do
+  def handle_event("redirect-to-google-calendar", _, socket) do
+    event = socket.assigns.event
+    {:ok, uri} = URI.new("https://calendar.google.com/calendar/render")
+    dt_start = Calendar.strftime(event.start_datetime, "%Y%m%dT%H%M%S")
+    dt_end = Calendar.strftime(event.end_datetime, "%Y%m%dT%H%M%S")
+
+    query_params = %{
+      "action" => "TEMPLATE",
+      "text" => event.name,
+      "details" =>
+        "You are attending #{event.name}!\nVisit event page at  #{url(~p"/#{event.slug}")}",
+      "dates" => "#{dt_start}/#{dt_end}",
+      "ctz" => event.time_zone,
+      "location" => event.location.address
+    }
+
+    url = %{uri | query: URI.encode_query(query_params)} |> URI.to_string()
+
+    socket = redirect(socket, external: url)
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("download-ics-file", params, socket) do
     event = socket.assigns.event
 
-    {:ok, dts} = DateTime.from_naive(event.end_datetime, event.time_zone, Tzdata.TimeZoneDatabase)
+    {:ok, dts} =
+      DateTime.from_naive(event.start_datetime, event.time_zone, Tzdata.TimeZoneDatabase)
+
     {:ok, dte} = DateTime.from_naive(event.end_datetime, event.time_zone, Tzdata.TimeZoneDatabase)
+
+    {dts, dte} =
+      if params["type"] == "android-cal" do
+        {:ok, dts} = DateTime.shift_zone(dts, "Etc/UTC")
+
+        {:ok, dte} = DateTime.shift_zone(dte, "Etc/UTC")
+        {dts, dte}
+      else
+        {dts, dte}
+      end
 
     events = [
       %ICalendar.Event{
         uid: event.id,
         summary: event.name,
         dtstart: dts,
+        dtstamp: event.updated_at,
         dtend: dte,
         modified: event.updated_at,
         description:
@@ -90,6 +127,12 @@ defmodule JuntosWeb.EventLive.Show do
   end
 
   @impl true
+  def handle_event("toggle-calendar-dropdown", _, socket) do
+    socket = assign(socket, show_add_to_calendar?: !socket.assigns.show_add_to_calendar?)
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("cancel-attendance", _, socket) do
     :ok = Events.remove_event_attendee(socket.assigns.event, socket.assigns.current_user)
     socket = assign(socket, attending?: false, show_withdraw_prompt?: false)
@@ -114,6 +157,7 @@ defmodule JuntosWeb.EventLive.Show do
         <.footer_attend event={@event} show={@attending?} />
         <.confirm_cancellation_dialog show={@show_withdraw_prompt?} />
         <.ticket_dialog event={@event} show={@show_ticket_dialog?} />
+        <.add_to_calendar event={@event} show={@show_add_to_calendar?} />
       </.event_page>
     </.page_wrapper>
     """
@@ -259,7 +303,7 @@ defmodule JuntosWeb.EventLive.Show do
               variant="secondary"
               size="lg"
               class="w-full flex items-center"
-              icon_left="hero-qr-code"
+              icon_left="material_qr_code"
               phx-click="toggle-ticket-dropdown"
             >
               {gettext "View ticket"}
@@ -268,7 +312,16 @@ defmodule JuntosWeb.EventLive.Show do
               variant="outline"
               size="lg"
               class="w-full flex items-center"
-              icon_left="hero-share"
+              icon_left="material_calendar_add_on"
+              phx-click="toggle-calendar-dropdown"
+            >
+              {gettext "Add to calendar"}
+            </.button>
+            <.button
+              variant="outline"
+              size="lg"
+              class="w-full flex items-center"
+              icon_left="material_share"
             >
               {gettext "Share event"}
             </.button>
@@ -360,7 +413,7 @@ defmodule JuntosWeb.EventLive.Show do
         </:header>
 
         <:body class="bg-(--color-bg-neutral-primary) flex flex-col gap-6">
-          Canceling means you may lose your spot, and re-registering could be unavailable if the event reaches capacity.
+          {gettext "Canceling means you may lose your spot, and re-registering could be unavailable if the event reaches capacity."}
           <div class="flex flex-col sm:flex-row gap-2 sm:place-self-end">
             <.button phx-click="toggle-withdraw-dropdown" variant="outline" phx-disable-with>
               {gettext "Keep my spot"}
@@ -404,13 +457,54 @@ defmodule JuntosWeb.EventLive.Show do
         <:body class="bg-(--color-bg-neutral-primary) border-(--color-border-neutral-secondary)/30 items-center border-t-2 border-dashed pt-6">
           <div class="flex flex-col items-center gap-6">
             {raw(ticket_svg())}
+          </div>
+        </:body>
+      </.bottom_sheet>
+    </div>
+    """
+  end
+
+  defp add_to_calendar(assigns) do
+    ~H"""
+    <div :if={@show} data-role="add-to-calendar-cta">
+      <.bottom_sheet
+        id="addCalButtonSheet"
+        show
+        on_cancel={JS.push("toggle-calendar-dropdown")}
+        close_button
+      >
+        <:header>
+          <h2 class="text-neutral-primary text-lg font-bold">{gettext "Add to calendar"}</h2>
+        </:header>
+
+        <:body class="bg-(--color-bg-neutral-primary) flex flex-col gap-6">
+          <div class="flex flex-col gap-2">
             <.button
-              variant="outline"
-              icon_left="hero-calendar-days"
-              class="w-full"
               phx-click="download-ics-file"
+              phx-value-type="ical"
+              variant="outline"
+              phx-disable-with
+              icon_left="material_calendar_add_on"
             >
-              {gettext "Add to calendar"}
+              {gettext "iCal"}
+            </.button>
+
+            <.button
+              phx-click="download-ics-file"
+              phx-value-type="android-cal"
+              variant="outline"
+              phx-disable-with
+              icon_left="material_android"
+            >
+              {gettext "Android"}
+            </.button>
+            <.button
+              phx-click="redirect-to-google-calendar"
+              icon_left="google-calendar"
+              variant="outline"
+              phx-disable-with
+            >
+              {gettext "Google Calendar"}
             </.button>
           </div>
         </:body>
@@ -543,7 +637,8 @@ defmodule JuntosWeb.EventLive.Show do
     options = [
       show_withdraw_prompt?: false,
       attending?: Events.is_attending?(socket.assigns.event, socket.assigns.current_user),
-      show_ticket_dialog?: false
+      show_ticket_dialog?: false,
+      show_add_to_calendar?: false
     ]
 
     assign(socket, options)

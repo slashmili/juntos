@@ -69,7 +69,7 @@ defmodule Juntos.MixProject do
       {:tzdata, "~> 1.1"},
       {:polymorphic_embed, "~> 5.0"},
       {:qr_code, "~> 3.2"},
-      {:icalendar, github: "slashmili/icalendar", branch: "remove-timex"},
+      {:icalendar, github: "slashmili/icalendar", branch: "main"},
       # Start Upload Deps
       {:waffle, "~> 1.1"},
       {:waffle_ecto, "~> 0.0.12"},
