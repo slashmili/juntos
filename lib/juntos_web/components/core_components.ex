@@ -695,6 +695,16 @@ defmodule JuntosWeb.CoreComponents do
     """
   end
 
+  def icon(%{name: "material_" <> icon_name} = assigns) do
+    assigns = assign(assigns, icon_name: icon_name)
+
+    ~H"""
+    <span class={["material-symbols-rounded", @class]}>
+      {@icon_name}
+    </span>
+    """
+  end
+
   def icon(%{name: "logo"} = assigns) do
     ~H"""
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -19,7 +19,14 @@
 }
 
 
+@import "./fonts.css";
+
+@theme {
+  --font-display: "Inter", "sans-serif";
+}
+
 body {
+  font-family: 'Inter', sans-serif;
   background: var(--color-bg-neutral-secondary);
 }
 
