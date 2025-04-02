@@ -5,11 +5,10 @@
       src: url('/fonts/material-symbols-rounded-400.ttf') format('truetype');
 }
 
-.material-symbols-rounded {
+.material-symbols {
   font-family: 'Material Symbols Rounded';
   font-weight: normal;
   font-style: normal;
-  font-size: 24px;
   line-height: 1;
   letter-spacing: normal;
   text-transform: none;
@@ -18,6 +17,12 @@
   word-wrap: normal;
   direction: ltr;
 }
+
+
+.material-symbols:after {
+  content: attr(data-icon);
+}
+
 
 @font-face {
     font-family: 'Inter';

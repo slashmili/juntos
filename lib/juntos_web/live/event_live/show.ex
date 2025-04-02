@@ -254,8 +254,8 @@ defmodule JuntosWeb.EventLive.Show do
   defp event_info(assigns) do
     ~H"""
     <section class="flex flex-col py-2 gap-2 text-sm font-semibold">
-      <div data-role="attendee-count">
-        <.icon name="hero-user-group" class="size-4" />
+      <div data-role="attendee-count" class="flex items-center gap-1">
+        <.icon name="material_groups_2" class="icon-size-4 size-4" />
         <span :if={@event.attendee_count == 0}>{gettext "No attendee"}</span>
         <span :if={@event.attendee_count > 0}>{@event.attendee_count} {gettext "attendees"}</span>
       </div>
@@ -361,13 +361,13 @@ defmodule JuntosWeb.EventLive.Show do
           <div class="flex flex-col items-center md:items-start">
             <div class="flex gap-4  font-bold">
               <div class="flex items-center gap-1">
-                <.icon name="hero-calendar-days" class="size-4" /> {Calendar.strftime(
+                <.icon name="material_date_range" class="icon-size-4" /> {Calendar.strftime(
                   @event.start_datetime,
                   "%a %d. %b"
                 )}
               </div>
               <div class="flex items-center gap-1">
-                <.icon name="hero-clock" class="size-4" /> {Calendar.strftime(
+                <.icon name="material_schedule" class="icon-size-4" /> {Calendar.strftime(
                   @event.start_datetime,
                   "%H:%M"
                 )} - {Calendar.strftime(
@@ -516,7 +516,7 @@ defmodule JuntosWeb.EventLive.Show do
   defp share_button(assigns) do
     ~H"""
     <section class="absolute left-4 bottom-4">
-      <.button type="button" icon_right="hero-share" size="md" variant="secondary"></.button>
+      <.button type="button" icon_right="material_share" size="md" variant="secondary"></.button>
     </section>
     """
   end
@@ -528,13 +528,15 @@ defmodule JuntosWeb.EventLive.Show do
       class="bg-(--color-bg-accent-brand-muted) rounded-full px-4 py-1.5 text-sm/5 font-medium gap-4 flex"
     >
       <div class="flex items-center gap-1">
-        <.icon name="hero-calendar-days" class="size-4" /> {Calendar.strftime(
+        <.icon name="material_date_range" class="icon-size-4" />
+        {Calendar.strftime(
           @event.start_datetime,
           "%a %d. %b"
         )}
       </div>
       <div class="flex items-center gap-1">
-        <.icon name="hero-clock" class="size-4" /> {Calendar.strftime(
+        <.icon name="material_schedule" class="icon-size-4" />
+        {Calendar.strftime(
           @event.start_datetime,
           "%H:%M"
         )} - {Calendar.strftime(
@@ -572,13 +574,16 @@ defmodule JuntosWeb.EventLive.Show do
   defp location_to_html(%{location: %Juntos.Events.Event.Place{}} = assigns) do
     ~H"""
     <div class="flex flex-col gap-2">
-      <a
-        href={"https://www.google.com/maps/search/?#{URI.encode_query(%{api: 1, query: @location.name, query_place_id: @location.id})}"}
-        class="underline"
-        target="_blank"
-      >
-        <.icon name="hero-map-pin" class="size-4" /> {@location.address}
-      </a>
+      <div class="flex flex-row gap-1 items-center">
+        <.icon name="material_location_on" class="icon-size-4" />
+        <a
+          href={"https://www.google.com/maps/search/?#{URI.encode_query(%{api: 1, query: @location.name, query_place_id: @location.id})}"}
+          class="underline"
+          target="_blank"
+        >
+          {@location.address}
+        </a>
+      </div>
 
       <div
         :if={@show_map}
@@ -601,18 +606,23 @@ defmodule JuntosWeb.EventLive.Show do
     case assigns[:location] do
       %{address: _} ->
         ~H"""
-        <a
-          href={"https://www.google.com/maps/search/?#{URI.encode_query(%{api: 1, query: @location.address})}"}
-          class="underline"
-          target="_blank"
-        >
-          <.icon name="hero-map-pin" class="size-4" /> {@location.address}
-        </a>
+        <div class="flex flex-row gap-1 items-center">
+          <.icon name="material_location_on" class="icon-size-4" />
+          <a
+            href={"https://www.google.com/maps/search/?#{URI.encode_query(%{api: 1, query: @location.address})}"}
+            class="underline"
+            target="_blank"
+          >
+            {@location.address}
+          </a>
+        </div>
         """
 
       %{link: _} ->
         ~H"""
-        <.icon name="hero-video-camera" class="size-4" /> {gettext "Online Event"}
+        <div class="flex flex-row gap-1 items-center">
+          <.icon name="material_videocam" class="size-4" /> {gettext "Online Event"}
+        </div>
         """
     end
   end

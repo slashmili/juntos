@@ -48,3 +48,10 @@ body {
     box-shadow: 0px 25px 100px -12px rgba(29, 41, 61, 0.25);
   }
 }
+
+.icon-size-4 {
+  font-size: 1rem;
+}
+.icon-size-6 {
+  font-size: 1.5rem;
+}

@@ -119,8 +119,8 @@ defmodule JuntosWeb.CoreComponents do
 
   defp button_icon_class(assigns) do
     case assigns[:size] do
-      "md" -> "h-4 w-4"
-      _ -> "h-6 w-6"
+      "md" -> "icon-size-4"
+      _ -> "icon-size-6"
     end
   end
 
@@ -699,9 +699,7 @@ defmodule JuntosWeb.CoreComponents do
     assigns = assign(assigns, icon_name: icon_name)
 
     ~H"""
-    <span class={["material-symbols-rounded", @class]}>
-      {@icon_name}
-    </span>
+    <span class={["material-symbols", @class]} data-icon={@icon_name}></span>
     """
   end
 
