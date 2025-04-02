@@ -1,5 +1,5 @@
 <header class="flex justify-center">
-  <.navbar />
+  <.navbar logged_in={not is_nil(assigns[:current_user])} />
 </header>
 <main class="text-(--color-text-neutral-primary)">
   <div class="">

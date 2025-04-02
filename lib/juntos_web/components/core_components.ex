@@ -16,6 +16,7 @@ defmodule JuntosWeb.CoreComponents do
   """
   use Phoenix.Component
   use Gettext, backend: JuntosWeb.Gettext
+  use JuntosWeb, :verified_routes
 
   alias Phoenix.LiveView.JS
 
@@ -48,7 +49,7 @@ defmodule JuntosWeb.CoreComponents do
         @variant_class,
         @size_class,
         @class,
-        "flex max-w-md justify-center gap-1  font-medium"
+        "flex max-w-md justify-center gap-1  font-medium gap-1 font-medium text-base min-w-20 h-fit"
       ]}
       {@rest}
     >
@@ -71,7 +72,7 @@ defmodule JuntosWeb.CoreComponents do
         @variant_class,
         @size_class,
         @class,
-        "animated flex cursor-pointer justify-center gap-1 font-medium"
+        "animated flex cursor-pointer justify-center gap-1 font-medium text-base min-w-20 h-fit"
       ]}
       {@rest}
       disabled={@disabled}
@@ -126,7 +127,7 @@ defmodule JuntosWeb.CoreComponents do
 
   defp button_size_class(assigns) do
     case assigns[:size] do
-      "md" -> "rounded-full p-3"
+      "md" -> "rounded-full py-2 px-3"
       _ -> "rounded-lg px-2 px-3 py-3"
     end
   end
@@ -212,15 +213,17 @@ defmodule JuntosWeb.CoreComponents do
 
   def navbar(assigns) do
     ~H"""
-    <navbar class="flex max-w-6xl w-full pt-2 py-4">
-      <div class="flex">
-        <.button variant="link" icon_right="logo"></.button>
-        <.button variant="link" icon_right="hero-magnifying-glass"></.button>
+    <navbar class="flex max-w-3xl w-full py-2 px-4 md:min-w-3xl md:max-w-5xl md:px-0">
+      <div class="flex p-3">
+        <.link href="/" class="size-6"><.icon name="logo" /></.link>
       </div>
-      <div :if={@logged_in} class="grow flex justify-end">
-        <.button variant="outline" size="md">Create event</.button>
-        <.button variant="link" icon_right="hero-bell"></.button>
-        <.button variant="link" icon_right="hero-user-solid"></.button>
+      <div :if={@logged_in} class="grow flex justify-end pr-3">
+        <.button type="link" href={~p"/new"} variant="outline" size="md">Create event</.button>
+      </div>
+      <div :if={not @logged_in} class="grow flex justify-end pr-3">
+        <.button type="link" href={~p"/users/log_in"} variant="outline" size="md">
+          {gettext "Login"}
+        </.button>
       </div>
     </navbar>
     """
@@ -705,42 +708,15 @@ defmodule JuntosWeb.CoreComponents do
 
   def icon(%{name: "logo"} = assigns) do
     ~H"""
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g clip-path="url(#clip0_139_1721)">
+    <span class="text-(--color-text-neutral-primary) size-6">
+      <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
-          d="M18 2H6C3.79086 2 2 3.79086 2 6V18C2 20.2091 3.79086 22 6 22H18C20.2091 22 22 20.2091 22 18V6C22 3.79086 20.2091 2 18 2ZM6 0C2.68629 0 0 2.68629 0 6V18C0 21.3137 2.68629 24 6 24H18C21.3137 24 24 21.3137 24 18V6C24 2.68629 21.3137 0 18 0H6Z"
-          fill="#475569"
+          d="M6 2H18C20.2091 2 22 3.79086 22 6V18C22 20.2091 20.2091 22 18 22H6C3.79086 22 2 20.2091 2 18V6C2 3.79086 3.79086 2 6 2ZM0 6C0 2.68629 2.68629 0 6 0H18C21.3137 0 24 2.68629 24 6V18C24 21.3137 21.3137 24 18 24H6C2.68629 24 0 21.3137 0 18V6ZM8.90556 18.7061C9.80865 17.8031 9.80865 16.3389 8.90556 15.4358C8.00247 14.5327 6.53827 14.5327 5.63519 15.4358C4.7321 16.3389 4.7321 17.8031 5.63519 18.7061C6.53827 19.6092 8.00247 19.6092 8.90556 18.7061ZM13.6432 10.3729C14.5463 11.276 14.5463 12.7402 13.6432 13.6433C12.7401 14.5464 11.2759 14.5464 10.3729 13.6433C9.46977 12.7402 9.46977 11.276 10.3729 10.3729C11.2759 9.46981 12.7401 9.46981 13.6432 10.3729ZM18.7062 8.90559C19.6092 8.0025 19.6092 6.5383 18.7062 5.63521C17.8031 4.73213 16.3389 4.73213 15.4358 5.63521C14.5327 6.5383 14.5327 8.0025 15.4358 8.90559C16.3389 9.80868 17.8031 9.80868 18.7062 8.90559Z"
         />
-        <circle
-          cx="7.27037"
-          cy="17.0709"
-          r="2.3125"
-          transform="rotate(-45 7.27037 17.0709)"
-          fill="#475569"
-        />
-        <circle
-          cx="12.0082"
-          cy="12.0081"
-          r="2.3125"
-          transform="rotate(-45 12.0082 12.0081)"
-          fill="#475569"
-        />
-        <circle
-          cx="17.0709"
-          cy="7.27039"
-          r="2.3125"
-          transform="rotate(-45 17.0709 7.27039)"
-          fill="#475569"
-        />
-      </g>
-      <defs>
-        <clipPath id="clip0_139_1721">
-          <rect width="24" height="24" fill="white" />
-        </clipPath>
-      </defs>
-    </svg>
+      </svg>
+    </span>
     """
   end
 
