@@ -229,6 +229,22 @@ defmodule JuntosWeb.CoreComponents do
     """
   end
 
+  def breadcrumb(assigns) do
+    ~H"""
+    <div class="flex max-w-3xl w-full py-2 px-3 md:min-w-3xl md:max-w-5xl md:px-0 text-(--color-text-neutral-secondary)">
+      <menu
+        :if={@breadcrumb != []}
+        class="flex space-x-1 [&>li:last-child]:hidden items-center justify-center"
+      >
+        <%= for item <- @breadcrumb do %>
+          <li class="text-xs">{render_slot(item)}</li>
+          <li><.icon name="material_chevron_right" class="icon-size-4" /></li>
+        <% end %>
+      </menu>
+    </div>
+    """
+  end
+
   @doc """
   Render Hero section
   """
@@ -623,47 +639,6 @@ defmodule JuntosWeb.CoreComponents do
       <button type="button" class="group absolute top-1 right-1 p-2" aria-label={gettext("close")}>
         <.icon name="hero-x-mark-solid" class="h-5 w-5 opacity-40 group-hover:opacity-70" />
       </button>
-    </div>
-    """
-  end
-
-  @doc """
-  Shows the flash with standard titles and content. ##
-  Examples <.flash_group
-      flash={@flash} /> group
-  """
-  attr :flash, :map, required: true, doc: "the map of flash messages"
-  attr :id, :string, default: "flash-group", doc: "the optional id of flash container"
-
-  def flash_group(assigns) do
-    ~H"""
-    <div id={@id}>
-      <.flash kind={:success} title={gettext("Success!")} flash={@flash} />
-      <.flash kind={:info} title={gettext("Success!")} flash={@flash} />
-      <.flash kind={:error} title={gettext("Error!")} flash={@flash} />
-      <.flash
-        id="client-error"
-        kind={:error}
-        title={gettext("We can't find the internet")}
-        phx-disconnected={show(".phx-client-error #client-error")}
-        phx-connected={hide("#client-error")}
-        hidden
-      >
-        {gettext("Attempting to reconnect")}
-        <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
-      </.flash>
-
-      <.flash
-        id="server-error"
-        kind={:error}
-        title={gettext("Something went wrong!")}
-        phx-disconnected={show(".phx-server-error #server-error")}
-        phx-connected={hide("#server-error")}
-        hidden
-      >
-        {gettext("Hang in there while we get back on track")}
-        <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
-      </.flash>
     </div>
     """
   end

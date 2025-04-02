@@ -1,9 +1,0 @@
-<header class="flex justify-center">
-  <.navbar logged_in={not is_nil(assigns[:current_user])} />
-</header>
-<main class="text-(--color-text-neutral-primary)">
-  <div class="">
-    <.flash_group flash={@flash} />
-    {@inner_content}
-  </div>
-</main>

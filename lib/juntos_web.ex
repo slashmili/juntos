@@ -39,8 +39,7 @@ defmodule JuntosWeb do
   def controller do
     quote do
       use Phoenix.Controller,
-        formats: [:html, :json],
-        layouts: [html: JuntosWeb.Layouts]
+        formats: [:html, :json]
 
       use Gettext, backend: JuntosWeb.Gettext
 
@@ -52,8 +51,7 @@ defmodule JuntosWeb do
 
   def live_view do
     quote do
-      use Phoenix.LiveView,
-        layout: {JuntosWeb.Layouts, :app}
+      use Phoenix.LiveView
 
       if Application.compile_env(:juntos, :sql_sandbox) do
         on_mount(JuntosWeb.LiveAsyncFeatureTests)
@@ -96,6 +94,7 @@ defmodule JuntosWeb do
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
+      alias JuntosWeb.Layouts
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())

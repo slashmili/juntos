@@ -145,21 +145,30 @@ defmodule JuntosWeb.EventLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <style>
-      body {
-        background: var(--color-bg-neutral-primary);
-      }
-    </style>
-    <.page_wrapper>
-      <.event_page>
-        <.event_card event={@event} />
-        <.footer_register event={@event} show={not @attending?} />
-        <.footer_attend event={@event} show={@attending?} />
-        <.confirm_cancellation_dialog show={@show_withdraw_prompt?} />
-        <.ticket_dialog event={@event} show={@show_ticket_dialog?} />
-        <.add_to_calendar event={@event} show={@show_add_to_calendar?} />
-      </.event_page>
-    </.page_wrapper>
+    <Layouts.app flash={@flash} current_user={@current_user}>
+      <:breadcrumb>
+        <.link navigate={~p"/"}><.icon name="material_home" class="icon-size-4" /></.link>
+      </:breadcrumb>
+      <:breadcrumb>
+        {gettext "event"}
+      </:breadcrumb>
+
+      <style>
+        body {
+          background: var(--color-bg-neutral-primary);
+        }
+      </style>
+      <.page_wrapper>
+        <.event_page>
+          <.event_card event={@event} />
+          <.footer_register event={@event} show={not @attending?} />
+          <.footer_attend event={@event} show={@attending?} />
+          <.confirm_cancellation_dialog show={@show_withdraw_prompt?} />
+          <.ticket_dialog event={@event} show={@show_ticket_dialog?} />
+          <.add_to_calendar event={@event} show={@show_add_to_calendar?} />
+        </.event_page>
+      </.page_wrapper>
+    </Layouts.app>
     """
   end
 

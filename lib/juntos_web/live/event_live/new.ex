@@ -107,21 +107,29 @@ defmodule JuntosWeb.EventLive.New do
   @impl true
   def render(assigns) do
     ~H"""
-    <.page_wrapper>
-      <.event_form form={@form}>
-        <.form_header />
-        <.name_input name={@form[:name]} />
-        <.description_input
-          show_desc={@show_desc}
-          description={@form[:description]}
-          description_editor={@form[:description_editor]}
-        />
-        <.cover_input form={@form} uploads={@uploads} />
-        <.date_input form={@form} show_time_zone_options={@show_time_zone_options} />
-        <.location_input form={@form} />
-        <.create_button />
-      </.event_form>
-    </.page_wrapper>
+    <Layouts.app flash={@flash} current_user={@current_user}>
+      <:breadcrumb>
+        <.link navigate={~p"/"}><.icon name="material_home" class="icon-size-4" /></.link>
+      </:breadcrumb>
+      <:breadcrumb>
+        {gettext "create event"}
+      </:breadcrumb>
+      <.page_wrapper>
+        <.event_form form={@form}>
+          <.form_header />
+          <.name_input name={@form[:name]} />
+          <.description_input
+            show_desc={@show_desc}
+            description={@form[:description]}
+            description_editor={@form[:description_editor]}
+          />
+          <.cover_input form={@form} uploads={@uploads} />
+          <.date_input form={@form} show_time_zone_options={@show_time_zone_options} />
+          <.location_input form={@form} />
+          <.create_button />
+        </.event_form>
+      </.page_wrapper>
+    </Layouts.app>
     """
   end
 
