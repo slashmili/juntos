@@ -29,7 +29,6 @@ defmodule JuntosWeb.Router do
   scope "/", JuntosWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
     live "/users/log_in", UserLoginLive, :new
     post "/users/log_in", UserSessionController, :create
 
@@ -81,6 +80,7 @@ defmodule JuntosWeb.Router do
 
     live_session :current_user,
       on_mount: [{JuntosWeb.UserAuth, :mount_current_user}] do
+      live "/", HomeLive, :home
       live "/*path", EventLive.Show
     end
   end

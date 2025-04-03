@@ -4,11 +4,11 @@
     --color-bg-neutral-primary-hover: var(--color-slate-100);
     --color-bg-neutral-primary-inverse: var(--color-neutral-900);
     --color-bg-neutral-primary-inverse-hover: var(--color-neutral-800);
-    --color-bg-neutral-secondary: var(--color-slate-100);
+    --color-bg-neutral-secondary: var(--color-slate-50);
     --color-bg-neutral-secondary-hover: var(--color-slate-50);
     --color-bg-neutral-secondary-inverse: var(--color-neutral-800);
     --color-bg-neutral-secondary-inverse-hover: var(--color-neutral-700);
-    --color-bg-neutral-tertiary: var(--color-slate-200);
+    --color-bg-neutral-tertiary: var(--color-white);
     --color-bg-neutral-tertiary-hover: var(--color-slate-100);
     --color-bg-accent-brand: var(--color-violet-700);
     --color-bg-accent-brand-hover: var(--color-violet-600);
@@ -52,15 +52,15 @@
   }
 
   .dark {
-    --color-bg-neutral-primary: var(--color-neutral-900);
+    --color-bg-neutral-primary: var(--color-neutral-800);
     --color-bg-neutral-primary-hover: var(--color-neutral-800);
     --color-bg-neutral-primary-inverse: var(--color-neutral-200);
     --color-bg-neutral-primary-inverse-hover: var(--color-neutral-100);
-    --color-bg-neutral-secondary: var(--color-neutral-800);
+    --color-bg-neutral-secondary: var(--color-neutral-900);
     --color-bg-neutral-secondary-hover: var(--color-neutral-700);
     --color-bg-neutral-secondary-inverse: var(--color-neutral-300);
     --color-bg-neutral-secondary-inverse-hover: var(--color-neutral-200);
-    --color-bg-neutral-tertiary: var(--color-neutral-900);
+    --color-bg-neutral-tertiary: var(--color-black);
     --color-bg-neutral-tertiary-hover: var(--color-neutral-800);
     --color-bg-accent-brand: var(--color-violet-500);
     --color-bg-accent-brand-hover: var(--color-violet-400);
@@ -76,7 +76,7 @@
     --color-bg-status-warning-hover: var(--color-amber-800);
     --color-bg-status-disabled: var(--color-neutral-700);
 
-    --color-border-neutral-primary: var(--color-slate-700);
+    --color-border-neutral-primary: var(--color-slate-800);
     --color-border-neutral-secondary: var(--color-slate-600);
     --color-border-neutral-secondary-focused: var(--color-slate-500);
     --color-border-accent-brand: var(--color-violet-400);
