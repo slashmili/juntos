@@ -75,9 +75,14 @@ defmodule JuntosWeb.HomeLive do
 
   defp event_card(assigns) do
     ~H"""
-    <div class="flex w-full min-w-2xs max-w-3xl rounded-2xl border-1 border-(--color-border-neutral-primary) bg-(--color-bg-neutral-tertiary)/10 backdrop-blur-lg shadow-lg px-3 place-self-center">
+    <div
+      phx-href
+      class="flex w-full min-w-2xs max-w-3xl rounded-2xl border-1 border-(--color-border-neutral-primary) bg-(--color-bg-neutral-tertiary)/10 backdrop-blur-lg shadow-lg px-3 place-self-center"
+    >
       <div class="py-3  pr-1 w-27 min-w-27">
-        <.event_cover_image cover_image={Events.event_cover_url(@event)} />
+        <.link navigate={~p"/#{@event.slug}"}>
+          <.event_cover_image cover_image={Events.event_cover_url(@event)} />
+        </.link>
       </div>
       <div class="grow flex flex-col pl-1  py-3">
         <div class="text-sm flex items-center gap-1">
@@ -89,7 +94,9 @@ defmodule JuntosWeb.HomeLive do
           /> 20:00
         </div>
         <div class="grow font-bold text-base  flex flex flex-col justify-center">
-          {@event.name}
+          <.link navigate={~p"/#{@event.slug}"}>
+            {@event.name}
+          </.link>
         </div>
         <div class="flex items-center text-sm gap-1">
           <.icon name="material_location_on" class="icon-size-4" /> Berlin, Germany
