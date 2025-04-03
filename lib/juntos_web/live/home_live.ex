@@ -78,7 +78,7 @@ defmodule JuntosWeb.HomeLive do
     <div
       class="flex w-full min-w-2xs max-w-3xl rounded-2xl border-1 border-(--color-border-neutral-primary) bg-(--color-bg-neutral-primary)/50 backdrop-blur-lg shadow-xl dark:shadow-slate-100/5 shadow-slate-900/4 px-3 place-self-center hover:bg-(--color-bg-neutral-primary-hover)"
     >
-      <div class="py-3  pr-1">
+      <div class="py-3  pr-1 flex-shrink-0">
         <.link navigate={~p"/#{@event.slug}"}>
           <.event_cover_image cover_image={Events.event_cover_url(@event)} />
         </.link>
