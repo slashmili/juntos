@@ -73,6 +73,7 @@ defmodule JuntosWeb.HomeLive do
     """
   end
 
+  attr :event, :any, required: true
   attr :past_event?, :boolean, required: false, default: false
 
   defp event_card(assigns) do

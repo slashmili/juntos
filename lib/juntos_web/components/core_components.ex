@@ -666,7 +666,7 @@ defmodule JuntosWeb.CoreComponents do
       name="hero-arrow-path" class="ml-1 animate-spin" /> h-3 w-3 outline
   """
   attr :name, :string, required: true
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
 
   def icon(%{name: "hero-" <> _} = assigns) do
     ~H"""
