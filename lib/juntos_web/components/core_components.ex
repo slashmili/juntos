@@ -49,7 +49,7 @@ defmodule JuntosWeb.CoreComponents do
         @variant_class,
         @size_class,
         @class,
-        "flex max-w-md justify-center gap-1  font-medium gap-1 font-medium text-base min-w-20 h-fit"
+        "flex max-w-md justify-center gap-1  font-medium gap-1 font-medium text-base min-w-20 h-fit bg-(--color-bg-neutral-primary)"
       ]}
       {@rest}
     >
@@ -215,7 +215,7 @@ defmodule JuntosWeb.CoreComponents do
     ~H"""
     <navbar class="flex max-w-3xl w-full py-2 px-4 md:min-w-3xl md:max-w-5xl md:px-0">
       <div class="flex p-3">
-        <.link href="/" class="size-6"><.icon name="logo" /></.link>
+        <.link href="/" class="size-6"><.icon name="logo" class="size-6" /></.link>
       </div>
       <div :if={@logged_in} class="grow flex justify-end pr-3">
         <.button type="link" href={~p"/new"} variant="outline" size="md">Create event</.button>
@@ -519,7 +519,7 @@ defmodule JuntosWeb.CoreComponents do
     >
       <div
         id={"#{@id}-overlay"}
-        class="pointer-events-none fixed inset-0  bg-black/80 opacity-0 transition-opacity duration-300"
+        class="pointer-events-none fixed inset-0  bg-black/80 dark:bg-white/10 opacity-0 transition-opacity duration-500 sm:backdrop-blur-xs"
         aria-hidden="true"
       >
       </div>
@@ -533,9 +533,9 @@ defmodule JuntosWeb.CoreComponents do
         sm:max-w-lg md:max-w-xl
         sm:max-h-15/20 bg-neutral-primary pointer-events-none fixed bottom-0 
         left-0 flex w-full translate-y-0
-        translate-y-full transform  flex-col justify-between gap-2 
-        rounded-t-2xl p-4 opacity-0 shadow-xl transition-transform
-        duration-300 sm:bottom-auto 
+        translate-y-full sm:transform-all  flex-col justify-between gap-2 
+        rounded-t-2xl p-4 opacity-0 shadow-xl xtransition-transform
+        duration-500 sm:bottom-auto 
         sm:left-1/2
         sm:top-1/2 sm:h-auto  sm:-translate-x-1/2
         sm:-translate-y-1/2

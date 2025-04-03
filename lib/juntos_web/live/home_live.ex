@@ -76,10 +76,9 @@ defmodule JuntosWeb.HomeLive do
   defp event_card(assigns) do
     ~H"""
     <div
-      phx-href
-      class="flex w-full min-w-2xs max-w-3xl rounded-2xl border-1 border-(--color-border-neutral-primary) bg-(--color-bg-neutral-tertiary)/10 backdrop-blur-lg shadow-lg px-3 place-self-center"
+      class="flex w-full min-w-2xs max-w-3xl rounded-2xl border-1 border-(--color-border-neutral-primary) bg-(--color-bg-neutral-primary)/50 backdrop-blur-lg shadow-xl dark:shadow-slate-100/5 shadow-slate-900/4 px-3 place-self-center hover:bg-(--color-bg-neutral-primary-hover)"
     >
-      <div class="py-3  pr-1 w-27 min-w-27">
+      <div class="py-3  pr-1">
         <.link navigate={~p"/#{@event.slug}"}>
           <.event_cover_image cover_image={Events.event_cover_url(@event)} />
         </.link>
@@ -109,7 +108,7 @@ defmodule JuntosWeb.HomeLive do
   defp event_cover_image(%{cover_image: %{media_type: :gif}} = assigns) do
     ~H"""
     <picture class="">
-      <img src={@cover_image.original} class="aspect-square rounded-lg" />
+      <img src={@cover_image.original} class="size-27 md:size-29 aspect-square rounded-lg" />
     </picture>
     """
   end
@@ -118,7 +117,7 @@ defmodule JuntosWeb.HomeLive do
     ~H"""
     <picture class="">
       <source srcset={@cover_image.webp} type="image/webp" />
-      <img src={@cover_image.jpg} class="aspect-square rounded-lg" />
+      <img src={@cover_image.jpg} class="size-27 md:size-29 aspect-square rounded-lg" />
     </picture>
     """
   end

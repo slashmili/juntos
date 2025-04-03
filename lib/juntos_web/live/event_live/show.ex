@@ -155,7 +155,7 @@ defmodule JuntosWeb.EventLive.Show do
 
       <style>
         body {
-          background: var(--color-bg-neutral-primary);
+          background: var(--color-bg-neutral-secondary);
         }
       </style>
       <.page_wrapper>
@@ -205,7 +205,7 @@ defmodule JuntosWeb.EventLive.Show do
 
   defp event_card_grid(assigns) do
     ~H"""
-    <section class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-[auto_1fr_auto] lg:grid-cols-3  gap-4 bg-(--color-bg-neutral-secondary) md:bg-(--color-bg-neutral-primary) rounded-2xl w-full">
+    <section class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-[auto_1fr_auto] lg:grid-cols-3  gap-4 bg-(--color-bg-neutral-tertiary) md:bg-(--color-bg-neutral-secondary) rounded-2xl w-full">
       {render_slot(@inner_block)}
     </section>
     """
@@ -213,7 +213,7 @@ defmodule JuntosWeb.EventLive.Show do
 
   defp event_card_grid_header(assigns) do
     ~H"""
-    <div class="md:col-span-2 md:row-start-1 md:bg-(--color-bg-neutral-secondary) md:rounded-t-2xl pt-4 px-4">
+    <div class="md:col-span-2 md:row-start-1 md:bg-(--color-bg-neutral-tertiary) md:rounded-t-2xl pt-4 px-4">
       {render_slot(@inner_block)}
     </div>
     """
@@ -229,7 +229,7 @@ defmodule JuntosWeb.EventLive.Show do
 
   defp event_card_grid_description(assigns) do
     ~H"""
-    <div class="md:col-span-2 md:row-start-2 md:row-span-3  md:bg-(--color-bg-neutral-secondary) md:-mt-4 md:rounded-b-2xl px-4 h-full">
+    <div class="md:col-span-2 md:row-start-2 md:row-span-3  md:bg-(--color-bg-neutral-tertiary) md:-mt-4 md:rounded-b-2xl px-4 h-full">
       {render_slot(@inner_block)}
     </div>
     """
@@ -357,7 +357,7 @@ defmodule JuntosWeb.EventLive.Show do
     ~H"""
     <footer
       :if={@show}
-      class="bg-(--color-bg-neutral-primary) fixed bottom-0 left-0 w-full py-6 event-show-shadow"
+      class="bg-(--color-bg-neutral-primary) fixed bottom-0 left-0 w-full py-6 event-show-shadow border-t border-(--color-border-neutral-primary)"
       data-role="register-cta"
     >
       <section
@@ -524,7 +524,7 @@ defmodule JuntosWeb.EventLive.Show do
 
   defp share_button(assigns) do
     ~H"""
-    <section class="absolute left-4 bottom-4">
+    <section class="absolute left-4 bottom-4 size-4 min-w-2">
       <.button type="button" icon_right="material_share" size="md" variant="secondary"></.button>
     </section>
     """
