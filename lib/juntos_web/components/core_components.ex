@@ -25,7 +25,7 @@ defmodule JuntosWeb.CoreComponents do
     default: "primary",
     doc: "the button variant style"
 
-  attr :size, :string, default: "lg", values: ~w(lg md)
+  attr :size, :string, default: "lg", values: ~w(lg md sm)
   attr :type, :string, default: "submit", values: ~w(submit button reset link)
   attr :class, :any, default: nil
   attr :icon_right, :string, default: nil
@@ -128,6 +128,7 @@ defmodule JuntosWeb.CoreComponents do
   defp button_size_class(assigns) do
     case assigns[:size] do
       "md" -> "rounded-full py-2 px-3"
+      "sm" -> "rounded-full py-1 px-3 text-sm"
       _ -> "rounded-lg px-2 px-3 py-3"
     end
   end
@@ -137,7 +138,7 @@ defmodule JuntosWeb.CoreComponents do
       if assigns[:disabled] do
         "bg-(--color-bg-status-disabled) text-(--color-text-status-disabled)"
       else
-        "bg-(--color-bg-accent-brand-muted) text-(--color-text-neutral-primary) hover:bg-(--color-bg-accent-brand-muted-hover)"
+        "!bg-(--color-bg-accent-brand-muted) text-(--color-text-neutral-primary) !hover:bg-(--color-bg-accent-brand-muted-hover)"
       end
 
     colors

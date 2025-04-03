@@ -4,7 +4,7 @@ defmodule JuntosWeb.EventLive.Show do
 
   @impl true
   def mount(params, _session, socket) do
-    event = Juntos.Repo.get_by(Events.Event, slug: hd(params["path"]))
+    event = Juntos.Repo.get_by!(Events.Event, slug: hd(params["path"]))
 
     {:ok,
      socket

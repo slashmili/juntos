@@ -67,7 +67,7 @@ defmodule JuntosWeb.HomeLive do
 
   defp future_events(assigns) do
     ~H"""
-    <div class="flex flex-col justify-start gap-4">
+    <div class="flex flex-col justify-start gap-2">
       <.event_card :for={event <- @events} event={event} />
     </div>
     """
@@ -77,46 +77,51 @@ defmodule JuntosWeb.HomeLive do
 
   defp event_card(assigns) do
     ~H"""
-    <div class="flex w-full min-w-2xs max-w-3xl rounded-2xl border-1 border-(--color-border-neutral-primary) bg-(--color-bg-neutral-primary)/50 backdrop-blur-lg shadow-xl dark:shadow-slate-100/5 shadow-slate-900/4 px-3 place-self-center hover:bg-(--color-bg-neutral-primary-hover)">
-      <div class="py-3  pr-1 flex-shrink-0">
-        <.link navigate={~p"/#{@event.slug}"}>
+    <.link navigate={~p"/#{@event.slug}"}>
+      <div class="flex w-full min-w-2xs max-w-3xl rounded-2xl border-1 border-(--color-border-neutral-primary) bg-(--color-bg-neutral-primary)/50 backdrop-blur-lg shadow-xl dark:shadow-slate-100/1 shadow-slate-900/4 px-3 place-self-center  hover:border-(--color-border-neutral-secondary) animated cursor-pointer">
+        <div class="py-3  pr-1 flex-shrink-0">
           <.event_cover_image cover_image={Events.event_cover_url(@event)} />
-        </.link>
-      </div>
-      <div class="grow flex flex-col pl-1  py-3">
-        <div class="text-sm flex items-center gap-1">
-          <.icon
-            name="material_date_range"
-            class={[
-              "icon-size-4 bg-(--color-bg-accent-brand-muted) rounded-full p-0.5",
-              @past_event? == true && "bg-(--color-bg-status-disabled)"
-            ]}
-          /> 8. Feb <span class="px-1"></span>
-          <.icon
-            name="material_schedule"
-            class={[
-              "icon-size-4 bg-(--color-bg-accent-brand-muted) rounded-full p-0.5",
-              @past_event? == true && "bg-(--color-bg-status-disabled)"
-            ]}
-          /> 20:00
         </div>
-        <div class="grow font-bold text-base  flex flex flex-col justify-center">
-          <.link navigate={~p"/#{@event.slug}"}>
-            {@event.name}
-          </.link>
-        </div>
-        <div class="flex items-center text-sm gap-1">
-          <div class="grow">
-            <.icon name="material_location_on" class="icon-size-4" /> Berlin, Germany
+        <div class="grow flex flex-col pl-1  py-3">
+          <div class="flex [&>*:first-child]:grow">
+            <div class="grow text-sm flex items-center gap-1">
+              <.icon
+                name="material_date_range"
+                class={[
+                  "icon-size-4 bg-(--color-bg-accent-brand-muted) rounded-full p-0.5",
+                  @past_event? == true && "bg-(--color-bg-status-disabled)"
+                ]}
+              /> 8. Feb <span class="px-1"></span>
+              <.icon
+                name="material_schedule"
+                class={[
+                  "icon-size-4 bg-(--color-bg-accent-brand-muted) rounded-full p-0.5",
+                  @past_event? == true && "bg-(--color-bg-status-disabled)"
+                ]}
+              /> 20:00
+            </div>
+            <div class=" flex-shrink-0">
+              <.button href="mange/event" type="link" size="sm" variant="secondary">Manage</.button>
+            </div>
           </div>
-          <div :if={@past_event?} class="flex-shrink-0">
-            <div class="py-1 px-2 rounded-full border border-(--color-border-neutral-primary) bg-(--color-bg-neutral-secondary) text-xs font-medium">
-              Past event
+          <div class="grow font-bold text-base  flex flex flex-col justify-center">
+            <.link navigate={~p"/#{@event.slug}"}>
+              {@event.name}
+            </.link>
+          </div>
+          <div class="flex">
+            <div class="grow flex items-center text-sm gap-1">
+              <.icon name="material_location_on" class="icon-size-4" /> Berlin, Germany
+            </div>
+            <div :if={@past_event?} class="flex-shrink-0">
+              <div class="py-1 px-2 rounded-full border border-(--color-border-neutral-primary) bg-(--color-bg-neutral-secondary) text-xs font-medium">
+                Past event
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </.link>
     """
   end
 
