@@ -49,7 +49,7 @@ defmodule JuntosWeb.CoreComponents do
         @variant_class,
         @size_class,
         @class,
-        "flex max-w-md justify-center gap-1  font-medium gap-1 font-medium text-base min-w-20 h-fit bg-(--color-bg-neutral-primary)"
+        "flex max-w-md justify-center gap-1  font-medium gap-1 font-medium text-base min-w-20 h-fit items-center"
       ]}
       {@rest}
     >
@@ -138,7 +138,7 @@ defmodule JuntosWeb.CoreComponents do
       if assigns[:disabled] do
         "bg-(--color-bg-status-disabled) text-(--color-text-status-disabled)"
       else
-        "!bg-(--color-bg-accent-brand-muted) text-(--color-text-neutral-primary) !hover:bg-(--color-bg-accent-brand-muted-hover)"
+        "text-(--color-text-neutral-primary) hover:bg-(--color-bg-accent-brand-muted-hover)  bg-(--color-bg-accent-brand-muted) "
       end
 
     colors
@@ -218,10 +218,10 @@ defmodule JuntosWeb.CoreComponents do
       <div class="flex p-3">
         <.link href="/" class="size-6"><.icon name="logo" class="size-6" /></.link>
       </div>
-      <div :if={@logged_in} class="grow flex justify-end pr-3">
+      <div :if={@logged_in} class="grow flex justify-end pr-3 pt-1">
         <.button type="link" href={~p"/new"} variant="outline" size="md">Create event</.button>
       </div>
-      <div :if={not @logged_in} class="grow flex justify-end pr-3">
+      <div :if={not @logged_in} class="grow flex justify-end pr-3 pt-1">
         <.button type="link" href={~p"/users/log_in"} variant="outline" size="md">
           {gettext "Login"}
         </.button>
@@ -917,5 +917,20 @@ defmodule JuntosWeb.CoreComponents do
   """
   def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
+  end
+
+  ## Useful event helpers
+  def datetime_to_hh_mm(datetime) do
+    Calendar.strftime(
+      datetime,
+      "%H:%M"
+    )
+  end
+
+  def datetime_to_short_date(datetime) do
+    Calendar.strftime(
+      datetime,
+      "%a %d. %b"
+    )
   end
 end
