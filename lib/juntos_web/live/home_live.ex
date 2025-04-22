@@ -4,13 +4,14 @@ defmodule JuntosWeb.HomeLive do
   alias Juntos.Events
   @impl true
   def mount(_params, _session, socket) do
-    events = Juntos.Repo.all(Events.Event)
+    events = Events.list_future_events()
+    user_events = Events.list_user_events(socket.assigns.current_user)
 
     {:ok,
      socket
      |> assign(
-       user_events: [Enum.random(events)],
-       future_events: Enum.take(events, 4),
+       user_events: user_events,
+       future_events: events,
        events: events,
        page_title: gettext("Home")
      )}
@@ -23,11 +24,17 @@ defmodule JuntosWeb.HomeLive do
       <.page_wrapper>
         <.home_page>
           <.hero_section />
-          <.events_list :if={@user_events != []} events={@user_events} title={gettext "Your events"} />
+          <.events_list
+            :if={@user_events != []}
+            events={@user_events}
+            title={gettext "Your events"}
+            data-role="your-section"
+          />
           <.events_list
             :if={@future_events != []}
             events={@future_events}
             title={gettext "Future events"}
+            data-role="future-section"
           />
         </.home_page>
       </.page_wrapper>
@@ -62,13 +69,19 @@ defmodule JuntosWeb.HomeLive do
   defp events_list(assigns) do
     ~H"""
     <.event_title_bar title={@title} />
-    <div class="flex flex-col justify-start gap-2">
+    <div class="flex flex-col justify-start gap-2" data-role={assigns[:"data-role"]}>
       <.event_card :for={event <- Enum.take(@events, 3)} event={event} />
       <div
         :if={length(@events) > 3}
         class="flex w-full min-w-2xs max-w-3xl px-3 p-3 place-self-center justify-end items-center gap-1"
       >
-        <.button variant="tertiary" type="link" size="md" icon_right="material_arrow_forward">
+        <.button
+          variant="tertiary"
+          type="link"
+          size="md"
+          icon_right="material_arrow_forward"
+          data-role="view-more-events"
+        >
           {gettext "View all"}
         </.button>
       </div>

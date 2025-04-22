@@ -162,4 +162,74 @@ defmodule Juntos.EventsTest do
       assert jpg =~ "jpg400x400.jpg"
     end
   end
+
+  describe "list_future_events/0" do
+    test "returns last 4 future events by start_datetime" do
+      event_dt = NaiveDateTime.utc_now()
+
+      Enum.each(1..10, fn index ->
+        event_fixture(
+          name: "Event #{index}",
+          start_datetime: NaiveDateTime.shift(event_dt, hour: index),
+          end_datetime: NaiveDateTime.shift(event_dt, hour: index)
+        )
+      end)
+
+      assert [
+               %{name: "Event 10"},
+               %{name: "Event 9"},
+               %{name: "Event 8"},
+               %{name: "Event 7"}
+             ] = SUT.list_future_events()
+    end
+
+    test "returns none" do
+      event_fixture()
+
+      assert SUT.list_future_events() == []
+    end
+  end
+
+  describe "list_user_events/1" do
+    test "returns events created by the user" do
+      user = user_fixture()
+      _event = event_fixture(name: "My Event", creator: user)
+      assert [%{name: "My Event"}] = SUT.list_user_events(user)
+    end
+
+    test "returns events attended by the user" do
+      user = user_fixture()
+      event = event_fixture(name: "Other Event")
+      assert :ok = SUT.add_event_attendee(event, user)
+      assert [%{name: "Other Event"}] = SUT.list_user_events(user)
+    end
+
+    test "returns single event if the user is owner and also attends the event" do
+      user = user_fixture()
+      event = event_fixture(name: "My Event & I attend", owner: user)
+      assert :ok = SUT.add_event_attendee(event, user)
+      assert [%{name: "My Event & I attend"}] = SUT.list_user_events(user)
+    end
+
+    test "returns last 4 user events by start_datetime" do
+      event_dt = NaiveDateTime.utc_now()
+      user = user_fixture()
+
+      Enum.each(1..10, fn index ->
+        event_fixture(
+          creator: user,
+          name: "Event #{index}",
+          start_datetime: NaiveDateTime.shift(event_dt, hour: index),
+          end_datetime: NaiveDateTime.shift(event_dt, hour: index)
+        )
+      end)
+
+      assert [
+               %{name: "Event 10"},
+               %{name: "Event 9"},
+               %{name: "Event 8"},
+               %{name: "Event 7"}
+             ] = SUT.list_future_events()
+    end
+  end
 end

@@ -131,4 +131,30 @@ defmodule Juntos.Events do
     q = from(ea in EventAttendee, where: ea.event_id == ^event.id, where: ea.user_id == ^user.id)
     Repo.aggregate(q, :count, :id) == 1
   end
+
+  def list_future_events do
+    from_dt = NaiveDateTime.utc_now()
+
+    q =
+      from(e in Event,
+        where: e.start_datetime > ^from_dt,
+        limit: 4,
+        order_by: [desc: :start_datetime]
+      )
+
+    Repo.all(q)
+  end
+
+  def list_user_events(%Accounts.User{} = user) do
+    base_query =
+      from(e in Event,
+        left_join: ea in EventAttendee,
+        on: ea.event_id == e.id,
+        where: e.creator_id == ^user.id or ea.user_id == ^user.id,
+        distinct: e.id
+      )
+
+    q = from(e in subquery(base_query), order_by: [desc: e.start_datetime], limit: 4)
+    Repo.all(q)
+  end
 end
