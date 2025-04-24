@@ -163,11 +163,11 @@ defmodule Juntos.EventsTest do
     end
   end
 
-  describe "list_future_events/0" do
-    test "returns last 4 future events by start_datetime" do
+  describe "list_future_events/1" do
+    test "returns future events by start_datetime" do
       event_dt = NaiveDateTime.utc_now()
 
-      Enum.each(1..10, fn index ->
+      Enum.each([-10, 1, 2, 3], fn index ->
         event_fixture(
           name: "Event #{index}",
           start_datetime: NaiveDateTime.shift(event_dt, hour: index),
@@ -176,10 +176,9 @@ defmodule Juntos.EventsTest do
       end)
 
       assert [
-               %{name: "Event 10"},
-               %{name: "Event 9"},
-               %{name: "Event 8"},
-               %{name: "Event 7"}
+               %{name: "Event 3"},
+               %{name: "Event 2"},
+               %{name: "Event 1"}
              ] = SUT.list_future_events()
     end
 
@@ -229,7 +228,7 @@ defmodule Juntos.EventsTest do
                %{name: "Event 9"},
                %{name: "Event 8"},
                %{name: "Event 7"}
-             ] = SUT.list_future_events()
+             ] = SUT.list_user_events(user)
     end
   end
 end

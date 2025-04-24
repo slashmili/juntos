@@ -132,15 +132,16 @@ defmodule Juntos.Events do
     Repo.aggregate(q, :count, :id) == 1
   end
 
-  def list_future_events do
+  def list_future_events(queries \\ []) do
     from_dt = NaiveDateTime.utc_now()
 
-    q =
+    list_events_q =
       from(e in Event,
         where: e.start_datetime > ^from_dt,
-        limit: 4,
         order_by: [desc: :start_datetime]
       )
+
+    q = Enum.reduce(queries, list_events_q, fn q, list_events_q -> q.(list_events_q) end)
 
     Repo.all(q)
   end
@@ -156,5 +157,17 @@ defmodule Juntos.Events do
 
     q = from(e in subquery(base_query), order_by: [desc: e.start_datetime], limit: 4)
     Repo.all(q)
+  end
+
+  def query_events_limit(limit) do
+    fn query ->
+      from(e in query, limit: ^limit)
+    end
+  end
+
+  def query_events_offset(offset) do
+    fn query ->
+      from(e in query, offset: ^offset)
+    end
   end
 end
