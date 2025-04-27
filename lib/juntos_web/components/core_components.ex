@@ -933,4 +933,11 @@ defmodule JuntosWeb.CoreComponents do
       "%a %d. %b"
     )
   end
+
+  def datetime_to_ddmmyy(datetime) do
+    Calendar.strftime(
+      datetime,
+      "%d.%m.%y"
+    )
+  end
 end
