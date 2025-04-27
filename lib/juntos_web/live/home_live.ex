@@ -173,6 +173,7 @@ defmodule JuntosWeb.HomeLive do
   defp event_card(assigns) do
     ~H"""
     <div
+      id={@id}
       class="flex w-full min-w-2xs max-w-3xl rounded-2xl border-1 border-(--color-border-neutral-primary) bg-(--color-bg-neutral-primary)/50 backdrop-blur-lg shadow-xl dark:shadow-slate-100/1 shadow-slate-900/4 px-3 place-self-center  hover:border-(--color-border-neutral-secondary)/50 animated cursor-pointer"
       role="link"
       phx-click={JS.navigate(~p"/#{@event.slug}")}
