@@ -108,4 +108,43 @@ defmodule JuntosWeb.HomeLiveTest do
     |> assert_has("[data-role=your-section]", text: "PAST EVENT")
     |> assert_has("[data-role=past-event-label]")
   end
+
+  test "renders online event", %{conn: conn, user: user} do
+    event_fixture(
+      creator: user,
+      name: "Online Event",
+      location: %{__type__: "url", link: "http://localhost"}
+    )
+
+    conn
+    |> visit("/")
+    |> assert_has("[data-role=your-section]", text: "Online Event")
+    |> assert_has("[data-role=online-event-label]", text: "Online")
+  end
+
+  test "renders custom address event", %{conn: conn, user: user} do
+    event_fixture(
+      creator: user,
+      name: "Custom Address",
+      location: %{__type__: "address", address: "custom address"}
+    )
+
+    conn
+    |> visit("/")
+    |> assert_has("[data-role=your-section]", text: "Custom Address")
+    |> assert_has("[data-role=address-event-label]")
+  end
+
+  test "renders place event", %{conn: conn, user: user} do
+    event_fixture(
+      creator: user,
+      name: "Place Event",
+      location: %{__type__: "place", id: "<id>", name: "<name>", address: "<address>"}
+    )
+
+    conn
+    |> visit("/")
+    |> assert_has("[data-role=your-section]", text: "Place Event")
+    |> assert_has("[data-role=place-event-label]")
+  end
 end

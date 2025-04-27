@@ -198,7 +198,7 @@ defmodule JuntosWeb.HomeLive do
         </div>
         <div class="flex">
           <div class="grow flex items-center  text-xs min-[450px]:text-sm gap-1">
-            <.icon name="material_location_on" class="icon-size-4" /> Berlin, Germany
+            <.event_location event={@event} />
           </div>
           <.event_past_label :if={@past_event?} />
         </div>
@@ -237,6 +237,35 @@ defmodule JuntosWeb.HomeLive do
         <.icon class="hidden sm:hidden text-xs" name="material_settings" />
       </a>
     </div>
+    """
+  end
+
+  defp event_location(%{event: %{location: %Juntos.Events.Event.Url{}}} = assigns) do
+    ~H"""
+    <div class="flex gap-1" data-role="online-event-label">
+      <.icon name="material_videocam" class="icon-size-4" /> {gettext "Online"}
+    </div>
+    """
+  end
+
+  defp event_location(%{event: %{location: %Juntos.Events.Event.Address{}}} = assigns) do
+    ~H"""
+    <div class="flex gap-1" data-role="address-event-label">
+      <.icon name="material_location_on" class="icon-size-4" /> {gettext "Custom"}
+    </div>
+    """
+  end
+
+  defp event_location(%{event: %{location: %Juntos.Events.Event.Place{}}} = assigns) do
+    ~H"""
+    <div class="flex gap-1" data-role="place-event-label">
+      <.icon name="material_location_on" class="icon-size-4" /> {@event.location.name}
+    </div>
+    """
+  end
+
+  defp event_location(assigns) do
+    ~H"""
     """
   end
 
