@@ -139,7 +139,14 @@ defmodule JuntosWeb.HomeLiveTest do
     event_fixture(
       creator: user,
       name: "Place Event",
-      location: %{__type__: "place", id: "<id>", name: "<name>", address: "<address>"}
+      location: %{
+        __type__: "place",
+        id: "<id>",
+        name: "<name>",
+        address: "<address>",
+        city: "My City",
+        country: "My Country"
+      }
     )
 
     conn

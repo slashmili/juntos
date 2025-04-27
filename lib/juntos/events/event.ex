@@ -108,10 +108,12 @@ defmodule Juntos.Events.Event.Place do
     field :id, :string
     field :name, :string
     field :address, :string
+    field :city, :string
+    field :country, :string
   end
 
   def changeset(place, params) do
-    cast(place, params, [:id, :name, :address])
+    cast(place, params, [:id, :name, :address, :city, :country])
   end
 end
 

@@ -103,8 +103,20 @@ class GoogleMapLookup {
   async lookupPlaceId(place) {
     const { Place } = await this.loader.importLibrary("places");
     const placeObj = new Place({ id: place.id })
-    await placeObj.fetchFields({ fields: ['location', 'formattedAddress'] })
-    return { ...place, address: placeObj.formattedAddress }
+    await placeObj.fetchFields({ fields: ['location', 'formattedAddress', 'addressComponents'] })
+
+    const addressComponents = placeObj.addressComponents;
+    const cityComponent = addressComponents.find(component => 
+      component.types.includes('locality')
+    );
+    const city = cityComponent ? cityComponent.longText : null;
+
+    const countryComponent = addressComponents.find(component => 
+      component.types.includes('country')
+    );
+    const country = countryComponent ? countryComponent.longText : null;
+
+    return { ...place, address: placeObj.formattedAddress, city: city, country: country }
   }
 }
 

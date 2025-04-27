@@ -243,7 +243,7 @@ defmodule JuntosWeb.HomeLive do
 
   defp event_location(%{event: %{location: %Juntos.Events.Event.Url{}}} = assigns) do
     ~H"""
-    <div class="flex gap-1" data-role="online-event-label">
+    <div class="flex gap-1 justify-center items-center" data-role="online-event-label">
       <.icon name="material_videocam" class="icon-size-4" /> {gettext "Online"}
     </div>
     """
@@ -251,7 +251,7 @@ defmodule JuntosWeb.HomeLive do
 
   defp event_location(%{event: %{location: %Juntos.Events.Event.Address{}}} = assigns) do
     ~H"""
-    <div class="flex gap-1" data-role="address-event-label">
+    <div class="flex gap-1 justify-center items-center" data-role="address-event-label">
       <.icon name="material_location_on" class="icon-size-4" /> {gettext "Custom"}
     </div>
     """
@@ -259,8 +259,13 @@ defmodule JuntosWeb.HomeLive do
 
   defp event_location(%{event: %{location: %Juntos.Events.Event.Place{}}} = assigns) do
     ~H"""
-    <div class="flex gap-1" data-role="place-event-label">
-      <.icon name="material_location_on" class="icon-size-4" /> {@event.location.name}
+    <div class="flex gap-1 justify-center items-center" data-role="place-event-label">
+      <.icon name="material_location_on" class="icon-size-4" /> {[
+        @event.location.city || @event.location.name,
+        @event.location.country
+      ]
+      |> Enum.reject(&is_nil/1)
+      |> Enum.join(", ")}
     </div>
     """
   end
