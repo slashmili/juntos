@@ -234,9 +234,15 @@ defmodule JuntosWeb.HomeLive do
         {gettext "Manage"}
       </.button>
 
-      <a href="mange/event" class="min-[450px]:hidden" title="Manage">
-        <.icon class="hidden sm:hidden text-xs" name="material_settings" />
-      </a>
+      <.button
+        class="min-[450px]:hidden flex w-4 !min-w-1"
+        href="mange/event"
+        type="link"
+        size="sm"
+        variant={(@past_event? && "outline") || "secondary"}
+      >
+        <.icon class="hidden sm:hidden text-sm" name="material_settings" />
+      </.button>
     </div>
     """
   end
