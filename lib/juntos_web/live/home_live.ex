@@ -109,6 +109,7 @@ defmodule JuntosWeb.HomeLive do
           size="md"
           icon_right="material_arrow_forward"
           data-role="view-more-events"
+          href={~p"/home"}
         >
           {gettext "View all"}
         </.button>
@@ -155,13 +156,6 @@ defmodule JuntosWeb.HomeLive do
         </.hero>
       </div>
     </div>
-    <div
-      :if={@more_events_available?}
-      class="flex w-full min-w-2xs max-w-3xl place-self-center mx-auto text-sm "
-      id="load-more-future-events-bottom"
-    >
-      <.icon name="material_refresh" class="icon-size-6 animate-spin" /> {gettext "Loading more events..."}
-    </div>
     """
   end
 
@@ -170,7 +164,7 @@ defmodule JuntosWeb.HomeLive do
   attr :past_event?, :boolean, required: false, default: false
   attr :manage_event?, :boolean, required: false, default: false
 
-  defp event_card(assigns) do
+  def event_card(assigns) do
     ~H"""
     <div
       id={@id}
@@ -208,7 +202,7 @@ defmodule JuntosWeb.HomeLive do
     """
   end
 
-  defp event_title_bar(assigns) do
+  def event_title_bar(assigns) do
     ~H"""
     <div class="md:place-self-center md:min-w-3xl">
       <div class="flex gap-2 items-center md:max-w-3xl w-full">

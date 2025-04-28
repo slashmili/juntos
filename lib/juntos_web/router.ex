@@ -81,6 +81,7 @@ defmodule JuntosWeb.Router do
     live_session :current_user,
       on_mount: [{JuntosWeb.UserAuth, :mount_current_user}] do
       live "/", HomeLive, :home
+      live "/home", UserEventsLive, :home
       live "/*path", EventLive.Show
     end
   end

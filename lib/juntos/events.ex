@@ -146,7 +146,7 @@ defmodule Juntos.Events do
     Repo.all(q)
   end
 
-  def list_user_events(%Accounts.User{} = user) do
+  def list_user_events(%Accounts.User{} = user, queries \\ []) do
     base_query =
       from(e in Event,
         left_join: ea in EventAttendee,
@@ -155,7 +155,8 @@ defmodule Juntos.Events do
         distinct: e.id
       )
 
-    q = from(e in subquery(base_query), order_by: [desc: e.start_datetime], limit: 4)
+    list_events_q = from(e in subquery(base_query), order_by: [desc: e.start_datetime], limit: 4)
+    q = Enum.reduce(queries, list_events_q, fn q, list_events_q -> q.(list_events_q) end)
     Repo.all(q)
   end
 
