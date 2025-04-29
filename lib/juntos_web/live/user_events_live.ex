@@ -22,11 +22,18 @@ defmodule JuntosWeb.UserEventsLive do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} current_user={@current_user}>
+      <:breadcrumb>
+        <.link navigate={~p"/"}><.icon name="material_home" class="icon-size-4" /></.link>
+      </:breadcrumb>
+      <:breadcrumb>
+        {gettext "my events"}
+      </:breadcrumb>
+
       <.page_wrapper>
         <.home_page>
           <.events_list
             events={@streams.user_events}
-            title={gettext "Your events"}
+            title={gettext "My Events"}
             data-role="your-section"
             current_user={@current_user}
             more_events_available?={@more_events_available?}
@@ -63,7 +70,7 @@ defmodule JuntosWeb.UserEventsLive do
       phx-update="stream"
       phx-viewport-bottom="load-more-future-events"
     >
-      <JuntosWeb.HomeLive.event_card
+      <JuntosWeb.EventLive.Components.list_event_card
         :for={{id, event} <- @events}
         id={id}
         event={event}
