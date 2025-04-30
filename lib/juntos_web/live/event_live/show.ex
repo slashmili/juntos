@@ -14,7 +14,7 @@ defmodule JuntosWeb.EventLive.Show do
   end
 
   @impl true
-  def handle_event("attend", _, %{assigns: %{current_user: nil}} = socket) do
+  def handle_event("attend", _, %{assigns: %{current_scope: nil}} = socket) do
     socket =
       push_navigate(socket, to: ~p"/users/log_in_redirect_back_to/#{socket.assigns.event.slug}")
 
@@ -23,7 +23,7 @@ defmodule JuntosWeb.EventLive.Show do
 
   @impl true
   def handle_event("attend", _, socket) do
-    :ok = Events.add_event_attendee(socket.assigns.event, socket.assigns.current_user)
+    :ok = Events.add_event_attendee(socket.assigns.event, socket.assigns.current_scope.user)
     socket = assign(socket, :attending?, !socket.assigns.attending?)
     event = Juntos.Repo.get!(Events.Event, socket.assigns.event.id)
     socket = assign(socket, :event, event)
@@ -90,8 +90,8 @@ defmodule JuntosWeb.EventLive.Show do
         organizer: "mailto:calendar-invite@juntos.now",
         attendees: [
           %{
-            :original_value => "mailto:#{socket.assigns.current_user.email}",
-            "CN" => "mailto:#{socket.assigns.current_user.email}",
+            :original_value => "mailto:#{socket.assigns.current_scope.user.email}",
+            "CN" => "mailto:#{socket.assigns.current_scope.user.email}",
             "CUTYPE" => "INDIVIDUAL",
             "PARTSTAT" => "ACCEPTED",
             "ROLE" => "REQ-PARTICIPANT",
@@ -134,7 +134,7 @@ defmodule JuntosWeb.EventLive.Show do
 
   @impl true
   def handle_event("cancel-attendance", _, socket) do
-    :ok = Events.remove_event_attendee(socket.assigns.event, socket.assigns.current_user)
+    :ok = Events.remove_event_attendee(socket.assigns.event, socket.assigns.current_scope.user)
     socket = assign(socket, attending?: false, show_withdraw_prompt?: false)
     event = Juntos.Repo.get!(Events.Event, socket.assigns.event.id)
     socket = assign(socket, :event, event)
@@ -145,7 +145,7 @@ defmodule JuntosWeb.EventLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_user={@current_user}>
+    <Layouts.app flash={@flash} current_scope={@current_scope}>
       <:breadcrumb>
         <.link navigate={~p"/"}><.icon name="material_home" class="icon-size-4" /></.link>
       </:breadcrumb>
@@ -655,7 +655,11 @@ defmodule JuntosWeb.EventLive.Show do
   defp set_toggles(socket) do
     options = [
       show_withdraw_prompt?: false,
-      attending?: Events.is_attending?(socket.assigns.event, socket.assigns.current_user),
+      attending?:
+        Events.is_attending?(
+          socket.assigns.event,
+          socket.assigns.current_scope && socket.assigns.current_scope.user
+        ),
       show_ticket_dialog?: false,
       show_add_to_calendar?: false
     ]

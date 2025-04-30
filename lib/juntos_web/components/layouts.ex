@@ -14,7 +14,7 @@ defmodule JuntosWeb.Layouts do
 
   attr :flash, :map, required: true, doc: "the map of flash messages"
 
-  attr :current_user, Juntos.Accounts.User,
+  attr :current_scope, Juntos.Accounts.Scope,
     required: false,
     default: nil,
     doc: "current logged in user"
@@ -24,7 +24,7 @@ defmodule JuntosWeb.Layouts do
   def app(assigns) do
     ~H"""
     <header class="flex flex-col items-center justify-center">
-      <.navbar logged_in={not is_nil(assigns[:current_user])} />
+      <.navbar logged_in={not is_nil(assigns[:current_scope])} />
       <.breadcrumb breadcrumb={@breadcrumb} />
     </header>
     <main class="text-(--color-text-neutral-primary)">

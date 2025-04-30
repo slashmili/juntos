@@ -9,6 +9,7 @@ defmodule Juntos.Accounts.User do
     field :name, :string
     field :confirmed_at, :naive_datetime
 
+    field :authenticated_at, :utc_datetime, virtual: true
     field :otp_code, :string, virtual: true
 
     timestamps(type: :utc_datetime_usec)

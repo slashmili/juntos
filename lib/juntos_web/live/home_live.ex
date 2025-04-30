@@ -7,7 +7,7 @@ defmodule JuntosWeb.HomeLive do
   def mount(_params, _session, socket) do
     socket =
       assign(socket,
-        user_events: maybe_load_user_events(socket.assigns.current_user),
+        user_events: maybe_load_user_events(socket.assigns.current_scope),
         offset: 0,
         limit: @limit,
         page_title: gettext("Home")
@@ -19,7 +19,7 @@ defmodule JuntosWeb.HomeLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_user={@current_user}>
+    <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.page_wrapper>
         <.home_page>
           <.hero_section />
@@ -28,10 +28,10 @@ defmodule JuntosWeb.HomeLive do
             events={@user_events}
             title={gettext "My Events"}
             data-role="your-section"
-            current_user={@current_user}
+            current_scope={@current_scope}
           />
           <.events_future_list
-            current_user={@current_user}
+            current_scope={@current_scope}
             events={@streams.future_events}
             title={gettext "Future Events"}
             data-role="future-section"
@@ -96,7 +96,7 @@ defmodule JuntosWeb.HomeLive do
       <JuntosWeb.EventLive.Components.list_event_card
         :for={event <- Enum.take(@events, 3)}
         event={event}
-        manage_event?={manage_event?(event, @current_user)}
+        manage_event?={manage_event?(event, @current_scope)}
         past_event?={past_event?(event)}
       />
       <div
@@ -132,7 +132,7 @@ defmodule JuntosWeb.HomeLive do
         :for={{id, event} <- @events}
         id={id}
         event={event}
-        manage_event?={manage_event?(event, @current_user)}
+        manage_event?={manage_event?(event, @current_scope)}
         past_event?={past_event?(event)}
       />
       <div
@@ -172,19 +172,19 @@ defmodule JuntosWeb.HomeLive do
     """
   end
 
-  defp maybe_load_user_events(nil) do
-    []
+  defp maybe_load_user_events(%{user: user}) do
+    Events.list_user_events(user)
   end
 
-  defp maybe_load_user_events(user) do
-    Events.list_user_events(user)
+  defp maybe_load_user_events(_) do
+    []
   end
 
   defp manage_event?(_, nil) do
     false
   end
 
-  defp manage_event?(event, user) do
+  defp manage_event?(event, %{user: user}) do
     event.creator_id == user.id
   end
 

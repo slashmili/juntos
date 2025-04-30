@@ -27,7 +27,7 @@ defmodule JuntosWeb.UserLoginLiveTest do
         |> submit()
 
       assert token = get_session(conn.conn, :user_token)
-      assert logged_in_user = Accounts.get_user_by_session_token(token)
+      assert {logged_in_user, _} = Accounts.get_user_by_session_token(token)
       assert logged_in_user.id == user.id
     end
 
@@ -64,7 +64,7 @@ defmodule JuntosWeb.UserLoginLiveTest do
         |> submit()
 
       assert token = get_session(conn.conn, :user_token)
-      assert logged_in_user = Accounts.get_user_by_session_token(token)
+      assert {logged_in_user, _} = Accounts.get_user_by_session_token(token)
 
       assert logged_in_user.email == new_user_email
       assert logged_in_user.confirmed_at

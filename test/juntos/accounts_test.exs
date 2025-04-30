@@ -60,7 +60,7 @@ defmodule Juntos.AccountsTest do
     end
 
     test "returns user by token", %{user: user, token: token} do
-      assert session_user = SUT.get_user_by_session_token(token)
+      assert {session_user, _} = SUT.get_user_by_session_token(token)
       assert session_user.id == user.id
     end
 

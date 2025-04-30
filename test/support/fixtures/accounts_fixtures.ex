@@ -6,6 +6,7 @@ defmodule Juntos.AccountsFixtures do
 
   alias Juntos.Accounts
   alias Juntos.Repo
+  import Ecto.Query
 
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
 
@@ -69,5 +70,14 @@ defmodule Juntos.AccountsFixtures do
     assert_received({:otp_code, otp_code})
     # assert_received({:otp_token, otp_token})
     otp_code
+  end
+
+  def offset_user_token(token, amount_to_add, unit) do
+    dt = DateTime.add(DateTime.utc_now(:second), amount_to_add, unit)
+
+    Juntos.Repo.update_all(
+      from(ut in Accounts.UserToken, where: ut.token == ^token),
+      set: [inserted_at: dt]
+    )
   end
 end

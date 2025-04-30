@@ -95,7 +95,7 @@ defmodule JuntosWeb.EventLive.New do
 
     event_params = Map.put(event_params, "location", to_location(socket.assigns.event_location))
 
-    case Events.create_event(event_params, socket.assigns.current_user) do
+    case Events.create_event(event_params, socket.assigns.current_scope.user) do
       {:ok, event} ->
         {:noreply, redirect(socket, to: ~p"/#{event.slug}")}
 
@@ -107,7 +107,7 @@ defmodule JuntosWeb.EventLive.New do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_user={@current_user}>
+    <Layouts.app flash={@flash} current_scope={@current_scope}>
       <:breadcrumb>
         <.link navigate={~p"/"}><.icon name="material_home" class="icon-size-4" /></.link>
       </:breadcrumb>

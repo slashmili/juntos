@@ -11,7 +11,7 @@ defmodule JuntosWeb.UserEventsLive do
         page_title: gettext("My Events")
       )
 
-    if socket.assigns.current_user do
+    if socket.assigns.current_scope do
       {:ok, stream_more_events(socket)}
     else
       {:ok, redirect(socket, to: ~p"/users/log_in")}
@@ -21,7 +21,7 @@ defmodule JuntosWeb.UserEventsLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_user={@current_user}>
+    <Layouts.app flash={@flash} current_scope={@current_scope}>
       <:breadcrumb>
         <.link navigate={~p"/"}><.icon name="material_home" class="icon-size-4" /></.link>
       </:breadcrumb>
@@ -35,7 +35,7 @@ defmodule JuntosWeb.UserEventsLive do
             events={@streams.user_events}
             title={gettext "My Events"}
             data-role="your-section"
-            current_user={@current_user}
+            current_scope={@current_scope}
             more_events_available?={@more_events_available?}
           />
         </.home_page>
@@ -74,7 +74,7 @@ defmodule JuntosWeb.UserEventsLive do
         :for={{id, event} <- @events}
         id={id}
         event={event}
-        manage_event?={manage_event?(event, @current_user)}
+        manage_event?={manage_event?(event, @current_scope)}
         past_event?={past_event?(event)}
       />
       <.no_event_hero />
@@ -114,7 +114,7 @@ defmodule JuntosWeb.UserEventsLive do
   defp stream_more_events(%{assigns: %{offset: offset, limit: limit}} = socket) do
     events =
       Events.list_user_events(
-        socket.assigns.current_user,
+        socket.assigns.current_scope.user,
         [
           Events.query_events_limit(limit),
           Events.query_events_offset(offset)
@@ -132,7 +132,7 @@ defmodule JuntosWeb.UserEventsLive do
     false
   end
 
-  defp manage_event?(event, user) do
+  defp manage_event?(event, %{user: user}) do
     event.creator_id == user.id
   end
 

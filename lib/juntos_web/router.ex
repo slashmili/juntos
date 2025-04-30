@@ -10,7 +10,8 @@ defmodule JuntosWeb.Router do
     plug :put_root_layout, html: {JuntosWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :fetch_current_user
+    # plug :fetch_current_user
+    plug :fetch_current_scope_for_user
   end
 
   pipeline :api do
@@ -48,8 +49,9 @@ defmodule JuntosWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :require_authenticated_user,
-      on_mount: [{JuntosWeb.UserAuth, :ensure_authenticated}] do
+      on_mount: [{JuntosWeb.UserAuth, :require_authenticated}] do
       live "/new", EventLive.New
+      live "/events/:event_id/edit", EventLive.Edit
     end
   end
 
@@ -79,7 +81,7 @@ defmodule JuntosWeb.Router do
     pipe_through :browser
 
     live_session :current_user,
-      on_mount: [{JuntosWeb.UserAuth, :mount_current_user}] do
+      on_mount: [{JuntosWeb.UserAuth, :mount_current_scope}] do
       live "/", HomeLive, :home
       live "/home", UserEventsLive, :home
       live "/*path", EventLive.Show
