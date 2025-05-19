@@ -231,4 +231,27 @@ defmodule Juntos.EventsTest do
              ] = SUT.list_user_events(user)
     end
   end
+
+  describe "get_event/1" do
+    test "get an existing event" do
+      user = user_fixture()
+      event = event_fixture(creator: user)
+
+      filters = [
+        SUT.query_events_for_scope(Juntos.Accounts.Scope.for_user(user)),
+        SUT.query_events_where_id(event.id)
+      ]
+
+      assert fetch_event = SUT.get_event(filters)
+      assert fetch_event.id == event.id
+    end
+
+    test "get event for scope" do
+      filters = [
+        SUT.query_events_where_id("040dbb17-12f7-4eed-aea8-a2cddaa835a8")
+      ]
+
+      refute SUT.get_event(filters)
+    end
+  end
 end

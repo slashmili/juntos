@@ -644,9 +644,12 @@ defmodule JuntosWeb.CoreComponents do
     """
   end
 
+  attr :rest, :global, include: ~w(data-role)
+  slot :inner_block, doc: "the inner block"
+
   def page_wrapper(assigns) do
     ~H"""
-    <div class="flex justify-center">
+    <div class="flex justify-center" {@rest}>
       {render_slot(@inner_block)}
     </div>
     """

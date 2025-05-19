@@ -9,6 +9,23 @@ defmodule Juntos.Events do
     Event.create_changeset(event, attr)
   end
 
+  def get_event(queries) do
+    event_q =
+      from(e in Event)
+
+    q = Enum.reduce(queries, event_q, fn q, event_q -> q.(event_q) end)
+    Repo.one(q)
+  end
+
+  def update_event(event, attrs \\ %{}) do
+    with {:ok, event = %Event{}} <-
+           event
+           |> Event.edit_changeset(attrs)
+           |> Repo.update() do
+      {:ok, event}
+    end
+  end
+
   def create_event(attrs \\ %{}, %Accounts.User{} = creator) do
     event_record_id = create_uuid()
 
@@ -169,6 +186,18 @@ defmodule Juntos.Events do
   def query_events_offset(offset) do
     fn query ->
       from(e in query, offset: ^offset)
+    end
+  end
+
+  def query_events_for_scope(%Juntos.Accounts.Scope{user: user}) do
+    fn query ->
+      from(e in query, where: e.creator_id == ^user.id)
+    end
+  end
+
+  def query_events_where_id(id) do
+    fn query ->
+      from(e in query, where: e.id == ^id)
     end
   end
 end

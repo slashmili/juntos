@@ -32,6 +32,26 @@ defmodule Juntos.Events.Event do
   end
 
   @doc false
+  def edit_changeset(event, attrs) do
+    event
+    |> cast(attrs, [
+      :name,
+      :description,
+      :start_datetime,
+      :end_datetime,
+      :time_zone
+    ])
+    |> cast_attachments(attrs, [:cover_image], allow_paths: true)
+    |> validate_inclusion(:time_zone, Chrono.TimeZone.known_timezones())
+    |> cast_polymorphic_embed(:location,
+      request: true
+    )
+    |> validate_required([:name, :start_datetime, :end_datetime, :time_zone])
+    |> validate_start_datetime()
+    |> validate_end_datetime()
+  end
+
+  @doc false
   def create_changeset(event, attrs) do
     event
     |> cast(attrs, [

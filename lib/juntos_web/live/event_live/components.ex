@@ -272,6 +272,7 @@ defmodule JuntosWeb.EventLive.Components do
           <div class=" flex-shrink-0">
             <.event_card_manage_button
               :if={@manage_event?}
+              event={@event}
               manage_event?={@manage_event?}
               past_event?={@past_event?}
             />
@@ -343,7 +344,7 @@ defmodule JuntosWeb.EventLive.Components do
     <div data-role="manage-event-button">
       <.button
         class="hidden min-[450px]:block"
-        href="mange/event"
+        href={~p"/events/#{@event}/edit"}
         type="link"
         size="sm"
         variant={(@past_event? && "outline") || "secondary"}
@@ -353,7 +354,7 @@ defmodule JuntosWeb.EventLive.Components do
 
       <.button
         class="min-[450px]:hidden flex w-4 !min-w-1"
-        href="mange/event"
+        href={~p"/events/#{@event}/edit"}
         type="link"
         size="sm"
         variant={(@past_event? && "outline") || "secondary"}

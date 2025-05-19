@@ -51,7 +51,7 @@ defmodule JuntosWeb.Router do
     live_session :require_authenticated_user,
       on_mount: [{JuntosWeb.UserAuth, :require_authenticated}] do
       live "/new", EventLive.New
-      live "/events/:event_id/edit", EventLive.Edit
+      live "/events/:id/edit", EventLive.Edit
     end
   end
 
