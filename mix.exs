@@ -71,6 +71,7 @@ defmodule Juntos.MixProject do
       {:polymorphic_embed, "~> 5.0"},
       {:qr_code, "~> 3.2"},
       {:icalendar, github: "slashmili/icalendar", branch: "main"},
+      {:tidewave, "~> 0.1", only: :dev},
       # Start Upload Deps
       {:waffle, "~> 1.1"},
       {:waffle_ecto, "~> 0.0.12"},
