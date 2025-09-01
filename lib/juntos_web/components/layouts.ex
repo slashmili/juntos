@@ -14,10 +14,9 @@ defmodule JuntosWeb.Layouts do
 
   attr :flash, :map, required: true, doc: "the map of flash messages"
 
-  attr :current_scope, Juntos.Accounts.Scope,
-    required: false,
+  attr :current_scope, :map,
     default: nil,
-    doc: "current logged in user"
+    doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
 
   slot :breadcrumb, required: false
 
