@@ -12,8 +12,6 @@ defmodule Juntos.Application do
       Juntos.Repo,
       {DNSCluster, query: Application.get_env(:juntos, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Juntos.PubSub},
-      # Start the Finch HTTP client for sending emails
-      {Finch, name: Juntos.Finch},
       # Start a worker by calling: Juntos.Worker.start_link(arg)
       # {Juntos.Worker, arg},
       # Start to serve requests, typically the last entry
