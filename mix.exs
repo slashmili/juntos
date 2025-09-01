@@ -76,7 +76,6 @@ defmodule Juntos.MixProject do
       # End Upload Deps
       # Start test/dev Deps
       {:phoenix_live_reload, "~> 1.6", only: :dev},
-      {:floki, ">= 0.30.0", only: :test},
       {:tidewave, "~> 0.4", only: :dev},
       {:lazy_html, ">= 0.1.0", only: :test},
       {:mimic, "~> 1.10", only: :test},
